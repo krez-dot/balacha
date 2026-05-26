@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -2443,30 +2443,130 @@
         grid-template-columns: 1fr
       }
     }
+
+    /* ── RUN HP BAR (header) ── */
+    .hp-bar-wrap { display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--fg) }
+    .hp-bar { width:70px;height:7px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden }
+    .hp-bar-fill { height:100%;background:linear-gradient(90deg,#ef4444,#f87171);border-radius:4px;transition:width .4s }
+
+    /* ── MAP ── */
+    .map-wrap { padding:16px;display:flex;flex-direction:column;align-items:center;gap:0;min-height:100% }
+    .map-title { font-size:1rem;font-weight:800;letter-spacing:.1em;color:var(--gold);margin-bottom:12px;text-align:center }
+    .map-run-info { display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;justify-content:center }
+    .map-stat { display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 10px;font-size:0.78rem }
+    .map-floor-row { display:flex;justify-content:center;gap:20px;width:100%;max-width:340px;position:relative }
+    .map-node { width:60px;height:60px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.5rem;cursor:default;border:2px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);transition:all .2s;position:relative;flex-shrink:0 }
+    .map-node .node-label { font-size:0.48rem;font-weight:700;letter-spacing:.05em;margin-top:1px;opacity:.7;text-transform:uppercase }
+    .map-node.available { border-color:var(--accent);background:rgba(108,99,255,0.15);box-shadow:0 0 12px rgba(108,99,255,0.3);cursor:pointer }
+    .map-node.available:hover { transform:scale(1.08);box-shadow:0 0 20px rgba(108,99,255,0.5) }
+    .map-node.done { opacity:.3;cursor:default }
+    .map-node.boss-node { border-color:#ef4444;background:rgba(239,68,68,0.08);font-size:1.9rem;width:68px;height:68px }
+    .map-node.boss-node.available { border-color:#ef4444;background:rgba(239,68,68,0.18);box-shadow:0 0 20px rgba(239,68,68,0.4);cursor:pointer }
+    .map-node.empty { visibility:hidden;pointer-events:none }
+    .map-conn-row { display:flex;justify-content:center;gap:20px;width:100%;max-width:340px;height:18px }
+    .map-conn-cell { width:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center }
+    .map-conn-line { width:2px;height:100%;background:rgba(255,255,255,0.1);margin:0 auto }
+
+    /* ── BATTLE ── */
+    .battle-wrap { padding:14px;display:flex;flex-direction:column;gap:10px }
+    .battle-enemy-card { background:var(--card2);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:7px }
+    .battle-enemy-top { display:flex;align-items:center;gap:10px }
+    .battle-enemy-emoji { font-size:2rem }
+    .battle-enemy-info { flex:1 }
+    .battle-enemy-name { font-size:1rem;font-weight:700;color:var(--fg) }
+    .battle-enemy-desc { font-size:0.7rem;color:var(--muted);margin-top:1px }
+    .battle-hp-bar { height:9px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden }
+    .battle-hp-fill { height:100%;border-radius:5px;transition:width .5s ease }
+    .battle-hp-fill.enemy { background:linear-gradient(90deg,#dc2626,#f87171) }
+    .battle-hp-fill.player { background:linear-gradient(90deg,#16a34a,#4ade80) }
+    .battle-hp-label { font-size:0.68rem;color:var(--muted);text-align:right;margin-top:2px }
+    .battle-player-hp { background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.25);border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:8px }
+    .battle-run-jokers { display:flex;flex-wrap:wrap;gap:5px }
+    .run-joker-chip { display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:3px 8px;font-size:0.68rem }
+    .charge-pips { display:flex;gap:2px }
+    .charge-pip { width:5px;height:5px;border-radius:50%;background:var(--accent) }
+    .charge-pip.empty { background:rgba(255,255,255,0.12) }
+
+    /* ── NODE RESULT OVERLAY ── */
+    .node-result-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .3s }
+    .node-result-overlay.show { opacity:1;pointer-events:all }
+    .node-result-box { background:var(--card2);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 28px;max-width:360px;width:92%;text-align:center;display:flex;flex-direction:column;gap:10px;max-height:90vh;overflow-y:auto }
+    .node-result-emoji { font-size:2.8rem }
+    .node-result-title { font-size:1.15rem;font-weight:800 }
+    .node-result-desc { font-size:0.82rem;color:var(--muted) }
+    .node-result-rewards { display:flex;flex-direction:column;gap:5px;background:rgba(255,255,255,0.03);border-radius:8px;padding:8px }
+    .node-result-btn { padding:11px;border-radius:10px;background:var(--accent);color:#fff;font-size:0.88rem;font-weight:700;cursor:pointer;border:none }
+
+    /* ── JOKER PICK ── */
+    .joker-pick-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:6px }
+    .joker-pick-card { background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center }
+    .joker-pick-card:hover { border-color:var(--accent);background:rgba(108,99,255,0.1) }
+    .joker-pick-icon { font-size:1.7rem }
+    .joker-pick-name { font-size:0.78rem;font-weight:700;margin:3px 0 2px }
+    .joker-pick-desc { font-size:0.66rem;color:var(--muted) }
+    .joker-pick-charges { font-size:0.66rem;color:var(--accent);margin-top:3px }
+
+    /* ── HOME ── */
+    .home-wrap { padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center }
+    .home-logo { font-size:3.5rem }
+    .home-title { font-size:1.5rem;font-weight:900;letter-spacing:.05em;color:var(--gold) }
+    .home-subtitle { font-size:0.82rem;color:var(--muted);max-width:280px;line-height:1.5 }
+    .start-run-btn { padding:13px 44px;background:linear-gradient(135deg,var(--accent),#a855f7);border:none;border-radius:12px;color:#fff;font-size:1.05rem;font-weight:800;letter-spacing:.05em;cursor:pointer;box-shadow:0 4px 20px rgba(108,99,255,0.4);transition:all .2s }
+    .start-run-btn:hover { transform:translateY(-2px);box-shadow:0 6px 28px rgba(108,99,255,0.5) }
+    .home-stats-row { display:flex;gap:12px;flex-wrap:wrap;justify-content:center }
+    .home-stat-box { background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 16px;min-width:72px }
+    .home-stat-val { font-size:1.3rem;font-weight:800;color:var(--gold) }
+    .home-stat-lbl { font-size:0.68rem;color:var(--muted);margin-top:1px }
+
+    /* ── SHOP NODE ── */
+    .shop-node-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;padding:12px 16px }
+    .shop-node-card { background:var(--card2);border:1.5px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center }
+
+    /* ── EVENT ── */
+    .event-wrap { padding:22px 18px;display:flex;flex-direction:column;gap:14px;max-width:460px;margin:0 auto }
+    .event-title { font-size:1.15rem;font-weight:800;text-align:center }
+    .event-text { font-size:0.82rem;color:var(--muted);text-align:center;line-height:1.5 }
+    .event-options { display:flex;flex-direction:column;gap:7px }
+    .event-btn { padding:11px 14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--fg);font-size:0.83rem;cursor:pointer;text-align:left;transition:all .2s }
+    .event-btn:hover { border-color:var(--accent);background:rgba(108,99,255,0.1) }
+    .event-btn-label { font-weight:700;display:block }
+    .event-btn-desc { font-size:0.7rem;color:var(--muted);margin-top:1px;display:block }
+
+    /* ── REST ── */
+    .rest-options { display:flex;flex-direction:column;gap:9px;padding:14px;max-width:380px;margin:0 auto }
+    .rest-btn { padding:14px;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.03);color:var(--fg);cursor:pointer;transition:all .2s;text-align:left }
+    .rest-btn:hover { border-color:var(--gold);background:rgba(240,180,41,0.07) }
+    .rest-btn-icon { font-size:1.4rem;margin-bottom:3px }
+    .rest-btn-label { font-size:0.88rem;font-weight:700 }
+    .rest-btn-desc { font-size:0.7rem;color:var(--muted);margin-top:2px }
+
+    /* ── CARD (rarity-free) ── */
+    .r-plain { background:linear-gradient(90deg,rgba(100,120,180,0.6),rgba(140,160,220,0.6)) !important }
+
+    /* mobile tweaks for new pages */
+    @media(max-width:640px) {
+      .map-node { width:52px;height:52px;font-size:1.3rem }
+      .map-node.boss-node { width:60px;height:60px;font-size:1.7rem }
+      .map-floor-row { gap:14px;max-width:290px }
+      .map-conn-row { gap:14px;max-width:290px }
+      .map-conn-cell { width:52px }
+      .home-wrap { padding:20px 16px }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- JOKER PICKER MODAL -->
-  <div class="joker-modal" id="joker-modal">
-    <div class="joker-modal-box">
-      <div class="joker-modal-title">🃏 Equip Joker</div>
-      <div class="joker-modal-grid" id="joker-modal-grid"></div>
-      <button class="joker-modal-cancel" onclick="closeJokerPicker()">Cancel</button>
+  <!-- NODE RESULT OVERLAY -->
+  <div class="node-result-overlay" id="node-result-overlay">
+    <div class="node-result-box">
+      <div class="node-result-emoji" id="result-emoji">🏆</div>
+      <div class="node-result-title" id="result-title">Victory!</div>
+      <div class="node-result-desc" id="result-desc"></div>
+      <div class="node-result-rewards" id="result-rewards"></div>
+      <div id="result-joker-pick"></div>
+      <button class="node-result-btn" id="result-btn" onclick="resultAction()">Continue →</button>
     </div>
-  </div>
-
-  <!-- CINEMATIC PULL OVERLAY -->
-  <div id="cinematic">
-    <div class="cin-bg"></div>
-    <div class="cin-flash" id="cin-flash"></div>
-    <div class="cin-title" id="cin-title">SUMMONING</div>
-    <div style="position:relative;width:100%">
-      <div class="cin-cards-row" id="cin-cards-row"></div>
-      <div class="cin-scroll-hint" id="cin-scroll-hint"></div>
-    </div>
-    <button class="cin-skip" id="cin-skip" onclick="skipCinematic()">Skip</button>
   </div>
 
   <!-- HEADER -->
@@ -2476,140 +2576,76 @@
       <span class="logo-text">ASTRALDRAW</span>
     </div>
     <div class="header-right">
-      <button class="daily-btn" id="daily-btn" onclick="claimDaily()">Daily Login</button>
+      <div id="run-hp-display" style="display:none">
+        <div class="hp-bar-wrap">
+          <span style="font-size:.85rem">❤️</span>
+          <div class="hp-bar"><div class="hp-bar-fill" id="hp-bar-fill"></div></div>
+          <span id="hp-text" style="font-size:.72rem;color:var(--muted)">80/80</span>
+        </div>
+      </div>
       <div class="gem-display">
         <span class="gem-icon">💎</span>
-        <span class="gem-count" id="gem-count">3000</span>
+        <span class="gem-count" id="gem-count">500</span>
       </div>
     </div>
   </div>
 
   <!-- TABS -->
   <div id="tabs">
-    <button class="tab active" onclick="goTab('pull',this)">✦ Summon</button>
+    <button class="tab active" id="tab-main" onclick="goTab('home',this)">🏠 Home</button>
+    <button class="tab" onclick="goTab('forge',this)">⚗️ Forge</button>
     <button class="tab" onclick="goTab('missions',this)">📋 Missions</button>
-    <button class="tab" onclick="goTab('shop',this)">🏪 Shop</button>
-    <button class="tab" onclick="goTab('inventory',this)">📦 Collection</button>
     <button class="tab" onclick="goTab('stats',this)">📊 Stats</button>
-    <button class="tab" onclick="goTab('boss',this)">⚔️ Boss</button>
   </div>
 
-  <!-- ═══ SUMMON PAGE ═══ -->
-  <div id="page-pull" class="page active">
-
-    <!-- BANNERS -->
-    <div class="banner-row" id="banner-row"></div>
-
-    <!-- PITY -->
-    <div class="pity-section">
-      <div class="pity-top">
-        <div class="pity-stat"><span class="pity-stat-label">Total Pulls</span><span class="pity-stat-value col-blue"
-            id="ps-total">0</span></div>
-        <div class="pity-stat"><span class="pity-stat-label">Pity Count</span><span class="pity-stat-value"
-            id="ps-pity">0</span></div>
-        <div class="pity-stat"><span class="pity-stat-label">Hard Pity In</span><span class="pity-stat-value"
-            id="ps-left">80</span></div>
-        <div class="pity-stat"><span class="pity-stat-label">5★ Rate</span><span class="pity-stat-value col-gold"
-            id="ps-rate">5.0%</span></div>
-        <div class="pity-stat"><span class="pity-stat-label">Last 5★ At</span><span class="pity-stat-value col-gold"
-            id="ps-last5">—</span></div>
-        <div class="pity-bar-wrap">
-          <div class="pity-bar-label">
-            <span>Pity Progress (0 → 80)</span>
-            <span id="ps-pct">0%</span>
-          </div>
-          <div class="pity-track">
-            <div class="pity-fill" id="ps-fill" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="guarantee-badge" id="guarantee-badge" style="display:none">⭐ 5★ Guaranteed!</div>
-      </div>
-    </div>
-
-    <!-- BOSS STATUS BAR (shown during active battle) -->
-    <div id="boss-status-bar" style="display:none"></div>
-
-    <!-- PULL BUTTONS -->
-    <div class="pull-row">
-      <button class="pull-btn btn-single" id="btn5" onclick="startPull(5)">
-        <div class="pull-btn-inner">
-          <span class="pull-btn-icon">🔮</span>
-          <span class="pull-btn-text">
-            <span class="pull-btn-title">Hand Pull ×5</span>
-            <span class="pull-btn-cost">💎 600 Gems — 1 full hand</span>
-          </span>
-        </div>
-        <div class="pull-btn-shine"></div>
-      </button>
-      <button class="pull-btn btn-multi" id="btn10" onclick="startPull(10)">
-        <div class="pull-btn-inner">
-          <span class="pull-btn-icon">✨</span>
-          <span class="pull-btn-text">
-            <span class="pull-btn-title">10× Summon</span>
-            <span class="pull-btn-cost">💎 1600 Gems — pick your best hand</span>
-          </span>
-        </div>
-        <div class="pull-btn-shine"></div>
-      </button>
-    </div>
-
-    <!-- PULL STAGE -->
-    <div class="pull-stage">
-      <div class="stage-label">Latest Summon Results — tap cards to select for poker hand</div>
-      <div class="cards-flex" id="pull-stage-cards">
-        <div class="empty">
-          <div class="empty-ico">🔮</div>
-          <p>Summon to begin your journey</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- POKER HAND -->
-    <div class="poker-wrap" id="poker-wrap" style="display:none">
-      <div class="poker-header">
-        <span class="poker-title">♠ Poker Hand</span>
-        <span class="poker-hint" id="poker-hint-text">Select exactly 5 cards to evaluate</span>
-      </div>
-      <div class="hand-suggestions" id="hand-suggestions"></div>
-      <div class="hand-drop" id="hand-drop">
-        <span class="hand-placeholder">Your selected cards appear here</span>
-      </div>
-      <div class="hand-result" id="hand-result"></div>
-      <button class="eval-btn" id="eval-btn" onclick="evalHand()">
-        ♦ Evaluate Hand &amp; Claim Reward
-        <div class="eval-btn-shine"></div>
-      </button>
-    </div>
-
-    <!-- JOKER SLOTS -->
-    <div class="joker-section">
-      <div class="joker-section-header">
-        <span class="joker-section-title">🃏 Joker Slots</span>
-        <span class="joker-section-sub">Equip jokers to boost hand rewards — drop from any pull</span>
-      </div>
-      <div class="joker-slots" id="joker-slots"></div>
-    </div>
-
-    <!-- HAND TABLE -->
-    <div class="hand-table-wrap">
-      <div class="section-title">Poker Rewards</div>
-      <div class="hand-table">
-        <div class="ht-row"><span class="ht-name">High Card</span><span class="ht-reward">+50 💎</span></div>
-        <div class="ht-row"><span class="ht-name">One Pair</span><span class="ht-reward">+150 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Two Pair</span><span class="ht-reward">+300 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Three of a Kind</span><span class="ht-reward">+500 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Straight</span><span class="ht-reward">+750 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Flush</span><span class="ht-reward">+1,000 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Full House</span><span class="ht-reward">+1,500 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Four of a Kind</span><span class="ht-reward">+3,000 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Straight Flush</span><span class="ht-reward">+4,000 💎</span></div>
-        <div class="ht-row"><span class="ht-name">Royal Flush</span><span class="ht-reward">+5,000 💎 + 5★
-            Guaranteed</span></div>
-      </div>
+  <!-- ═══ HOME PAGE ═══ -->
+  <div id="page-home" class="page active">
+    <div class="home-wrap">
+      <div class="home-logo">🃏</div>
+      <div class="home-title">ASTRALDRAW</div>
+      <div class="home-subtitle">A roguelike poker journey. Collect jokers, battle enemies, conquer the tower.</div>
+      <button class="start-run-btn" onclick="startRun()">⚔️ START RUN</button>
+      <div class="home-stats-row" id="home-stats-row"></div>
     </div>
   </div>
 
-  <!-- ═══ MISSIONS PAGE ═══ -->
+  <!-- ═══ MAP PAGE ═══ -->
+  <div id="page-map" class="page">
+    <div class="map-wrap">
+      <div class="map-title">✦ THE TOWER</div>
+      <div class="map-run-info" id="map-run-info"></div>
+      <div id="map-grid"></div>
+    </div>
+  </div>
+
+  <!-- ═══ BATTLE PAGE ═══ -->
+  <div id="page-battle" class="page">
+    <div class="battle-wrap" id="battle-wrap"></div>
+  </div>
+
+  <!-- ═══ SHOP NODE PAGE ═══ -->
+  <div id="page-shop-node" class="page">
+    <div id="shop-node-wrap"></div>
+  </div>
+
+  <!-- ═══ REST PAGE ═══ -->
+  <div id="page-rest" class="page">
+    <div id="rest-wrap"></div>
+  </div>
+
+  <!-- ═══ EVENT PAGE ═══ -->
+  <div id="page-event" class="page">
+    <div class="event-wrap" id="event-wrap"></div>
+  </div>
+
+  <!-- ═══ FORGE PAGE ═══ -->
+  <div id="page-forge" class="page">
+    <div class="section-title">⚗️ Joker Forge <span id="forge-shard-count" style="font-size:0.8rem;font-weight:600;color:var(--blue2);margin-left:8px"></span></div>
+    <div style="font-size:0.78rem;color:var(--text2);margin-bottom:12px;padding:0 16px">Spend Shards earned from boss victories to forge jokers for your next run</div>
+    <div class="craft-grid" id="craft-grid"></div>
+  </div>
+
+  <!-- MISSIONS PAGE (keep) -->
   <div id="page-missions" class="page">
     <div class="section-title">Daily Missions</div>
     <div class="mission-list" id="mission-list"></div>
@@ -2617,1549 +2653,951 @@
     <div class="mission-list" id="weekly-mission-list"></div>
   </div>
 
-  <!-- ═══ SHOP PAGE ═══ -->
-  <div id="page-shop" class="page">
-    <div class="section-title">Gem Shop</div>
-    <div class="shop-grid" id="shop-grid"></div>
-    <div class="section-title" style="margin-top:20px">Exchange</div>
-    <div class="shop-grid" id="exchange-grid"></div>
-    <div class="section-title" style="margin-top:20px">⚗️ Joker Crafting <span id="shard-count-shop"
-        style="font-size:0.8rem;font-weight:600;color:var(--blue2);margin-left:8px"></span></div>
-    <div style="font-size:0.78rem;color:var(--text2);margin-bottom:12px">Spend Shards earned from boss battles to craft
-      specific jokers</div>
-    <div class="craft-grid" id="craft-grid"></div>
-  </div>
-
-  <!-- ═══ COLLECTION PAGE ═══ -->
-  <div id="page-inventory" class="page">
-    <div class="inv-header">
-      <div class="filter-pills" id="filter-pills"></div>
-      <span class="inv-count" id="inv-count"></span>
-    </div>
-    <div class="inv-grid" id="inv-grid"></div>
-  </div>
-
-  <!-- ═══ STATS PAGE ═══ -->
+  <!-- STATS PAGE (keep) -->
   <div id="page-stats" class="page">
     <div class="stats-grid" id="stats-grid"></div>
     <div class="section-title">Hand History</div>
     <div class="history-list" id="history-list"></div>
   </div>
 
-  <!-- ═══ BOSS PAGE ═══ -->
-  <div id="page-boss" class="page">
-    <div id="boss-page-content"></div>
-  </div>
-
   <div id="toast-stack"></div>
+
+  <!-- hidden stubs for legacy JS refs -->
+  <div id="page-pull" style="display:none"></div>
+  <div id="boss-status-bar" style="display:none"></div>
 
   <script>
     // ═══════════════════════════════════════════════
-    // CONSTANTS
+    // CORE CONSTANTS
     // ═══════════════════════════════════════════════
     const SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
     const SUIT_SYM = { Hearts: '♥', Diamonds: '♦', Clubs: '♣', Spades: '♠' };
     const SUIT_CLS = { Hearts: 'suit-h', Diamonds: 'suit-d', Clubs: 'suit-c', Spades: 'suit-s' };
     const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
     const V_ORDER = { 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, J: 11, Q: 12, K: 13, A: 14 };
-    const STAR_CHARS = { 3: '★★★', 4: '★★★★', 5: '★★★★★' };
-
+    // ── HAND REWARDS (used as base damage in battles) ──
     const HAND_REWARDS = {
-      'Royal Flush': 5000, 'Straight Flush': 4000, 'Four of a Kind': 3000,
-      'Full House': 1500, 'Flush': 1000, 'Straight': 750,
-      'Three of a Kind': 500, 'Two Pair': 300, 'One Pair': 150, 'High Card': 50
+      'Royal Flush':3000,'Straight Flush':1500,'Four of a Kind':1000,
+      'Full House':700,'Flush':500,'Straight':400,
+      'Three of a Kind':250,'Two Pair':150,'One Pair':80,'High Card':30,
     };
     const HAND_TIER = {
-      'Royal Flush': 3, 'Straight Flush': 3, 'Four of a Kind': 3,
-      'Full House': 2, 'Flush': 2, 'Straight': 2,
-      'Three of a Kind': 1, 'Two Pair': 1, 'One Pair': 1, 'High Card': 1
+      'Royal Flush':3,'Straight Flush':3,'Four of a Kind':3,
+      'Full House':2,'Flush':2,'Straight':2,
+      'Three of a Kind':1,'Two Pair':1,'One Pair':1,'High Card':1
     };
-    const CHIP_VALUES = { 3: 10, 4: 30, 5: 80 };
-    const HAND_ORDER = ['Royal Flush', 'Straight Flush', 'Four of a Kind', 'Full House', 'Flush', 'Straight', 'Three of a Kind', 'Two Pair', 'One Pair', 'High Card'];
+    const HAND_ORDER = ['Royal Flush','Straight Flush','Four of a Kind','Full House','Flush','Straight','Three of a Kind','Two Pair','One Pair','High Card'];
+
+    const CARD_TYPES = {
+      lucky:{ label:'LUCKY', chipBonus:50 },
+      metal:{ label:'METAL', chipBonus:150 },
+      glass:{ label:'GLASS', chipBonus:400, destroyOnPlay:true },
+    };
+
+    const NODE_ICONS  = {battle:'⚔️',elite:'💀',shop:'🏪',rest:'🔥',event:'❓',boss:'👑'};
+    const NODE_LABELS = {battle:'BATTLE',elite:'ELITE',shop:'SHOP',rest:'REST',event:'EVENT',boss:'BOSS'};
 
     const JOKERS = [
-      {
-        id: 'high_roller', name: 'High Roller', icon: '🎲', rarity: 3, desc: '+250 gems on any hand',
-        apply: (cards, hand, base) => base + 250
-      },
-      {
-        id: 'suit_collector', name: 'Suit Collector', icon: '🎴', rarity: 3, desc: '+150 per unique suit in hand',
-        apply: (cards, hand, base) => base + new Set(cards.map(c => c.suit)).size * 150
-      },
-      {
-        id: 'pair_magnet', name: 'Pair Magnet', icon: '🧲', rarity: 3, desc: '×2 on Two Pair or better',
-        apply: (cards, hand, base) => {
-          const rank = ['High Card', 'One Pair', 'Two Pair', 'Three of a Kind', 'Straight', 'Flush', 'Full House', 'Four of a Kind', 'Straight Flush', 'Royal Flush'];
-          return rank.indexOf(hand) >= 2 ? base * 2 : base;
-        }
-      },
-      {
-        id: 'star_power', name: 'Star Power', icon: '⭐', rarity: 4, desc: '+25% per 5★ card in hand',
-        apply: (cards, hand, base) => { const n = cards.filter(c => c.rarity === 5).length; return n ? Math.floor(base * (1 + n * 0.25)) : base; }
-      },
-      {
-        id: 'gem_thief', name: 'Gem Thief', icon: '💎', rarity: 4, desc: '×1.5 on hands worth 500+ gems',
-        apply: (cards, hand, base) => base >= 500 ? Math.floor(base * 1.5) : base
-      },
-      {
-        id: 'golden_pair', name: 'Golden Pair', icon: '👑', rarity: 4, desc: '×3 on One Pair specifically',
-        apply: (cards, hand, base) => hand === 'One Pair' ? base * 3 : base
-      },
-      {
-        id: 'rainbow', name: 'Rainbow', icon: '🌈', rarity: 5, desc: '+2000 gems — all 4 suits in hand',
-        apply: (cards, hand, base) => new Set(cards.map(c => c.suit)).size === 4 ? base + 2000 : base
-      },
-      {
-        id: 'lucky_joker', name: 'Lucky Joker', icon: '🃏', rarity: 5, desc: '×5 on High Card',
-        apply: (cards, hand, base) => hand === 'High Card' ? base * 5 : base
-      },
-      // ── EXTRA 3★ ──
-      {
-        id: 'straight_shot', name: 'Straight Shot', icon: '🎯', rarity: 3, desc: '+500 on Straight or Straight Flush',
-        apply: (cards, hand, base) => ['Straight', 'Straight Flush'].includes(hand) ? base + 500 : base
-      },
-      {
-        id: 'flush_hunter', name: 'Flush Hunter', icon: '🌊', rarity: 3, desc: '+400 on Flush specifically',
-        apply: (cards, hand, base) => hand === 'Flush' ? base + 400 : base
-      },
-      {
-        id: 'card_sharp', name: 'Card Sharp', icon: '✂️', rarity: 3, desc: '+120 per face card (J/Q/K/A)',
-        apply: (cards, hand, base) => base + cards.filter(c => ['J', 'Q', 'K', 'A'].includes(c.value)).length * 120
-      },
-      {
-        id: 'wild_whisperer', name: 'Wild Whisperer', icon: '🌙', rarity: 3, desc: '+200 per 5★ wild card',
-        apply: (cards, hand, base) => base + cards.filter(c => c.rarity === 5).length * 200
-      },
-      {
-        id: 'penny_pincher', name: 'Penny Pincher', icon: '💵', rarity: 3, desc: '×1.3 on all hands',
-        apply: (cards, hand, base) => Math.floor(base * 1.3)
-      },
-      {
-        id: 'three_magic', name: "Three's Magic", icon: '💫', rarity: 3, desc: '+600 on Three of a Kind or Full House',
-        apply: (cards, hand, base) => ['Three of a Kind', 'Full House'].includes(hand) ? base + 600 : base
-      },
-      // ── EXTRA 4★ ──
-      {
-        id: 'four_leaf', name: 'Four Leaf', icon: '🍀', rarity: 4, desc: '×2 on Four of a Kind',
-        apply: (cards, hand, base) => hand === 'Four of a Kind' ? base * 2 : base
-      },
-      {
-        id: 'full_throttle', name: 'Full Throttle', icon: '🔥', rarity: 4, desc: '+800 on Full House',
-        apply: (cards, hand, base) => hand === 'Full House' ? base + 800 : base
-      },
-      {
-        id: 'ace_hunter', name: 'Ace Hunter', icon: '🗡️', rarity: 4, desc: '+500 if hand contains an Ace',
-        apply: (cards, hand, base) => cards.some(c => c.value === 'A') ? base + 500 : base
-      },
-      {
-        id: 'king_maker', name: 'King Maker', icon: '🤴', rarity: 4, desc: '+600 if hand contains a King',
-        apply: (cards, hand, base) => cards.some(c => c.value === 'K') ? base + 600 : base
-      },
-      {
-        id: 'lucky_sevens', name: 'Lucky Sevens', icon: '7️⃣', rarity: 4, desc: '+777 if any card is a 7',
-        apply: (cards, hand, base) => cards.some(c => c.value === '7') ? base + 777 : base
-      },
-      {
-        id: 'wild_child', name: 'Wild Child', icon: '🌪️', rarity: 4, desc: '×2 if 2+ wild (5★) cards in hand',
-        apply: (cards, hand, base) => cards.filter(c => c.rarity === 5).length >= 2 ? base * 2 : base
-      },
-      // ── EXTRA 5★ ──
-      {
-        id: 'jackpot', name: 'Jackpot', icon: '🎰', rarity: 5, desc: '×2.5 on hands with base reward 1000+ gems',
-        apply: (cards, hand, base) => (HAND_REWARDS[hand] || 0) >= 1000 ? Math.floor(base * 2.5) : base
-      },
-      {
-        id: 'celestial', name: 'Celestial', icon: '🌟', rarity: 5, desc: '+1000 per 5★ card in hand',
-        apply: (cards, hand, base) => base + cards.filter(c => c.rarity === 5).length * 1000
-      },
-      {
-        id: 'void_walker', name: 'Void Walker', icon: '🌑', rarity: 5, desc: 'Hand always pays at least 800 💎',
-        apply: (cards, hand, base) => Math.max(base, 800)
-      },
-      {
-        id: 'jokers_wild', name: "Joker's Wild", icon: '👾', rarity: 5, desc: '×4 on Straight Flush or Royal Flush',
-        apply: (cards, hand, base) => ['Straight Flush', 'Royal Flush'].includes(hand) ? base * 4 : base
-      },
-      {
-        id: 'william_grabber', name: 'William Grabber', icon: '🤌', rarity: 3,
-        desc: '+300 per group of matching values in hand',
-        apply: (cards, hand, base) => {
-          const freq = {};
-          cards.forEach(c => (freq[c.value] = (freq[c.value] || 0) + 1));
-          return base + Object.values(freq).filter(v => v >= 2).length * 300;
-        }
-      },
-      {
-        id: 'euan', name: 'Euan', icon: '🎲', rarity: 4,
-        desc: '"Sir uhhh, try ko po" — 30% chance to ×2 reward',
-        apply: (cards, hand, base) => (Math.random() < 0.3 ? base * 2 : base)
-      },
-      {
-        id: 'manio', name: 'Manio', icon: '🚽', rarity: 4,
-        desc: '25% knocked out in bathroom (×0), 75% back swinging (×2)',
-        apply: (cards, hand, base) => (Math.random() < 0.25 ? 0 : base * 2)
-      },
+      {id:'high_roller',   name:'High Roller',   icon:'🎲',rarity:3,maxCharges:3, desc:'+250 on any hand',            apply:(c,h,b)=>b+250},
+      {id:'flush_hunter',  name:'Flush Hunter',  icon:'🌊',rarity:3,maxCharges:3, desc:'+400 on Flush',               apply:(c,h,b)=>h==='Flush'?b+400:b},
+      {id:'straight_shot', name:'Straight Shot', icon:'🎯',rarity:3,maxCharges:3, desc:'+500 on Straight or Str.Flush',apply:(c,h,b)=>['Straight','Straight Flush'].includes(h)?b+500:b},
+      {id:'card_sharp',    name:'Card Sharp',    icon:'✂️',rarity:3,maxCharges:3, desc:'+120 per face card (J/Q/K/A)',apply:(c,h,b)=>b+c.filter(x=>['J','Q','K','A'].includes(x.value)).length*120},
+      {id:'penny_pincher', name:'Penny Pincher', icon:'💵',rarity:3,maxCharges:3, desc:'×1.3 on all hands',           apply:(c,h,b)=>Math.floor(b*1.3)},
+      {id:'three_magic',   name:"Three's Magic", icon:'💫',rarity:3,maxCharges:3, desc:'+600 on Three of a Kind/Full House',apply:(c,h,b)=>['Three of a Kind','Full House'].includes(h)?b+600:b},
+      {id:'william_grabber',name:'William Grabber',icon:'🤌',rarity:3,maxCharges:3,desc:'+300 per matched value group', apply:(c,h,b)=>{const f={};c.forEach(x=>(f[x.value]=(f[x.value]||0)+1));return b+Object.values(f).filter(v=>v>=2).length*300;}},
+      {id:'lucky_charm',   name:'Lucky Charm',   icon:'🍀',rarity:3,maxCharges:3, desc:'+80 per Lucky card in hand',   apply:(c,h,b)=>b+c.filter(x=>x.cardType==='lucky').length*80},
+      {id:'four_leaf',     name:'Four Leaf',     icon:'🌿',rarity:4,maxCharges:5, desc:'×2 on Four of a Kind',         apply:(c,h,b)=>h==='Four of a Kind'?b*2:b},
+      {id:'full_throttle', name:'Full Throttle', icon:'🔥',rarity:4,maxCharges:5, desc:'+800 on Full House',           apply:(c,h,b)=>h==='Full House'?b+800:b},
+      {id:'ace_hunter',    name:'Ace Hunter',    icon:'🗡️',rarity:4,maxCharges:5, desc:'+500 if Ace in hand',          apply:(c,h,b)=>c.some(x=>x.value==='A')?b+500:b},
+      {id:'king_maker',    name:'King Maker',    icon:'🤴',rarity:4,maxCharges:5, desc:'+600 if King in hand',         apply:(c,h,b)=>c.some(x=>x.value==='K')?b+600:b},
+      {id:'lucky_sevens',  name:'Lucky Sevens',  icon:'7️⃣',rarity:4,maxCharges:5, desc:'+777 if any 7 in hand',        apply:(c,h,b)=>c.some(x=>x.value==='7')?b+777:b},
+      {id:'euan',          name:'Euan',          icon:'🎲',rarity:4,maxCharges:5, desc:'"sir uhhh try ko po" — 30% ×2',apply:(c,h,b)=>Math.random()<0.3?b*2:b},
+      {id:'manio',         name:'Manio',         icon:'🚽',rarity:4,maxCharges:5, desc:'25% knocked out (×0), 75% ×2', apply:(c,h,b)=>Math.random()<0.25?0:b*2},
+      {id:'metal_fan',     name:'Metal Fan',     icon:'⚙️',rarity:4,maxCharges:5, desc:'+200 per Metal card in hand',  apply:(c,h,b)=>b+c.filter(x=>x.cardType==='metal').length*200},
+      {id:'jackpot',       name:'Jackpot',       icon:'🎰',rarity:5,maxCharges:12,desc:'×2.5 if base damage ≥1000',    apply:(c,h,b)=>(HAND_REWARDS[h]||0)>=1000?Math.floor(b*2.5):b},
+      {id:'glass_cannon',  name:'Glass Cannon',  icon:'💎',rarity:5,maxCharges:12,desc:'+1200 per Glass card played',  apply:(c,h,b)=>b+c.filter(x=>x.cardType==='glass').length*1200},
+      {id:'void_walker',   name:'Void Walker',   icon:'🌑',rarity:5,maxCharges:12,desc:'Hand always deals ≥800 damage',apply:(c,h,b)=>Math.max(b,800)},
+      {id:'jokers_wild',   name:"Joker's Wild",  icon:'👾',rarity:5,maxCharges:12,desc:'×4 on Straight Flush/Royal Flush',apply:(c,h,b)=>['Straight Flush','Royal Flush'].includes(h)?b*4:b},
+      {id:'celestial',     name:'Celestial',     icon:'🌟',rarity:5,maxCharges:12,desc:'+1000 on Royal Flush',        apply:(c,h,b)=>h==='Royal Flush'?b+1000:b},
     ];
 
     const BOSSES = [
-      {
-        id: 'goblin', name: 'Goblin King', emoji: '👺', hp: 2500, rounds: 5,
-        color: '#16a34a', bg: 'linear-gradient(135deg,#052e16,#166534)',
-        desc: 'Flushes & Straight Flushes deal ×2 damage',
-        reward: { gems: 2000, shards: 1 }, consolation: 200,
-        gimmick: (hand, dmg) => ['Flush', 'Straight Flush', 'Royal Flush'].includes(hand) ? dmg * 2 : dmg
-      },
-      {
-        id: 'golem', name: 'Iron Golem', emoji: '🗿', hp: 5000, rounds: 5,
-        color: '#6b7280', bg: 'linear-gradient(135deg,#111827,#374151)',
-        desc: 'Pairs & below deal 0 damage — need Three of a Kind or better',
-        reward: { gems: 4000, shards: 2 }, consolation: 400,
-        gimmick: (hand, dmg) => ['High Card', 'One Pair', 'Two Pair'].includes(hand) ? 0 : dmg
-      },
-      {
-        id: 'lich', name: 'Shadow Lich', emoji: '💀', hp: 3500, rounds: 5,
-        color: '#a855f7', bg: 'linear-gradient(135deg,#1e0533,#4c1d95)',
-        desc: 'Playing the same hand type twice heals the Lich for 300 HP',
-        reward: { gems: 3500, shards: 2 }, consolation: 300,
-        gimmick: (hand, dmg) => dmg
-      },
-      {
-        id: 'dragon', name: 'Ancient Dragon', emoji: '🐉', hp: 10000, rounds: 5,
-        color: '#ef4444', bg: 'linear-gradient(135deg,#450a0a,#991b1b)',
-        desc: 'Must deal 10000 damage in 5 rounds or lose 2000 gems',
-        reward: { gems: 10000, shards: 4 }, consolation: 600,
-        gimmick: (hand, dmg) => dmg
-      },
+      {id:'goblin',name:'Goblin King', emoji:'👺',hp:2500,rounds:5,desc:'Flushes deal ×2 damage', reward:{gems:500,shards:1}, gimmick:(h,d)=>['Flush','Straight Flush','Royal Flush'].includes(h)?d*2:d},
+      {id:'golem', name:'Iron Golem',  emoji:'🗿',hp:5000,rounds:5,desc:'Pairs & below deal 0 damage', reward:{gems:800,shards:2}, gimmick:(h,d)=>['High Card','One Pair','Two Pair'].includes(h)?0:d},
+      {id:'lich',  name:'Shadow Lich', emoji:'💀',hp:3500,rounds:5,desc:'Same hand twice heals 300 HP', reward:{gems:700,shards:2}, gimmick:(h,d)=>d},
+      {id:'dragon',name:'Ancient Dragon',emoji:'🐉',hp:10000,rounds:5,desc:'Defeat in 5 rounds or lose 500 gems', reward:{gems:2000,shards:4}, gimmick:(h,d)=>d},
     ];
-    const JOKER_CRAFT_COSTS = { 3: 3, 4: 6, 5: 12 };
+    const JOKER_CRAFT_COSTS = {3:3,4:6,5:12};
 
-    const CARD_TYPES = {
-      lucky: { label: 'LUCKY', icon: '🍀', chipMult: 2 },
-      metal: { label: 'METAL', icon: '⚙️', chipMult: 4 },
-      glass: { label: 'GLASS', icon: '💎', chipMult: 8, destroyOnPlay: true },
-    };
-
-    const BANNERS = [
-      { id: 'standard', name: 'Standard Banner', sub: 'All rarities available', emoji: '🌟', bg: 'linear-gradient(135deg,#1a2040,#2d3a6a)', badge: 'Always Active', rate5: 0.05 },
-      { id: 'featured', name: 'Celestial Covenant', sub: 'Featured 5★ rate UP!', emoji: '⚡', bg: 'linear-gradient(135deg,#1a0a30,#4c1d95)', badge: 'Rate UP', rate5: 0.075 },
-      { id: 'weapon', name: 'Stellar Armory', sub: 'Weapon cards rate UP', emoji: '⚔️', bg: 'linear-gradient(135deg,#200a0a,#7c2020)', badge: 'Limited', rate5: 0.06 },
+    const ENEMIES = [
+      {id:'scout',   name:'Goblin Scout',emoji:'👺',hp:600, atk:15,rounds:3,reward:80},
+      {id:'wolf',    name:'Shadow Wolf', emoji:'🐺',hp:500, atk:20,rounds:3,reward:70},
+      {id:'skeleton',name:'Skeleton',    emoji:'💀',hp:400, atk:12,rounds:3,reward:60},
+      {id:'orc',     name:'Orc Warrior', emoji:'🪓',hp:900, atk:25,rounds:4,reward:120},
+      {id:'mage',    name:'Dark Mage',   emoji:'🧙',hp:700, atk:30,rounds:3,reward:110},
+      {id:'vampire', name:'Vampire',     emoji:'🧛',hp:800, atk:22,rounds:4,reward:100},
+    ];
+    const ELITE_ENEMIES = [
+      {id:'e_knight',  name:'Death Knight',  emoji:'⚔️',hp:1800,atk:40,rounds:5,reward:300,shards:1},
+      {id:'e_witch',   name:'Void Witch',    emoji:'🔮',hp:1500,atk:45,rounds:5,reward:280,shards:1},
+      {id:'e_colossus',name:'Stone Colossus',emoji:'🗿',hp:2200,atk:35,rounds:5,reward:350,shards:1},
+      {id:'e_demon',   name:'Chaos Demon',   emoji:'😈',hp:1600,atk:50,rounds:4,reward:320,shards:1},
     ];
 
-    const SHOP_ITEMS = [
-      { id: 'small', name: 'Small Pack', icon: '💎', price: 0, priceGold: 50, gems: 300, desc: 'Buy with Gold Coins' },
-      { id: 'medium', name: 'Medium Pack', icon: '💎', price: 0, priceGold: 150, gems: 1000, desc: 'Best value per coin' },
-      { id: 'large', name: 'Grand Pack', icon: '💎', price: 0, priceGold: 400, gems: 3000, desc: 'Huge gem boost' },
-      { id: 'single_ticket', name: 'Summon Ticket', icon: '🎫', price: 0, priceGold: 160, gems: 0, isTicket: true, desc: 'Single summon, no gems' },
-    ];
-
-    const EXCHANGE_ITEMS = [
-      { id: 'dupe3', name: 'Stardust', icon: '✨', cost: 10, costUnit: '3★ cards', reward: 50, rewardUnit: 'gems', desc: 'Convert 10 duplicate 3★ cards' },
-      { id: 'dupe4', name: 'Starlight', icon: '🌙', cost: 5, costUnit: '4★ cards', reward: 250, rewardUnit: 'gems', desc: 'Convert 5 duplicate 4★ cards' },
-      { id: 'gold_to_gems', name: 'Gold Exchange', icon: '🪙', cost: 100, costUnit: 'Gold', reward: 60, rewardUnit: 'gems', desc: '100 Gold → 60 Gems' },
+    const EVENTS = [
+      {id:'chest',   title:'🗝️ Mysterious Chest',  text:"A glowing chest sits in the path.",
+       options:[{label:'🔓 Force it open',desc:'50/50: +250💎 or −20 HP',action:'chest_open'},{label:'🚶 Leave it',desc:'Play it safe',action:'leave'}]},
+      {id:'merchant',title:'🧙 Wandering Merchant', text:'A cloaked merchant offers you a deal.',
+       options:[{label:'💰 Buy a random joker (200💎)',desc:'Merchant picks for you',action:'merchant_buy'},{label:'🚶 Pass',desc:'Keep your gems',action:'leave'}]},
+      {id:'shrine',  title:'⛩️ Ancient Shrine',     text:'A shrine hums with ancient energy.',
+       options:[{label:'🙏 Pray (+25 max HP)',desc:'The shrine strengthens you',action:'shrine_hp'},{label:'💎 Offer 100💎 (+3 charges on next joker)',desc:'Empower your next joker',action:'shrine_gems'},{label:'🚶 Leave',desc:'Better safe',action:'leave'}]},
+      {id:'gamble',  title:"🎰 Gambler's Den",       text:'A shady figure challenges you. Win big or lose it all.',
+       options:[{label:'🎲 Bet 300💎 (×3 if win)',desc:'50/50 gamble',action:'gamble'},{label:'🚶 Walk away',desc:'The smart move',action:'leave'}]},
+      {id:'potion',  title:'🧪 Mysterious Potion',   text:'A glowing vial sits on a pedestal.',
+       options:[{label:'✨ Drink it (+30 HP)',desc:'Restore some health',action:'potion_drink'},{label:'🚶 Leave it',desc:"You're not sure what's in it",action:'leave'}]},
+      {id:'spirit',  title:'👻 Lost Spirit',          text:'A spirit offers a boon — for a price.',
+       options:[{label:'🃏 Trade 20 HP for a joker',desc:'Power at a cost',action:'spirit_trade'},{label:'💨 Let it pass',desc:"You don't deal with spirits",action:'leave'}]},
     ];
 
     const DAILY_MISSIONS = [
-      { id: 'pull1', title: 'First Summon', desc: 'Perform 1 summon today', target: 1, stat: 'dailyPulls', reward: 100 },
-      { id: 'pull5', title: 'Committed Summoner', desc: 'Perform 5 summons', target: 5, stat: 'dailyPulls', reward: 300 },
-      { id: 'poker1', title: 'Poker Player', desc: 'Evaluate 1 poker hand', target: 1, stat: 'dailyPoker', reward: 150 },
-      { id: 'pair', title: 'At Least a Pair', desc: 'Get One Pair or better', target: 1, stat: 'dailyPair', reward: 200 },
+      {id:'play1',title:'First Hand',    desc:'Evaluate 1 hand',    target:1, stat:'dailyPoker',reward:80},
+      {id:'play3',title:'Poker Night',   desc:'Evaluate 3 hands',   target:3, stat:'dailyPoker',reward:150},
+      {id:'pair1',title:'Nice Hit',      desc:'Deal 200+ in one hand',target:1,stat:'dailyPair', reward:120},
     ];
-
     const WEEKLY_MISSIONS = [
-      { id: 'w_50pulls', title: 'Devoted Traveler', desc: 'Perform 50 total summons', target: 50, stat: 'weeklyPulls', reward: 1500 },
-      { id: 'w_5star', title: 'Legend Hunter', desc: 'Obtain 3 five-star cards', target: 3, stat: 'weeklyFives', reward: 2000 },
-      { id: 'w_flush', title: 'Flush Master', desc: 'Get a Flush or better hand', target: 1, stat: 'weeklyFlush', reward: 800 },
+      {id:'w_flush',title:'Flushed Out',desc:'Play 1 Flush or better',target:1, stat:'weeklyFlush',reward:400},
+      {id:'w_hands',title:'The Grind',  desc:'Evaluate 20 hands',   target:20,stat:'weeklyPoker',reward:600},
     ];
 
     // ═══════════════════════════════════════════════
     // STATE
     // ═══════════════════════════════════════════════
-    function defaultState() {
-      return {
-        gems: 3000, gold: 0,
-        pity: 0, guaranteeNext: false,
-        activeBanner: 'standard',
-        inventory: [],
-        lastPull: [],
-        handEvaluated: false,
-        jokerInventory: [],
-        equippedJokers: [null, null, null],
-        stats: {
-          totalPulls: 0, r3: 0, r4: 0, r5: 0,
-          gemsSpent: 0, pokerEarned: 0,
-          bestHand: '—', handHistory: []
-        },
-        missions: {
-          dailyPulls: 0, dailyPoker: 0, dailyPair: 0,
-          weeklyPulls: 0, weeklyFives: 0, weeklyFlush: 0,
-          dailyClaimed: {}, weeklyClaimed: {},
-          lastDaily: null, lastWeekly: null
-        },
-        dailyLoginClaimed: false,
-        lastLoginDate: null,
-        jokerShards: 0,
-        bossBattle: null,
-        bossHistory: []
+    function defaultState(){
+      return{
+        gems:500, gold:0, shards:0,
+        stats:{totalRuns:0,runsWon:0,totalHands:0,bestHand:'—',handHistory:[]},
+        missions:{dailyPoker:0,dailyPair:0,weeklyFlush:0,weeklyPoker:0,dailyClaimed:{},weeklyClaimed:{},lastDaily:null,lastWeekly:null},
+        dailyLoginClaimed:false, lastLoginDate:null,
+        jokerShards:0,
+        run:null,
       };
     }
-
-    let S = loadState();
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem('astraldraw_v3');
-        if (raw) return Object.assign(defaultState(), JSON.parse(raw));
-      } catch (e) { }
+    let S=loadState();
+    function loadState(){
+      try{const raw=localStorage.getItem('astraldraw_v4');if(raw)return Object.assign(defaultState(),JSON.parse(raw));}catch(e){}
       return defaultState();
     }
-    function save() { localStorage.setItem('astraldraw_v3', JSON.stringify(S)); }
+    function save(){localStorage.setItem('astraldraw_v4',JSON.stringify(S));}
 
-    // reset daily/weekly if needed
-    function checkDailyReset() {
-      const today = new Date().toDateString();
-      if (S.lastLoginDate !== today) {
-        S.missions.dailyPulls = 0;
-        S.missions.dailyPoker = 0;
-        S.missions.dailyPair = 0;
-        S.missions.dailyClaimed = {};
-        S.dailyLoginClaimed = false;
-        S.lastLoginDate = today;
-      }
-      const week = getWeekKey();
-      if (S.lastWeeklyReset !== week) {
-        S.missions.weeklyPulls = 0;
-        S.missions.weeklyFives = 0;
-        S.missions.weeklyFlush = 0;
-        S.missions.weeklyClaimed = {};
-        S.lastWeeklyReset = week;
-      }
-    }
-    function getWeekKey() {
-      const d = new Date();
-      const jan1 = new Date(d.getFullYear(), 0, 1);
-      return d.getFullYear() + '-w' + Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
-    }
-
-    // ═══════════════════════════════════════════════
-    // GACHA ENGINE
-    // ═══════════════════════════════════════════════
-    function getRarity(banner) {
-      const p = S.pity;
-      const b = BANNERS.find(b => b.id === banner) || BANNERS[0];
-      let r5 = b.rate5 || 0.05;
-      if (p >= 65) r5 = r5 + 0.15 * (p - 64);
-      if (p >= 80 || S.guaranteeNext) r5 = 1;
-      r5 = Math.min(r5, 1);
-
-      const roll = Math.random();
-      if (roll < r5) return 5;
-      if (roll < r5 + 0.25) return 4;
-      return 3;
-    }
-
-    function makeCard(rarity) {
-      const tr = Math.random();
-      const cardType = tr < 0.03 ? 'glass' : tr < 0.08 ? 'metal' : tr < 0.18 ? 'lucky' : null;
-      return {
-        id: Date.now() + Math.random(),
-        suit: SUITS[Math.floor(Math.random() * 4)],
-        value: VALUES[Math.floor(Math.random() * 13)],
-        rarity,
-        cardType,
-        banner: S.activeBanner,
-        ts: Date.now()
-      };
-    }
-
-    function makeJokerDrop() {
-      const r = Math.random();
-      let pool;
-      if (r < 0.06) pool = JOKERS.filter(j => j.rarity === 5);
-      else if (r < 0.30) pool = JOKERS.filter(j => j.rarity === 4);
-      else pool = JOKERS.filter(j => j.rarity === 3);
-      const def = pool[Math.floor(Math.random() * pool.length)];
-      return {
-        isJoker: true,
-        uid: 'j_' + Date.now() + '_' + Math.random().toString(36).slice(2),
-        jokerId: def.id,
-        def: def,
-        ts: Date.now()
-      };
-    }
-
-    function rollCards(n) {
-      const results = [];
-      for (let i = 0; i < n; i++) {
-        const r = getRarity(S.activeBanner);
-        const c = makeCard(r);
-        results.push(c);
-        S.pity++;
-        S.stats.totalPulls++;
-
-        if (r === 5) {
-          S.pity = 0;
-          S.guaranteeNext = false;
-          S.stats.r5++;
-          S.missions.weeklyFives++;
-        } else if (r === 4) { S.stats.r4++; }
-        else { S.stats.r3++; }
-
-        S.missions.dailyPulls++;
-        S.missions.weeklyPulls++;
-      }
-      const jokerChance = n >= 10 ? 0.25 : 0.15;
-      if (Math.random() < jokerChance) results.push(makeJokerDrop());
-      return results;
-    }
-
-    // ═══════════════════════════════════════════════
-    // PULL FLOW
-    // ═══════════════════════════════════════════════
-    let selectedCards = [];
-    let pendingCards = [];
-    let evalDone = false;
-
-    function startPull(n) {
-      const cost = n === 10 ? 1600 : 600;
-      if (S.gems < cost) { toast('Not enough gems! 💎', 't-red'); return; }
-
-      S.gems -= cost;
-      S.stats.gemsSpent += cost;
-
-      const results = rollCards(n);
-      const cards = results.filter(r => !r.isJoker);
-      const jokerDrops = results.filter(r => r.isJoker);
-
-      S.lastPull = cards;
-      S.inventory.push(...cards);
-      jokerDrops.forEach(j => S.jokerInventory.push({ uid: j.uid, jokerId: j.jokerId }));
-
-      pendingCards = cards;
-      selectedCards = [];
-      evalDone = false;
-
+    function checkDailyReset(){
+      const today=new Date().toDateString();
+      if(S.lastLoginDate!==today){S.missions.dailyPoker=0;S.missions.dailyPair=0;S.missions.dailyClaimed={};S.lastLoginDate=today;S.dailyLoginClaimed=false;}
+      const wk=getWeekKey();
+      if(S.missions.lastWeekly!==wk){S.missions.weeklyFlush=0;S.missions.weeklyPoker=0;S.missions.weeklyClaimed={};S.missions.lastWeekly=wk;}
       save();
+    }
+    function getWeekKey(){const d=new Date(),j=new Date(d.getFullYear(),0,1);return d.getFullYear()+'-w'+Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
+
+    // ═══════════════════════════════════════════════
+    // MAP GENERATION
+    // ═══════════════════════════════════════════════
+    function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+    function pickNodeType(floor){
+      const w=[
+        {battle:55,event:25,rest:20,shop:0, elite:0 },
+        {battle:45,event:20,rest:15,shop:20,elite:0 },
+        {battle:35,event:20,rest:15,shop:15,elite:15},
+        {battle:25,event:15,rest:15,shop:20,elite:25},
+        {battle:15,event:10,rest:20,shop:20,elite:35},
+      ][Math.min(floor,4)];
+      let r=Math.random()*100;
+      for(const[type,weight]of Object.entries(w)){r-=weight;if(r<=0)return type;}
+      return 'battle';
+    }
+
+    function generateMap(){
+      const floors=[];
+      for(let f=0;f<5;f++){
+        const floor=[null,null,null];
+        const cols=f===0?[0,1,2]:shuffle([0,1,2]).slice(0,Math.random()<0.35?2:3).sort((a,b)=>a-b);
+        cols.forEach(c=>{floor[c]={col:c,type:pickNodeType(f),connections:[]};});
+        floors.push(floor);
+      }
+      floors.push([null,{col:1,type:'boss',connections:[]},null]);
+      for(let f=0;f<floors.length-1;f++){
+        const curr=floors[f],next=floors[f+1];
+        const nextCols=[0,1,2].filter(c=>next[c]!==null);
+        [0,1,2].forEach(c=>{
+          if(!curr[c])return;
+          const sorted=[...nextCols].sort((a,b)=>Math.abs(a-c)-Math.abs(b-c));
+          curr[c].connections=sorted.slice(0,Math.random()<0.35&&sorted.length>1?2:1);
+        });
+        nextCols.forEach(nc=>{
+          const reachable=[0,1,2].some(c=>curr[c]&&curr[c].connections.includes(nc));
+          if(!reachable){const cl=[0,1,2].filter(c=>curr[c]).sort((a,b)=>Math.abs(a-nc)-Math.abs(b-nc))[0];if(cl!==undefined&&!curr[cl].connections.includes(nc))curr[cl].connections.push(nc);}
+        });
+      }
+      return floors;
+    }
+
+    // ═══════════════════════════════════════════════
+    // RUN MANAGEMENT
+    // ═══════════════════════════════════════════════
+    function startRun(){
+      S.run={map:generateMap(),floor:0,nodePos:null,playerHp:80,maxHp:80,runGems:0,jokers:[],completedNodes:[],bossHistory:[],bonusCharges:0};
+      S.stats.totalRuns++;
+      save();
+      setMainTab('🗺️ Map','map');
       updateHeader();
-      showCinematic(results);
+      renderMap();
+      goTabRaw('map');
+    }
+
+    function endRun(won){
+      if(!S.run)return;
+      if(won){S.stats.runsWon++;spawnParticles(25);}
+      S.gems+=S.run.runGems;
+      const rg=S.run.runGems;
+      save();
+      showNodeResult({
+        emoji:won?'🏆':'💀',title:won?'TOWER CLEARED!':'RUN OVER',
+        desc:won?'You conquered the tower!':'You were defeated. Better luck next time.',
+        rewards:[`💎 +${rg.toLocaleString()} gems earned`],
+      },()=>{S.run=null;save();setMainTab('🏠 Home','home');updateHeader();renderHome();goTabRaw('home');});
+    }
+
+    function setMainTab(label,page){
+      const btn=document.getElementById('tab-main');
+      if(!btn)return;
+      btn.textContent=label;
+      btn.onclick=()=>goTab(page,btn);
+    }
+
+    function isNodeDone(floor,col){return S.run&&S.run.completedNodes.some(n=>n.floor===floor&&n.col===col);}
+
+    function isNodeAvailable(floor,col){
+      if(!S.run||!S.run.map[floor]||!S.run.map[floor][col])return false;
+      if(floor===0)return!isNodeDone(floor,col);
+      const prev=S.run.map[floor-1];
+      return[0,1,2].some(c=>prev[c]&&isNodeDone(floor-1,c)&&prev[c].connections.includes(col));
+    }
+
+    function completeNode(){
+      if(!S.run||!S.run.nodePos)return;
+      const{floor,col}=S.run.nodePos;
+      if(!isNodeDone(floor,col))S.run.completedNodes.push({floor,col});
+      save();
+    }
+
+    function enterNode(floor,col){
+      if(!S.run||!isNodeAvailable(floor,col))return;
+      S.run.floor=floor;S.run.nodePos={floor,col};save();
+      const node=S.run.map[floor][col];
+      const t=node.type;
+      if(t==='battle'||t==='elite'){
+        const pool=t==='elite'?ELITE_ENEMIES:ENEMIES;
+        const base=pool[Math.floor(Math.random()*pool.length)];
+        const scale=1+floor*0.25;
+        const enemy={...base,hp:Math.floor(base.hp*scale),maxHp:Math.floor(base.hp*scale),atk:Math.floor(base.atk*scale),isElite:t==='elite'};
+        startBattleNode(enemy);
+      }else if(t==='shop'){startShopNode();}
+      else if(t==='rest'){startRestNode();}
+      else if(t==='event'){startEventNode();}
+      else if(t==='boss'){startBossNode();}
     }
 
     // ═══════════════════════════════════════════════
-    // CINEMATIC
+    // JOKERS
     // ═══════════════════════════════════════════════
-    let cinResolve = null;
-    let cinTimer = null;
-    let cinIndex = 0;
-    let allCinCards = [];
+    function addRunJoker(jokerId){
+      if(!S.run)return;
+      const def=JOKERS.find(j=>j.id===jokerId);if(!def)return;
+      const bonus=S.run.bonusCharges||0;S.run.bonusCharges=0;
+      S.run.jokers.push({jokerId,charges:def.maxCharges+bonus,uid:'rj_'+Date.now()+'_'+Math.random().toString(36).slice(2)});
+      save();
+    }
 
-    function showCinematic(cards) {
-      const overlay = document.getElementById('cinematic');
-      const row = document.getElementById('cin-cards-row');
-      const flash = document.getElementById('cin-flash');
-      row.innerHTML = '';
-      allCinCards = cards;
-      cinIndex = 0;
-
-      // Build card elements (hidden)
-      cards.forEach(c => {
-        const el = buildCinCard(c);
-        row.appendChild(el);
+    function applyJokers(cards,handName,base){
+      let reward=base;const triggered=[];
+      if(!S.run||!S.run.jokers.length)return{reward:Math.floor(reward),triggered};
+      const toRemove=[];
+      S.run.jokers.forEach(rj=>{
+        const def=JOKERS.find(j=>j.id===rj.jokerId);
+        if(!def||rj.charges<=0)return;
+        const prev=reward;
+        reward=def.apply(cards,handName,reward);
+        if(reward!==prev)triggered.push(def);
+        rj.charges--;
+        if(rj.charges<=0)toRemove.push(rj.uid);
       });
-
-      overlay.classList.add('active');
-      const cardCount = cards.filter(c => !c.isJoker).length;
-      document.getElementById('cin-title').textContent = cardCount > 1 ? `${cardCount}× SUMMON` : 'SUMMON';
-
-      // Show swipe hint if cards overflow
-      const hint = document.getElementById('cin-scroll-hint');
-      if (hint) {
-        setTimeout(() => {
-          const scrollable = row.scrollWidth > row.clientWidth;
-          hint.style.display = scrollable ? 'block' : 'none';
-          row.addEventListener('scroll', () => {
-            hint.style.display = (row.scrollLeft + row.clientWidth >= row.scrollWidth - 10) ? 'none' : 'block';
-          }, { passive: true });
-        }, 500);
+      if(toRemove.length){
+        S.run.jokers=S.run.jokers.filter(rj=>!toRemove.includes(rj.uid));
+        save();toast('🃏 A joker expired!','t-blue');
       }
-
-      // Reveal one by one
-      function revealNext() {
-        if (cinIndex >= cards.length) {
-          const has5 = cards.some(c => !c.isJoker && c.rarity === 5);
-          const hasJoker = cards.some(c => c.isJoker);
-          cinTimer = setTimeout(() => closeCinematic(cards), (has5 || hasJoker) ? 3500 : 2000);
-          return;
-        }
-        const el = row.children[cinIndex];
-        const c = cards[cinIndex];
-        if (!c.isJoker && c.rarity === 5) {
-          flash.classList.add('pop');
-          setTimeout(() => flash.classList.remove('pop'), 400);
-        }
-        el.classList.add('revealed');
-        cinIndex++;
-        cinTimer = setTimeout(revealNext, cinIndex <= cards.length ? 220 : 0);
-      }
-      setTimeout(revealNext, 300);
+      return{reward:Math.floor(reward),triggered};
     }
 
-    function skipCinematic() {
-      clearTimeout(cinTimer);
-      const row = document.getElementById('cin-cards-row');
-      Array.from(row.children).forEach(el => el.classList.add('revealed'));
-      cinTimer = setTimeout(() => closeCinematic(allCinCards), 800);
-    }
-
-    function closeCinematic(allResults) {
-      document.getElementById('cinematic').classList.remove('active');
-      const cards = allResults.filter(c => !c.isJoker);
-      const jokerDrops = allResults.filter(c => c.isJoker);
-
-      renderPullStage(cards);
-      showPokerWrap(true);
-      renderJokerTray();
-
-      // toasts for 5*
-      const fives = cards.filter(c => c.rarity === 5);
-      if (fives.length) {
-        toast(`✨ ${fives.length} Legendary 5★ obtained!`, 't-gold');
-        spawnParticles(fives.length > 1 ? 25 : 14);
-      }
-      jokerDrops.forEach(j => {
-        toast(`🃏 Joker obtained: ${j.def.name}!`, 't-green');
-        spawnParticles(8);
-      });
-      updateUI();
-    }
-
-    function buildCinCard(c) {
-      const div = document.createElement('div');
-      if (c.isJoker) {
-        div.className = 'cin-card joker-card';
-        div.innerHTML = `<div class="card-body">
-      <div class="rarity-strip joker-strip"></div>
-      <div class="joker-cin-icon">${c.def.icon}</div>
-      <div class="joker-cin-badge">JOKER</div>
-      <div class="joker-cin-name">${c.def.name}</div>
-      <div class="joker-cin-desc">${c.def.desc}</div>
-    </div>`;
-      } else {
-        div.className = `cin-card r${c.rarity} card`;
-        div.innerHTML = cardInnerHTML(c, true);
-      }
-      return div;
+    function pickRandomJokerDef(){
+      const r=Math.random();
+      const pool=r<0.06?JOKERS.filter(j=>j.rarity===5):r<0.30?JOKERS.filter(j=>j.rarity===4):JOKERS.filter(j=>j.rarity===3);
+      return pool[Math.floor(Math.random()*pool.length)];
     }
 
     // ═══════════════════════════════════════════════
-    // CARD RENDERING
+    // CARDS
     // ═══════════════════════════════════════════════
-    function suitColor(suit) { return SUIT_CLS[suit]; }
+    function makeCard(){
+      const tr=Math.random();
+      const cardType=tr<0.03?'glass':tr<0.08?'metal':tr<0.18?'lucky':null;
+      return{id:Date.now()+Math.random(),suit:SUITS[Math.floor(Math.random()*4)],value:VALUES[Math.floor(Math.random()*13)],cardType};
+    }
 
-    function cardInnerHTML(c, big = false) {
-      const sc = suitColor(c.suit);
-      const sym = SUIT_SYM[c.suit];
-      const stars = STAR_CHARS[c.rarity];
-      const shimmer = c.rarity === 5 ? '<div class="card-shimmer"></div>' : '';
-      const wildBadge = c.rarity === 5 ? '<div class="wild-badge">WILD</div>' : '';
-      const ct = c.cardType ? CARD_TYPES[c.cardType] : null;
-      const typeBadge = ct ? `<div class="type-badge type-${c.cardType}">${ct.label}</div>` : '';
-      return `
-    <div class="card-body">
-      <div class="rarity-strip"></div>
-      ${shimmer}
+    function suitColor(suit){return SUIT_CLS[suit]||'suit-s';}
+
+    function cardInnerHTML(c,big=false){
+      const sc=suitColor(c.suit);
+      const sym=SUIT_SYM[c.suit]||c.suit;
+      const ct=c.cardType?CARD_TYPES[c.cardType]:null;
+      const typeBadge=ct?`<div class="type-badge type-${c.cardType}">${ct.label}</div>`:'';
+      return`<div class="card-body">
+      <div class="rarity-strip r-plain"></div>
       <div class="card-corner-tl ${sc}">${c.value}<br>${sym}</div>
-      <div class="card-suit-icon ${sc}" style="font-size:${big ? '2rem' : '1.4rem'}">${sym}</div>
+      <div class="card-suit-icon ${sc}" style="font-size:${big?'2rem':'1.4rem'}">${sym}</div>
       <div class="card-val ${sc}">${c.value}</div>
-      <div class="card-stars" style="color:${c.rarity === 5 ? 'var(--gold)' : c.rarity === 4 ? 'var(--purple2)' : 'var(--blue2)'}">${stars}</div>
-      ${wildBadge}
       ${typeBadge}
       <div class="card-corner-br ${sc}">${c.value}<br>${sym}</div>
     </div>`;
     }
 
-    function makeCardEl(c, selectable) {
-      const div = document.createElement('div');
-      div.className = `card r${c.rarity}`;
-      div.dataset.id = c.id;
-      div.innerHTML = cardInnerHTML(c);
-      if (selectable) {
-        div.addEventListener('click', () => toggleSelect(c.id, div));
-      }
+    function makeCardEl(c,selectable){
+      const div=document.createElement('div');
+      div.className='card';div.dataset.id=c.id;
+      div.innerHTML=cardInnerHTML(c);
+      if(selectable)div.addEventListener('click',()=>battleToggleSelect(c.id,div));
       return div;
     }
 
-    function renderPullStage(cards) {
-      const container = document.getElementById('pull-stage-cards');
-      container.innerHTML = '';
-      cards.forEach((c, i) => {
-        const el = makeCardEl(c, true);
-        el.classList.add('revealing');
-        el.style.animationDelay = (i * 60) + 'ms';
-        container.appendChild(el);
+    function getChipBonus(cards){
+      return cards.reduce((sum,c)=>{
+        const ct=c.cardType&&CARD_TYPES[c.cardType];
+        return sum+(ct?ct.chipBonus:0);
+      },0);
+    }
+
+    // ═══════════════════════════════════════════════
+    // POKER MATH
+    // ═══════════════════════════════════════════════
+    function classifyHand(cards){
+      const vals=cards.map(c=>V_ORDER[c.value]||parseInt(c.value)).sort((a,b)=>a-b);
+      const suits=cards.map(c=>c.suit);
+      const vc={};vals.forEach(v=>vc[v]=(vc[v]||0)+1);
+      const counts=Object.values(vc).sort((a,b)=>b-a);
+      const isFlush=new Set(suits).size===1;
+      const isStraight=vals[4]-vals[0]===4&&new Set(vals).size===5;
+      const isAceLow=JSON.stringify(vals)==='[2,3,4,5,14]';
+      if(isFlush&&(isStraight||isAceLow)){if(isStraight&&vals[4]===14&&vals[0]===10)return'Royal Flush';return'Straight Flush';}
+      if(counts[0]===4)return'Four of a Kind';
+      if(counts[0]===3&&counts[1]===2)return'Full House';
+      if(isFlush)return'Flush';
+      if(isStraight||isAceLow)return'Straight';
+      if(counts[0]===3)return'Three of a Kind';
+      if(counts[0]===2&&counts[1]===2)return'Two Pair';
+      if(counts[0]===2)return'One Pair';
+      return'High Card';
+    }
+
+    function getCombos(arr,k){
+      if(k===0)return[[]];if(arr.length<k)return[];
+      const[first,...rest]=arr;
+      return[...getCombos(rest,k-1).map(c=>[first,...c]),...getCombos(rest,k)];
+    }
+
+    function getBestHandName(cards){
+      if(!cards||cards.length<5)return'—';
+      let best=HAND_ORDER.length-1;
+      getCombos(cards,5).forEach(combo=>{const idx=HAND_ORDER.indexOf(classifyHand(combo));if(idx<best)best=idx;});
+      return HAND_ORDER[best];
+    }
+
+    // ═══════════════════════════════════════════════
+    // BATTLE NODE
+    // ═══════════════════════════════════════════════
+    let battle=null;
+
+    function startBattleNode(enemy){
+      battle={enemy,enemyHp:enemy.maxHp,round:1,maxRounds:enemy.rounds||4,pendingCards:[],selectedCards:[],evalDone:false,totalDmg:0,dmgLog:[]};
+      dealNextRound();
+      renderBattle();
+      goTabRaw('battle');
+    }
+
+    function dealNextRound(){
+      if(!battle)return;
+      battle.pendingCards=Array.from({length:10},makeCard);
+      battle.selectedCards=[];battle.evalDone=false;
+    }
+
+    function battleToggleSelect(id,el){
+      if(!battle||battle.evalDone)return;
+      const card=battle.pendingCards.find(c=>c.id==id);if(!card)return;
+      const idx=battle.selectedCards.findIndex(c=>c.id==id);
+      if(idx===-1){
+        if(battle.selectedCards.length>=5){toast('Max 5 cards!','t-blue');return;}
+        battle.selectedCards.push(card);el.classList.add('selected');
+      }else{battle.selectedCards.splice(idx,1);el.classList.remove('selected');}
+      updateBattleHandDrop();
+    }
+
+    function updateBattleHandDrop(){
+      const drop=document.getElementById('battle-hand-drop');
+      const btn=document.getElementById('battle-eval-btn');
+      const hint=document.getElementById('battle-hint');
+      if(!drop||!battle)return;
+      drop.innerHTML='';
+      if(!battle.selectedCards.length){
+        drop.innerHTML='<span class="hand-placeholder">Select 5 cards to attack</span>';
+        drop.classList.remove('ready');if(btn)btn.classList.remove('show');
+        if(hint)hint.textContent='Select exactly 5 cards';return;
+      }
+      battle.selectedCards.forEach(c=>drop.appendChild(makeCardEl(c,false)));
+      if(battle.selectedCards.length===5){
+        drop.classList.add('ready');if(btn)btn.classList.add('show');
+        if(hint)hint.textContent=`Best possible: ${getBestHandName(battle.pendingCards)}`;
+      }else{
+        drop.classList.remove('ready');if(btn)btn.classList.remove('show');
+        if(hint)hint.textContent=`Select ${5-battle.selectedCards.length} more`;
+      }
+    }
+
+    function evalHand(){
+      if(!battle||battle.selectedCards.length!==5||battle.evalDone)return;
+      battle.evalDone=true;
+      const cards=battle.selectedCards;
+      const handName=classifyHand(cards);
+      const chips=getChipBonus(cards);
+      const baseReward=(HAND_REWARDS[handName]||30)+chips;
+      const{reward,triggered}=applyJokers(cards,handName,baseReward);
+      const tier=HAND_TIER[handName]||1;
+
+      // Boss gimmick
+      let dmg=reward;
+      const runNode=S.run&&S.run.nodePos?S.run.map[S.run.nodePos.floor][S.run.nodePos.col]:null;
+      if(runNode&&runNode.type==='boss'&&battle.enemy.bossId){
+        const boss=BOSSES.find(b=>b.id===battle.enemy.bossId);
+        if(boss){
+          if(boss.id==='lich'&&battle.dmgLog.length){
+            const lastHand=battle.dmgLog[battle.dmgLog.length-1].hand;
+            if(lastHand===handName){battle.enemyHp=Math.min(battle.enemy.maxHp,battle.enemyHp+300);toast('💀 Lich healed 300 HP!','t-red');dmg=0;}
+          }
+          if(dmg>0)dmg=boss.gimmick(handName,dmg);
+        }
+      }
+
+      battle.enemyHp=Math.max(0,battle.enemyHp-dmg);
+      battle.totalDmg+=dmg;battle.dmgLog.push({hand:handName,dmg});
+
+      // Glass card destruction
+      const glassCards=cards.filter(c=>c.cardType==='glass');
+
+      // Stats & missions
+      S.stats.totalHands++;S.missions.dailyPoker++;
+      if(reward>=200)S.missions.dailyPair++;
+      const hi=HAND_ORDER.indexOf(handName);
+      if(hi<=5)S.missions.weeklyFlush++;
+      S.missions.weeklyPoker++;
+      if(!S.stats.bestHand||HAND_ORDER.indexOf(handName)<HAND_ORDER.indexOf(S.stats.bestHand))S.stats.bestHand=handName;
+      S.stats.handHistory=([{hand:handName,reward:dmg,ts:Date.now()},...(S.stats.handHistory||[])]).slice(0,50);
+      if(S.run)S.run.runGems+=Math.floor(baseReward*0.2); // bonus run gems
+      save();
+
+      if(handName==='Royal Flush')spawnParticles(30);
+      else if(['Straight Flush','Four of a Kind'].includes(handName))spawnParticles(18);
+
+      const tierMsg=tier===3?'t-gold':tier===2?'t-blue':'t-green';
+      let msg=`${handName}! ⚔️${dmg.toLocaleString()}`;
+      if(chips>0)msg+=` +${chips}chips`;
+      if(triggered.length)msg+=` ${triggered.map(j=>j.icon).join('')}`;
+      if(glassCards.length)msg+=` 💎shattered`;
+      toast(msg,tierMsg);sfxReward();
+
+      // Update battle UI
+      const resultEl=document.getElementById('battle-hand-result');
+      if(resultEl){resultEl.textContent=`${handName} — ⚔️ ${dmg.toLocaleString()} damage`;resultEl.className=`hand-result show tier${tier}`;}
+      document.getElementById('battle-eval-btn')&&document.getElementById('battle-eval-btn').classList.remove('show');
+
+      // Update enemy HP bar
+      const fill=document.getElementById('enemy-hp-fill');
+      if(fill)fill.style.width=Math.round(battle.enemyHp/battle.enemy.maxHp*100)+'%';
+      const lbl=document.getElementById('enemy-hp-label');
+      if(lbl)lbl.textContent=`${battle.enemyHp.toLocaleString()} / ${battle.enemy.maxHp.toLocaleString()} HP`;
+
+      if(battle.enemyHp<=0){setTimeout(()=>onBattleWin(),700);return;}
+
+      if(battle.round>=battle.maxRounds){
+        const pen=battle.enemy.atk*2;
+        if(S.run){S.run.playerHp=Math.max(0,S.run.playerHp-pen);save();}
+        setTimeout(()=>{updateHeader();if(S.run&&S.run.playerHp<=0)onPlayerDie();else onBattleLose();},700);
+      }else{
+        battle.round++;
+        setTimeout(()=>{
+          const atkDmg=battle.enemy.atk;
+          if(S.run){S.run.playerHp=Math.max(0,S.run.playerHp-atkDmg);save();}
+          updateHeader();
+          if(S.run&&S.run.playerHp<=0){onPlayerDie();return;}
+          dealNextRound();renderBattle();
+        },700);
+      }
+    }
+
+    function onBattleWin(){
+      completeNode();
+      const enemy=battle.enemy;
+      const gemsGain=enemy.reward||100;
+      const shardsGain=enemy.shards||0;
+      if(S.run)S.run.runGems+=gemsGain;
+      if(shardsGain)S.jokerShards=(S.jokerShards||0)+shardsGain;
+      save();
+      const jokerChance=enemy.isElite||shardsGain>0?1.0:0.25;
+      const giveJoker=Math.random()<jokerChance;
+      const rewardLine=`💎 +${gemsGain}${shardsGain?` • ⚗️ +${shardsGain} shards`:''}`;
+      if(giveJoker){
+        const opts=[pickRandomJokerDef(),pickRandomJokerDef(),pickRandomJokerDef()];
+        showNodeResult({emoji:enemy.emoji,title:`${enemy.name} defeated!`,desc:`Dealt ${battle.totalDmg.toLocaleString()} total damage`,rewards:[rewardLine],jokerPick:opts},jokerId=>{if(jokerId)addRunJoker(jokerId);battle=null;checkRunProgress();});
+      }else{
+        showNodeResult({emoji:enemy.emoji,title:`${enemy.name} defeated!`,desc:`Dealt ${battle.totalDmg.toLocaleString()} total damage`,rewards:[rewardLine]},()=>{battle=null;checkRunProgress();});
+      }
+    }
+
+    function onBattleLose(){
+      completeNode();
+      showNodeResult({emoji:'😓',title:'Enemy survived...',desc:`You ran out of rounds.`,rewards:['No gem reward']},()=>{battle=null;checkRunProgress();});
+    }
+
+    function onPlayerDie(){battle=null;endRun(false);}
+
+    function checkRunProgress(){
+      if(!S.run)return;
+      if(isNodeDone(5,1)){endRun(true);return;}
+      renderMap();updateHeader();goTabRaw('map');
+    }
+
+    // ═══════════════════════════════════════════════
+    // BOSS NODE
+    // ═══════════════════════════════════════════════
+    function startBossNode(){
+      const boss=BOSSES[Math.floor(Math.random()*BOSSES.length)];
+      startBattleNode({...boss,bossId:boss.id,maxHp:boss.hp,hp:boss.hp,atk:50,rounds:boss.rounds,reward:boss.reward.gems,shards:boss.reward.shards,isElite:false});
+    }
+
+    // ═══════════════════════════════════════════════
+    // SHOP NODE
+    // ═══════════════════════════════════════════════
+    function startShopNode(){renderShopNode();goTabRaw('shop-node');}
+
+    function renderShopNode(){
+      const wrap=document.getElementById('shop-node-wrap');if(!wrap)return;
+      const gems=S.gems+(S.run?S.run.runGems:0);
+      const pool=shuffle([...JOKERS]).slice(0,3);
+      const prices={3:120,4:250,5:500};
+      wrap.innerHTML=`<div class="section-title" style="padding:16px 16px 0">🏪 Shop</div>
+      <div style="padding:6px 16px 12px;font-size:0.8rem;color:var(--muted)">You have 💎 ${gems.toLocaleString()}</div>
+      <div class="shop-node-grid" id="shop-joker-grid"></div>
+      <div style="text-align:center;padding:14px"><button class="event-btn" onclick="leaveShopNode()" style="width:100%;text-align:center">🚪 Leave Shop (no purchase)</button></div>`;
+      const grid=document.getElementById('shop-joker-grid');
+      pool.forEach(def=>{
+        const price=prices[def.rarity]||200;const canAfford=gems>=price;
+        const card=document.createElement('div');card.className='shop-node-card';
+        card.innerHTML=`<div style="font-size:2rem">${def.icon}</div>
+        <div style="font-size:0.82rem;font-weight:700">${def.name}</div>
+        <div style="font-size:0.66rem;color:var(--muted);margin-bottom:4px">${def.desc}</div>
+        <div style="font-size:0.68rem;color:var(--accent)">⚡ ${def.maxCharges} charges</div>
+        <button class="node-result-btn" style="margin-top:8px;padding:7px;font-size:0.78rem;opacity:${canAfford?1:0.4}" ${canAfford?'':'disabled'} onclick="buyShopJoker('${def.id}',${price})">💎 ${price}</button>`;
+        grid.appendChild(card);
       });
     }
 
-    // ═══════════════════════════════════════════════
-    // POKER SELECTION
-    // ═══════════════════════════════════════════════
-    function toggleSelect(id, el) {
-      if (evalDone) return;
-      const card = pendingCards.find(c => c.id == id);
-      if (!card) return;
-
-      const idx = selectedCards.findIndex(c => c.id == id);
-      if (idx === -1) {
-        if (selectedCards.length >= 5) { toast('Max 5 cards!', 't-blue'); return; }
-        selectedCards.push(card);
-        el.classList.add('selected');
-      } else {
-        selectedCards.splice(idx, 1);
-        el.classList.remove('selected');
-      }
-      renderHandDrop();
+    function buyShopJoker(id,price){
+      const gems=S.gems+(S.run?S.run.runGems:0);
+      if(gems<price){toast('Not enough gems!','t-red');return;}
+      if(S.run){if(S.run.runGems>=price)S.run.runGems-=price;else{const r=price-S.run.runGems;S.run.runGems=0;S.gems-=r;}}else S.gems-=price;
+      addRunJoker(id);
+      const def=JOKERS.find(j=>j.id===id);
+      toast(`🃏 ${def?def.name:'Joker'} added!`,'t-green');spawnParticles(8);
+      renderShopNode();updateHeader();
     }
 
-    function renderHandDrop() {
-      const drop = document.getElementById('hand-drop');
-      const btn = document.getElementById('eval-btn');
-      const hint = document.getElementById('poker-hint-text');
+    function leaveShopNode(){completeNode();checkRunProgress();}
 
-      drop.innerHTML = '';
-      if (selectedCards.length === 0) {
-        drop.innerHTML = '<span class="hand-placeholder">Your selected cards appear here</span>';
-        drop.classList.remove('ready');
-        btn.classList.remove('show');
-        hint.textContent = 'Select exactly 5 cards to evaluate';
+    // ═══════════════════════════════════════════════
+    // REST NODE
+    // ═══════════════════════════════════════════════
+    function startRestNode(){renderRestNode();goTabRaw('rest');}
+
+    function renderRestNode(){
+      const wrap=document.getElementById('rest-wrap');if(!wrap||!S.run)return;
+      const run=S.run;
+      wrap.innerHTML=`<div class="section-title" style="padding:16px 16px 8px">🔥 Rest Site</div>
+      <div style="padding:0 16px 12px;font-size:0.8rem;color:var(--muted)">Take a moment to recover or prepare.</div>
+      <div class="rest-options">
+        <button class="rest-btn" onclick="restHeal()">
+          <div class="rest-btn-icon">❤️</div><div class="rest-btn-label">Heal (+30 HP)</div>
+          <div class="rest-btn-desc">Current: ${run.playerHp}/${run.maxHp} HP</div>
+        </button>
+        <button class="rest-btn" onclick="restJoker()">
+          <div class="rest-btn-icon">🃏</div><div class="rest-btn-label">Pick a Joker</div>
+          <div class="rest-btn-desc">Choose 1 of 3 random jokers (free)</div>
+        </button>
+      </div>`;
+    }
+
+    function restHeal(){
+      if(!S.run)return;
+      S.run.playerHp=Math.min(S.run.maxHp,S.run.playerHp+30);save();
+      completeNode();toast('❤️ Healed 30 HP!','t-green');checkRunProgress();
+    }
+
+    function restJoker(){
+      showNodeResult({emoji:'🃏',title:'Choose a Joker',desc:'Pick one to add to your run.',rewards:[],jokerPick:[pickRandomJokerDef(),pickRandomJokerDef(),pickRandomJokerDef()]},jokerId=>{if(jokerId)addRunJoker(jokerId);completeNode();checkRunProgress();});
+    }
+
+    // ═══════════════════════════════════════════════
+    // EVENT NODE
+    // ═══════════════════════════════════════════════
+    function startEventNode(){
+      const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
+      renderEventNode(ev);goTabRaw('event');
+    }
+
+    function renderEventNode(ev){
+      const wrap=document.getElementById('event-wrap');if(!wrap)return;
+      wrap.innerHTML=`<div class="event-title">${ev.title}</div><div class="event-text">${ev.text}</div><div class="event-options" id="event-options"></div>`;
+      const opts=document.getElementById('event-options');
+      ev.options.forEach(opt=>{
+        const btn=document.createElement('button');btn.className='event-btn';
+        btn.innerHTML=`<span class="event-btn-label">${opt.label}</span><span class="event-btn-desc">${opt.desc}</span>`;
+        btn.onclick=()=>resolveEvent(opt.action,ev);opts.appendChild(btn);
+      });
+    }
+
+    function resolveEvent(action,ev){
+      if(!S.run)return;const run=S.run;completeNode();
+      if(action==='leave'){checkRunProgress();return;}
+      if(action==='chest_open'){
+        if(Math.random()<0.5){run.runGems+=250;save();showNodeResult({emoji:'💰',title:'Lucky!',desc:'You found 250 gems!',rewards:['💎 +250 gems']},()=>checkRunProgress());}
+        else{run.playerHp=Math.max(1,run.playerHp-20);save();if(run.playerHp<=1){onPlayerDie();return;}showNodeResult({emoji:'💥',title:'Trapped!',desc:'The chest was booby-trapped!',rewards:['❤️ −20 HP']},()=>checkRunProgress());}
         return;
       }
-      selectedCards.forEach(c => {
-        const el = makeCardEl(c, false);
-        drop.appendChild(el);
-      });
-      if (selectedCards.length === 5) {
-        drop.classList.add('ready');
-        btn.classList.add('show');
-        hint.textContent = 'Hand ready — evaluate to claim reward!';
-      } else {
-        drop.classList.remove('ready');
-        btn.classList.remove('show');
-        hint.textContent = `Select ${5 - selectedCards.length} more card${5 - selectedCards.length !== 1 ? 's' : ''}`;
+      if(action==='merchant_buy'){
+        const gems=S.gems+run.runGems;if(gems<200){toast('Not enough gems!','t-red');checkRunProgress();return;}
+        if(run.runGems>=200)run.runGems-=200;else{const r=200-run.runGems;run.runGems=0;S.gems-=r;}
+        const def=pickRandomJokerDef();addRunJoker(def.id);save();
+        showNodeResult({emoji:def.icon,title:`Got ${def.name}!`,desc:def.desc,rewards:['💎 −200 gems']},()=>checkRunProgress());return;
       }
-    }
-
-    function showPokerWrap(show) {
-      document.getElementById('poker-wrap').style.display = show ? 'block' : 'none';
-      document.getElementById('hand-result').className = 'hand-result';
-      document.getElementById('eval-btn').classList.remove('show');
-      renderHandDrop();
-      renderHandSuggestions();
+      if(action==='shrine_hp'){run.maxHp+=25;run.playerHp=Math.min(run.maxHp,run.playerHp+25);save();showNodeResult({emoji:'⛩️',title:'Blessed!',desc:'Max HP increased.',rewards:['❤️ +25 max HP']},()=>checkRunProgress());return;}
+      if(action==='shrine_gems'){
+        const gems=S.gems+run.runGems;if(gems<100){toast('Not enough gems!','t-red');checkRunProgress();return;}
+        if(run.runGems>=100)run.runGems-=100;else{const r=100-run.runGems;run.runGems=0;S.gems-=r;}
+        run.bonusCharges=(run.bonusCharges||0)+3;save();
+        showNodeResult({emoji:'✨',title:'Empowered!',desc:'Next joker gets +3 extra charges.',rewards:['💎 −100 gems','⚡ +3 bonus charges']},()=>checkRunProgress());return;
+      }
+      if(action==='gamble'){
+        const gems=S.gems+run.runGems;if(gems<300){toast('Not enough gems!','t-red');checkRunProgress();return;}
+        if(run.runGems>=300)run.runGems-=300;else{const r=300-run.runGems;run.runGems=0;S.gems-=r;}
+        if(Math.random()<0.5){run.runGems+=900;save();showNodeResult({emoji:'🎰',title:'Winner!',desc:'You tripled your bet!',rewards:['💎 +900 gems']},()=>checkRunProgress());}
+        else{save();showNodeResult({emoji:'😢',title:'You lost...',desc:'The gambler takes your gems.',rewards:['💎 −300 gems']},()=>checkRunProgress());}
+        return;
+      }
+      if(action==='potion_drink'){run.playerHp=Math.min(run.maxHp,run.playerHp+30);save();showNodeResult({emoji:'🧪',title:'Refreshed!',desc:'The potion healed you.',rewards:['❤️ +30 HP']},()=>checkRunProgress());return;}
+      if(action==='spirit_trade'){
+        run.playerHp=Math.max(1,run.playerHp-20);
+        const def=pickRandomJokerDef();addRunJoker(def.id);save();
+        if(run.playerHp<=1){onPlayerDie();return;}
+        showNodeResult({emoji:'👻',title:"Spirit's Gift",desc:'You received a joker.',rewards:['❤️ −20 HP',`🃏 ${def.name} added`]},()=>checkRunProgress());return;
+      }
+      checkRunProgress();
     }
 
     // ═══════════════════════════════════════════════
-    // POKER EVALUATION
+    // NODE RESULT OVERLAY
     // ═══════════════════════════════════════════════
-    function evalHand() {
-      if (selectedCards.length !== 5 || evalDone) return;
-      evalDone = true;
+    let resultCallback=null;
 
-      const handName = classifyHandWithWilds(selectedCards);
-      const chips = getChipBonus(selectedCards);
-      const baseReward = (HAND_REWARDS[handName] || 50) + chips;
-      const { reward, triggered } = applyJokers(selectedCards, handName, baseReward);
-      const tier = HAND_TIER[handName] || 1;
-
-      S.gems += reward;
-      S.stats.pokerEarned += reward;
-      S.gold += Math.floor(reward / 10);
-
-      if (!S.stats.bestHand || Object.keys(HAND_REWARDS).indexOf(handName) < Object.keys(HAND_REWARDS).indexOf(S.stats.bestHand)) {
-        S.stats.bestHand = handName;
-      }
-
-      S.stats.handHistory.unshift({ hand: handName, reward, ts: Date.now() });
-      if (S.stats.handHistory.length > 50) S.stats.handHistory.pop();
-
-      if (handName === 'Royal Flush') { S.guaranteeNext = true; spawnParticles(30); }
-      if (handName === 'Straight Flush' || handName === 'Four of a Kind') spawnParticles(18);
-
-      S.missions.dailyPoker++;
-      if (reward >= 150) S.missions.dailyPair++;
-      const handIdx = Object.keys(HAND_REWARDS).indexOf(handName);
-      if (handIdx <= 5) S.missions.weeklyFlush++;
-
-      // Destroy glass cards after scoring
-      const glassCards = selectedCards.filter(c => c.cardType === 'glass');
-      if (glassCards.length) {
-        const glassIds = new Set(glassCards.map(c => c.id));
-        S.inventory = S.inventory.filter(c => !glassIds.has(c.id));
-      }
-
-      save();
-      updateHeader();
-      updateUI();
-
-      const resultEl = document.getElementById('hand-result');
-      let resultText = `${handName} — +${reward.toLocaleString()} 💎 +${Math.floor(reward / 10)} 🪙`;
-      if (chips > 0) resultText += `  •  +${chips} chip bonus`;
-      if (triggered.length) resultText += `  •  ${triggered.map(j => j.icon + ' ' + j.name).join('  ')}`;
-      if (glassCards.length) resultText += `  •  💎 ${glassCards.length} glass card${glassCards.length > 1 ? 's' : ''} shattered`;
-      resultEl.textContent = resultText;
-      resultEl.className = `hand-result show tier${tier}`;
-      document.getElementById('eval-btn').classList.remove('show');
-
-      const tierMsg = tier === 3 ? 't-gold' : tier === 2 ? 't-blue' : 't-green';
-      toast(`${handName}! +${reward.toLocaleString()} 💎`, tierMsg);
-      if (S.bossBattle) processBossDamage(handName, reward);
-      sfxReward();
+    function showNodeResult(data,cb){
+      resultCallback=cb;
+      document.getElementById('result-emoji').textContent=data.emoji||'✦';
+      document.getElementById('result-title').textContent=data.title||'';
+      document.getElementById('result-desc').textContent=data.desc||'';
+      const rwr=document.getElementById('result-rewards');
+      rwr.innerHTML=(data.rewards||[]).filter(Boolean).map(r=>`<div style="font-size:0.83rem">${r}</div>`).join('');
+      const jpEl=document.getElementById('result-joker-pick');jpEl.innerHTML='';
+      if(data.jokerPick&&data.jokerPick.length){
+        document.getElementById('result-btn').style.display='none';
+        const lbl=document.createElement('div');lbl.style.cssText='font-size:0.78rem;color:var(--muted);margin-bottom:6px';lbl.textContent='Choose a joker:';jpEl.appendChild(lbl);
+        const grid=document.createElement('div');grid.className='joker-pick-grid';
+        data.jokerPick.forEach(def=>{
+          const card=document.createElement('div');card.className='joker-pick-card';
+          card.innerHTML=`<div class="joker-pick-icon">${def.icon}</div><div class="joker-pick-name">${def.name}</div><div class="joker-pick-desc">${def.desc}</div><div class="joker-pick-charges">⚡ ${def.maxCharges} charges</div>`;
+          card.onclick=()=>{document.getElementById('node-result-overlay').classList.remove('show');if(resultCallback)resultCallback(def.id);resultCallback=null;};
+          grid.appendChild(card);
+        });
+        jpEl.appendChild(grid);
+        const skip=document.createElement('button');skip.className='event-btn';skip.style.cssText='margin-top:8px;width:100%;text-align:center';skip.textContent='Skip (no joker)';
+        skip.onclick=()=>{document.getElementById('node-result-overlay').classList.remove('show');if(resultCallback)resultCallback(null);resultCallback=null;};
+        jpEl.appendChild(skip);
+      }else{document.getElementById('result-btn').style.display='';}
+      document.getElementById('node-result-overlay').classList.add('show');
     }
 
-    function classifyHand(cards) {
-      const vals = cards.map(c => V_ORDER[c.value] || parseInt(c.value)).sort((a, b) => a - b);
-      const suits = cards.map(c => c.suit);
-      const vc = {};
-      vals.forEach(v => vc[v] = (vc[v] || 0) + 1);
-      const counts = Object.values(vc).sort((a, b) => b - a);
-
-      const isFlush = new Set(suits).size === 1;
-      const isStraight = vals[4] - vals[0] === 4 && new Set(vals).size === 5;
-      const isAceLow = JSON.stringify(vals) === '[2,3,4,5,14]';
-
-      if (isFlush && (isStraight || isAceLow)) {
-        if (isStraight && vals[4] === 14 && vals[0] === 10) return 'Royal Flush';
-        return 'Straight Flush';
-      }
-      if (counts[0] === 4) return 'Four of a Kind';
-      if (counts[0] === 3 && counts[1] === 2) return 'Full House';
-      if (isFlush) return 'Flush';
-      if (isStraight || isAceLow) return 'Straight';
-      if (counts[0] === 3) return 'Three of a Kind';
-      if (counts[0] === 2 && counts[1] === 2) return 'Two Pair';
-      if (counts[0] === 2) return 'One Pair';
-      return 'High Card';
+    function resultAction(){
+      document.getElementById('node-result-overlay').classList.remove('show');
+      if(resultCallback)resultCallback(null);resultCallback=null;
     }
 
-    function classifyHandWithWilds(cards) {
-      const wilds = cards.filter(c => c.rarity === 5);
-      const fixed = cards.filter(c => c.rarity !== 5);
-      if (wilds.length === 0) return classifyHand(cards);
-      if (wilds.length >= 4) return 'Royal Flush';
-
-      let bestIdx = HAND_ORDER.length - 1;
-      function tryWilds(wIdx, current) {
-        if (wIdx === wilds.length) {
-          const idx = HAND_ORDER.indexOf(classifyHand(current));
-          if (idx < bestIdx) bestIdx = idx;
-          return;
+    // ═══════════════════════════════════════════════
+    // RENDER: MAP
+    // ═══════════════════════════════════════════════
+    function renderMap(){
+      const grid=document.getElementById('map-grid');const info=document.getElementById('map-run-info');
+      if(!grid||!S.run)return;
+      const run=S.run;
+      info.innerHTML=`
+      <div class="map-stat">❤️ <strong>${run.playerHp}/${run.maxHp}</strong></div>
+      <div class="map-stat">💎 <strong>${run.runGems.toLocaleString()}</strong></div>
+      <div class="map-stat">🃏 <strong>${run.jokers.length}</strong> jokers</div>`;
+      grid.innerHTML='';
+      for(let f=5;f>=0;f--){
+        const floor=run.map[f];
+        const row=document.createElement('div');row.className='map-floor-row';
+        for(let c=0;c<3;c++){
+          const node=floor[c];
+          const cell=document.createElement('div');
+          if(!node){cell.className='map-node empty';row.appendChild(cell);continue;}
+          const done=isNodeDone(f,c);const available=isNodeAvailable(f,c);
+          cell.className=`map-node${node.type==='boss'?' boss-node':''}${done?' done':available?' available':''}`;
+          cell.innerHTML=`${NODE_ICONS[node.type]||'?'}<div class="node-label">${NODE_LABELS[node.type]||''}</div>`;
+          if(available&&!done)cell.onclick=()=>enterNode(f,c);
+          row.appendChild(cell);
         }
-        for (const suit of SUITS) {
-          for (const value of VALUES) {
-            tryWilds(wIdx + 1, [...current, { suit, value, rarity: 5 }]);
+        grid.appendChild(row);
+        if(f>0){
+          const connRow=document.createElement('div');connRow.className='map-conn-row';
+          for(let c=0;c<3;c++){
+            const cell=document.createElement('div');cell.className='map-conn-cell';
+            // Show line if this column has any node in this or adjacent floor
+            const hasAbove=floor[c]!==null;
+            const hasBelow=run.map[f-1][c]!==null;
+            if(hasAbove||hasBelow){cell.innerHTML='<div class="map-conn-line"></div>';}
+            connRow.appendChild(cell);
           }
+          grid.appendChild(connRow);
         }
       }
-      tryWilds(0, fixed);
-      return HAND_ORDER[bestIdx];
-    }
-
-    function getChipBonus(cards) {
-      return cards.reduce((sum, c) => {
-        const base = CHIP_VALUES[c.rarity] || 0;
-        const mult = c.cardType && CARD_TYPES[c.cardType] ? CARD_TYPES[c.cardType].chipMult : 1;
-        return sum + Math.floor(base * mult);
-      }, 0);
     }
 
     // ═══════════════════════════════════════════════
-    // BANNERS
+    // RENDER: BATTLE
     // ═══════════════════════════════════════════════
-    function renderBanners() {
-      const row = document.getElementById('banner-row');
-      row.innerHTML = '';
-      BANNERS.forEach(b => {
-        const div = document.createElement('div');
-        div.className = 'banner-card' + (S.activeBanner === b.id ? ' selected' : '');
-        div.innerHTML = `
-      <div class="banner-art" style="background:${b.bg}">
-        <span style="font-size:3.5rem">${b.emoji}</span>
-        <div class="banner-badge">${b.badge}</div>
+    function renderBattle(){
+      const wrap=document.getElementById('battle-wrap');if(!wrap||!battle||!S.run)return;
+      const run=S.run;const en=battle.enemy;
+      const hpPct=Math.round(battle.enemyHp/en.maxHp*100);
+      const playerPct=Math.round(run.playerHp/run.maxHp*100);
+      const jokersHtml=run.jokers.length?`<div class="battle-run-jokers">${run.jokers.map(rj=>{
+        const def=JOKERS.find(j=>j.id===rj.jokerId);if(!def)return'';
+        const pips=Array.from({length:Math.min(def.maxCharges,12)},(_,i)=>`<div class="charge-pip${i<rj.charges?'':' empty'}"></div>`).join('');
+        return`<div class="run-joker-chip">${def.icon} ${def.name}<div class="charge-pips">${pips}</div></div>`;
+      }).join('')}</div>`:'';
+      wrap.innerHTML=`
+      <div class="battle-enemy-card">
+        <div class="battle-enemy-top">
+          <div class="battle-enemy-emoji">${en.emoji}</div>
+          <div class="battle-enemy-info">
+            <div class="battle-enemy-name">${en.name}${en.isElite?' ⚡ ELITE':''}</div>
+            <div class="battle-enemy-desc">${en.desc||`⚔️ ATK ${en.atk}/round`}</div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--muted)">Rd ${battle.round}/${battle.maxRounds}</div>
+        </div>
+        <div class="battle-hp-bar"><div class="battle-hp-fill enemy" id="enemy-hp-fill" style="width:${hpPct}%"></div></div>
+        <div class="battle-hp-label" id="enemy-hp-label">${battle.enemyHp.toLocaleString()} / ${en.maxHp.toLocaleString()} HP · ⚔️ ${en.atk} ATK/rd</div>
       </div>
-      <div class="banner-info">
-        <div class="banner-name">${b.name}</div>
-        <div class="banner-sub">${b.sub} | 5★: ${(b.rate5 * 100).toFixed(1)}%</div>
-      </div>`;
-        div.onclick = () => { S.activeBanner = b.id; save(); renderBanners(); };
-        row.appendChild(div);
+      <div class="battle-player-hp">
+        <div style="flex:1"><div class="battle-hp-bar"><div class="battle-hp-fill player" style="width:${playerPct}%"></div></div></div>
+        <div style="font-size:0.73rem;margin-left:8px">❤️ ${run.playerHp}/${run.maxHp}</div>
+      </div>
+      ${jokersHtml}
+      <div id="battle-stage-cards" style="display:flex;flex-wrap:wrap;gap:6px;padding:2px 0"></div>
+      <div class="hand-drop" id="battle-hand-drop"><span class="hand-placeholder">Select 5 cards to attack</span></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="poker-hint" id="battle-hint">Select exactly 5 cards</span>
+        <button class="eval-btn" id="battle-eval-btn" onclick="evalHand()">⚔️ ATTACK<div class="eval-btn-shine"></div></button>
+      </div>
+      <div class="hand-result" id="battle-hand-result"></div>`;
+      const stageEl=document.getElementById('battle-stage-cards');
+      battle.pendingCards.forEach((c,i)=>{const el=makeCardEl(c,true);el.classList.add('revealing');el.style.animationDelay=(i*40)+'ms';stageEl.appendChild(el);});
+    }
+
+    // ═══════════════════════════════════════════════
+    // RENDER: HOME
+    // ═══════════════════════════════════════════════
+    function renderHome(){
+      const row=document.getElementById('home-stats-row');if(!row)return;
+      row.innerHTML=`
+      <div class="home-stat-box"><div class="home-stat-val">${S.stats.totalRuns||0}</div><div class="home-stat-lbl">Runs</div></div>
+      <div class="home-stat-box"><div class="home-stat-val">${S.stats.runsWon||0}</div><div class="home-stat-lbl">Wins</div></div>
+      <div class="home-stat-box"><div class="home-stat-val">${S.gems.toLocaleString()}</div><div class="home-stat-lbl">Gems</div></div>
+      <div class="home-stat-box"><div class="home-stat-val">${S.jokerShards||0}</div><div class="home-stat-lbl">Shards</div></div>`;
+    }
+
+    // ═══════════════════════════════════════════════
+    // RENDER: FORGE
+    // ═══════════════════════════════════════════════
+    function renderForge(){
+      const grid=document.getElementById('craft-grid');const sc=document.getElementById('forge-shard-count');
+      if(!grid)return;if(sc)sc.textContent=`${S.jokerShards||0} ⚗️`;
+      grid.innerHTML='';
+      JOKERS.forEach(def=>{
+        const cost=JOKER_CRAFT_COSTS[def.rarity]||3;const canAfford=(S.jokerShards||0)>=cost&&!!S.run;
+        const card=document.createElement('div');card.className='joker-card-item';
+        card.innerHTML=`<div class="joker-item-icon">${def.icon}</div>
+        <div class="joker-item-info">
+          <div class="joker-item-name">${def.name} ${'★'.repeat(def.rarity)}</div>
+          <div class="joker-item-desc">${def.desc}</div>
+          <div style="font-size:0.68rem;color:var(--accent);margin-top:2px">⚡ ${def.maxCharges} charges</div>
+        </div>
+        <button class="craft-btn${canAfford?'':' disabled'}" ${canAfford?'':'disabled'} onclick="forgeJoker('${def.id}',${cost})">⚗️ ${cost}</button>`;
+        grid.appendChild(card);
       });
+    }
+
+    function forgeJoker(id,cost){
+      if(!S.run){toast('Start a run first!','t-red');return;}
+      if((S.jokerShards||0)<cost){toast('Not enough shards!','t-red');return;}
+      S.jokerShards-=cost;addRunJoker(id);
+      const def=JOKERS.find(j=>j.id===id);
+      toast(`⚗️ Forged ${def?def.name:'Joker'}!`,'t-gold');spawnParticles(10);save();renderForge();updateHeader();
     }
 
     // ═══════════════════════════════════════════════
     // MISSIONS
     // ═══════════════════════════════════════════════
-    function renderMissions() {
-      renderMissionList('mission-list', DAILY_MISSIONS, S.missions.dailyClaimed);
-      renderMissionList('weekly-mission-list', WEEKLY_MISSIONS, S.missions.weeklyClaimed);
+    function renderMissions(){
+      renderMissionList('mission-list',DAILY_MISSIONS,S.missions.dailyClaimed);
+      renderMissionList('weekly-mission-list',WEEKLY_MISSIONS,S.missions.weeklyClaimed);
     }
 
-    function renderMissionList(containerId, missions, claimed) {
-      const el = document.getElementById(containerId);
-      el.innerHTML = '';
-      missions.forEach(m => {
-        const prog = Math.min(S.missions[m.stat] || 0, m.target);
-        const done = prog >= m.target;
-        const isClaimed = !!claimed[m.id];
-        const div = document.createElement('div');
-        div.className = 'mission' + (isClaimed ? ' done' : '');
-        div.innerHTML = `
-      <span class="mission-icon">${isClaimed ? '✅' : '🎯'}</span>
-      <div class="mission-info">
-        <div class="mission-title">${m.title}</div>
-        <div class="mission-prog">${m.desc} — ${prog}/${m.target}</div>
-        <div class="mission-bar"><div class="mission-fill" style="width:${(prog / m.target * 100)}%"></div></div>
-      </div>
-      <span class="mission-reward">+${m.reward} 💎</span>
-      <button class="claim-btn" ${(!done || isClaimed) ? 'disabled' : ''} onclick="claimMission('${m.id}',${m.reward},${containerId === 'mission-list' ? 'true' : 'false'})">
-        ${isClaimed ? 'Claimed' : done ? 'Claim' : 'Locked'}
-      </button>`;
+    function renderMissionList(containerId,missions,claimed){
+      const el=document.getElementById(containerId);if(!el)return;
+      el.innerHTML='';
+      missions.forEach(m=>{
+        const prog=S.missions[m.stat]||0;const done=prog>=m.target;const isClaimed=claimed&&claimed[m.id];
+        const div=document.createElement('div');div.className=`mission-item${done?' done':''}`;
+        div.innerHTML=`<div class="mission-text">
+          <div class="mission-title">${m.title}</div><div class="mission-desc">${m.desc}</div>
+          <div class="mission-prog-bar"><div class="mission-prog-fill" style="width:${Math.min(100,prog/m.target*100)}%"></div></div>
+        </div>
+        <div class="mission-reward-wrap">
+          <div class="mission-reward">+${m.reward} 💎</div>
+          ${done&&!isClaimed?`<button class="mission-claim-btn" onclick="claimMission('${m.id}','${containerId==='mission-list'?'daily':'weekly'}',${m.reward})">Claim</button>`:isClaimed?`<span style="font-size:0.7rem;color:var(--muted)">✓</span>`:`<span style="font-size:0.7rem;color:var(--muted)">${prog}/${m.target}</span>`}
+        </div>`;
         el.appendChild(div);
       });
     }
 
-    function claimMission(id, reward, isDaily) {
-      const claimed = isDaily ? S.missions.dailyClaimed : S.missions.weeklyClaimed;
-      if (claimed[id]) return;
-      claimed[id] = true;
-      S.gems += reward;
-      save();
-      updateHeader();
-      renderMissions();
-      toast(`Mission complete! +${reward} 💎`, 't-green');
-    }
-
-    // ═══════════════════════════════════════════════
-    // DAILY LOGIN
-    // ═══════════════════════════════════════════════
-    function claimDaily() {
-      if (S.dailyLoginClaimed) return;
-      S.dailyLoginClaimed = true;
-      const reward = 160;
-      S.gems += reward;
-      save();
-      updateHeader();
-      document.getElementById('daily-btn').disabled = true;
-      toast(`Daily login: +${reward} 💎`, 't-gold');
-      spawnParticles(8);
-    }
-
-    // ═══════════════════════════════════════════════
-    // SHOP
-    // ═══════════════════════════════════════════════
-    function renderShop() {
-      const grid = document.getElementById('shop-grid');
-      grid.innerHTML = '';
-      SHOP_ITEMS.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'shop-item';
-        div.innerHTML = `
-      <div class="shop-icon">${item.icon}</div>
-      <div class="shop-name">${item.name}</div>
-      <div class="shop-price">🪙 ${item.priceGold} Gold</div>
-      <div class="shop-desc">${item.desc}</div>`;
-        div.onclick = () => buyShop(item);
-        grid.appendChild(div);
-      });
-
-      const exGrid = document.getElementById('exchange-grid');
-      exGrid.innerHTML = '';
-      EXCHANGE_ITEMS.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'shop-item';
-        div.innerHTML = `
-      <div class="shop-icon">${item.icon}</div>
-      <div class="shop-name">${item.name}</div>
-      <div class="shop-price">${item.cost} ${item.costUnit} → ${item.reward} ${item.rewardUnit}</div>
-      <div class="shop-desc">${item.desc}</div>`;
-        div.onclick = () => doExchange(item);
-        exGrid.appendChild(div);
-      });
-
-      const shardCount = document.getElementById('shard-count-shop');
-      if (shardCount) shardCount.textContent = `— ⚗️ ${S.jokerShards || 0} Shards`;
-
-      const craftGrid = document.getElementById('craft-grid');
-      if (craftGrid) {
-        craftGrid.innerHTML = '';
-        const rarityColors = { 3: '#60a5fa', 4: '#c084fc', 5: '#f0b429' };
-        const sorted = [...JOKERS].sort((a, b) => a.rarity - b.rarity);
-        sorted.forEach(joker => {
-          const cost = JOKER_CRAFT_COSTS[joker.rarity] || 99;
-          const canAfford = (S.jokerShards || 0) >= cost;
-          const rStars = '★'.repeat(joker.rarity);
-          const div = document.createElement('div');
-          div.className = 'craft-item' + (canAfford ? '' : ' cant-afford');
-          div.innerHTML = `<div class="craft-icon">${joker.icon}</div>
-            <div class="craft-name" style="color:${rarityColors[joker.rarity] || '#fff'}">${joker.name}</div>
-            <div style="font-size:0.6rem;font-weight:700;color:${rarityColors[joker.rarity]};margin-bottom:4px">${rStars}</div>
-            <div class="craft-desc">${joker.desc}</div>
-            <div class="craft-cost">⚗️ ${cost} Shards</div>`;
-          if (canAfford) div.onclick = () => craftJoker(joker.id);
-          craftGrid.appendChild(div);
-        });
-      }
-    }
-
-    function buyShop(item) {
-      if (S.gold < item.priceGold) { toast('Not enough Gold! 🪙', 't-red'); return; }
-      S.gold -= item.priceGold;
-      if (item.gems) S.gems += item.gems;
-      save();
-      updateHeader();
-      toast(`Purchased ${item.name}! +${item.gems} 💎`, 't-green');
-    }
-
-    function doExchange(item) {
-      const count3 = S.inventory.filter(c => c.rarity === 3).length;
-      const count4 = S.inventory.filter(c => c.rarity === 4).length;
-
-      if (item.id === 'dupe3') {
-        if (count3 < item.cost) { toast(`Need ${item.cost} 3★ cards (have ${count3})`, 't-red'); return; }
-        removeCards(3, item.cost);
-        S.gems += item.reward;
-        toast(`Exchanged! +${item.reward} 💎`, 't-green');
-      } else if (item.id === 'dupe4') {
-        if (count4 < item.cost) { toast(`Need ${item.cost} 4★ cards (have ${count4})`, 't-red'); return; }
-        removeCards(4, item.cost);
-        S.gems += item.reward;
-        toast(`Exchanged! +${item.reward} 💎`, 't-green');
-      } else if (item.id === 'gold_to_gems') {
-        if (S.gold < item.cost) { toast('Not enough Gold! 🪙', 't-red'); return; }
-        S.gold -= item.cost;
-        S.gems += item.reward;
-        toast(`Exchanged! +${item.reward} 💎`, 't-green');
-      }
-      save();
-      updateHeader();
-    }
-
-    function removeCards(rarity, count) {
-      let removed = 0;
-      S.inventory = S.inventory.filter(c => {
-        if (c.rarity === rarity && removed < count) { removed++; return false; }
-        return true;
-      });
-    }
-
-    // ═══════════════════════════════════════════════
-    // INVENTORY
-    // ═══════════════════════════════════════════════
-    let invFilter = 'all';
-
-    function renderInventory() {
-      renderFilterPills();
-      const grid = document.getElementById('inv-grid');
-      let cards = [...S.inventory].sort((a, b) => b.rarity - a.rarity || b.ts - a.ts);
-
-      if (invFilter !== 'all') {
-        if (['5', '4', '3'].includes(invFilter)) cards = cards.filter(c => c.rarity == invFilter);
-        else cards = cards.filter(c => c.suit === invFilter);
-      }
-
-      document.getElementById('inv-count').textContent = `${cards.length} cards`;
-
-      if (!cards.length) {
-        grid.innerHTML = '<div class="empty" style="width:100%"><div class="empty-ico">📦</div><p>No cards match this filter</p></div>';
-        return;
-      }
-      grid.innerHTML = '';
-      cards.forEach(c => {
-        const el = makeCardEl(c, false);
-        grid.appendChild(el);
-      });
-    }
-
-    function renderFilterPills() {
-      const wrap = document.getElementById('filter-pills');
-      const filters = [
-        { key: 'all', label: 'All' },
-        { key: '5', label: '5★' },
-        { key: '4', label: '4★' },
-        { key: '3', label: '3★' },
-        { key: 'Hearts', label: '♥' },
-        { key: 'Diamonds', label: '♦' },
-        { key: 'Clubs', label: '♣' },
-        { key: 'Spades', label: '♠' },
-      ];
-      wrap.innerHTML = '';
-      filters.forEach(f => {
-        const b = document.createElement('button');
-        b.className = 'pill' + (invFilter === f.key ? ' on' : '');
-        b.textContent = f.label;
-        b.onclick = () => { invFilter = f.key; renderInventory(); };
-        wrap.appendChild(b);
-      });
+    function claimMission(id,type,reward){
+      const claimed=type==='daily'?S.missions.dailyClaimed:S.missions.weeklyClaimed;
+      if(claimed[id])return;claimed[id]=true;S.gems+=reward;save();updateHeader();renderMissions();toast(`+${reward} 💎 mission!`,'t-gold');
     }
 
     // ═══════════════════════════════════════════════
     // STATS
     // ═══════════════════════════════════════════════
-    function renderStats() {
-      const grid = document.getElementById('stats-grid');
-      const luckPct = S.stats.totalPulls > 0
-        ? (S.stats.r5 / S.stats.totalPulls * 100).toFixed(2) + '%' : '—';
-
-      const tiles = [
-        { label: 'Total Summons', val: S.stats.totalPulls, cls: 'col-blue' },
-        { label: '5★ Legendaries', val: S.stats.r5, cls: 'col-gold' },
-        { label: '4★ Rares', val: S.stats.r4, cls: 'col-purple' },
-        { label: '3★ Commons', val: S.stats.r3, cls: '' },
-        { label: 'Gems Earned (Poker)', val: S.stats.pokerEarned.toLocaleString(), cls: 'col-green' },
-        { label: 'Gems Spent', val: S.stats.gemsSpent.toLocaleString(), cls: 'col-red' },
-        { label: 'Gold Coins', val: S.gold.toLocaleString(), cls: 'col-gold' },
-        { label: '5★ Luck Rate', val: luckPct, cls: 'col-gold' },
-        { label: 'Current Pity', val: S.pity, cls: '' },
-        { label: 'Best Hand', val: S.stats.bestHand, cls: 'col-purple', small: true },
-      ];
-
-      grid.innerHTML = '';
-      tiles.forEach(t => {
-        const div = document.createElement('div');
-        div.className = 'stat-tile';
-        div.innerHTML = `<div class="st-label">${t.label}</div><div class="st-val ${t.cls}" style="${t.small ? 'font-size:1.1rem' : ''}">${t.val}</div>`;
-        grid.appendChild(div);
-      });
-
-      const hist = document.getElementById('history-list');
-      if (!S.stats.handHistory.length) {
-        hist.innerHTML = '<div style="color:var(--text3);padding:16px;font-size:0.85rem">No hands evaluated yet.</div>';
-        return;
-      }
-      hist.innerHTML = '';
-      S.stats.handHistory.forEach(h => {
-        const d = new Date(h.ts);
-        const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const tier = HAND_TIER[h.hand] || 1;
-        const cls = tier === 3 ? 'col-gold' : tier === 2 ? 'col-purple' : 'col-blue';
-        const div = document.createElement('div');
-        div.className = 'hist-item';
-        div.innerHTML = `<span class="hist-hand ${cls}">${h.hand}</span><span class="hist-reward">+${h.reward.toLocaleString()} 💎</span><span class="hist-time">${timeStr}</span>`;
-        hist.appendChild(div);
-      });
+    function renderStats(){
+      const grid=document.getElementById('stats-grid');const hist=document.getElementById('history-list');if(!grid)return;
+      const st=S.stats;
+      grid.innerHTML=`
+      <div class="stat-box"><div class="stat-val">${st.totalRuns||0}</div><div class="stat-lbl">Total Runs</div></div>
+      <div class="stat-box"><div class="stat-val">${st.runsWon||0}</div><div class="stat-lbl">Runs Won</div></div>
+      <div class="stat-box"><div class="stat-val">${st.totalHands||0}</div><div class="stat-lbl">Hands Played</div></div>
+      <div class="stat-box"><div class="stat-val">${st.bestHand||'—'}</div><div class="stat-lbl">Best Hand</div></div>
+      <div class="stat-box"><div class="stat-val">${S.gems.toLocaleString()}</div><div class="stat-lbl">Total Gems</div></div>
+      <div class="stat-box"><div class="stat-val">${S.jokerShards||0}</div><div class="stat-lbl">Shards</div></div>`;
+      if(hist){hist.innerHTML='';(st.handHistory||[]).slice(0,20).forEach(h=>{const d=document.createElement('div');d.className='history-item';d.innerHTML=`<span>${h.hand}</span><span>${h.reward.toLocaleString()} dmg</span>`;hist.appendChild(d);});}
     }
 
     // ═══════════════════════════════════════════════
-    // UI / PITY
+    // HEADER
     // ═══════════════════════════════════════════════
-    function updateHeader() {
-      const el = document.getElementById('gem-count');
-      el.textContent = S.gems.toLocaleString();
-      el.classList.add('gem-anim');
-      setTimeout(() => el.classList.remove('gem-anim'), 400);
-
-      const dailyBtn = document.getElementById('daily-btn');
-      dailyBtn.disabled = S.dailyLoginClaimed;
-      dailyBtn.textContent = S.dailyLoginClaimed ? '✓ Claimed' : 'Daily Login (+160💎)';
-    }
-
-    function updatePity() {
-      const p = S.pity;
-      const left = Math.max(0, 80 - p);
-      const pct = Math.min(100, p / 80 * 100);
-      let r5 = 0.05;
-      if (p >= 65) r5 = 0.05 + 0.15 * (p - 64);
-      r5 = Math.min(r5, 1);
-
-      document.getElementById('ps-total').textContent = S.stats.totalPulls;
-      document.getElementById('ps-pity').textContent = p;
-
-      const leftEl = document.getElementById('ps-left');
-      leftEl.textContent = left;
-      leftEl.className = 'pity-stat-value' + (left <= 10 ? ' col-red' : left <= 25 ? ' col-gold' : '');
-
-      document.getElementById('ps-rate').textContent = (r5 * 100).toFixed(1) + '%';
-      document.getElementById('ps-last5').textContent = p === 0 ? 'just now' : p + ' pulls ago';
-      document.getElementById('ps-pct').textContent = pct.toFixed(0) + '%';
-      document.getElementById('ps-fill').style.width = pct + '%';
-
-      const badge = document.getElementById('guarantee-badge');
-      badge.style.display = S.guaranteeNext ? 'block' : 'none';
-
-      document.getElementById('btn5').disabled = S.gems < 600;
-      document.getElementById('btn10').disabled = S.gems < 1600;
+    function updateHeader(){
+      const gc=document.getElementById('gem-count');
+      const hpDisp=document.getElementById('run-hp-display');
+      const hpFill=document.getElementById('hp-bar-fill');
+      const hpText=document.getElementById('hp-text');
+      if(gc)gc.textContent=(S.gems+(S.run?S.run.runGems:0)).toLocaleString();
+      if(S.run&&hpDisp){
+        hpDisp.style.display='flex';
+        const pct=Math.round(S.run.playerHp/S.run.maxHp*100);
+        if(hpFill)hpFill.style.width=pct+'%';
+        if(hpText)hpText.textContent=`${S.run.playerHp}/${S.run.maxHp}`;
+      }else if(hpDisp){hpDisp.style.display='none';}
     }
 
     // ═══════════════════════════════════════════════
-    // JOKER SYSTEM
+    // NAVIGATION
     // ═══════════════════════════════════════════════
-    function applyJokers(cards, handName, base) {
-      let reward = base;
-      const triggered = [];
-      if (!S.equippedJokers) return { reward: Math.floor(reward), triggered };
-      S.equippedJokers.forEach(uid => {
-        if (!uid) return;
-        const inv = S.jokerInventory.find(j => j.uid === uid);
-        if (!inv) return;
-        const def = JOKERS.find(j => j.id === inv.jokerId);
-        if (!def) return;
-        const prev = reward;
-        reward = def.apply(cards, handName, reward);
-        if (reward !== prev) triggered.push(def);
-      });
-      return { reward: Math.floor(reward), triggered };
+    function goTabRaw(name){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      const p=document.getElementById('page-'+name);if(p)p.classList.add('active');
     }
 
-    let jokerPickerSlot = -1;
-
-    function renderJokerTray() {
-      const wrap = document.getElementById('joker-slots');
-      if (!wrap) return;
-      if (!S.equippedJokers) S.equippedJokers = [null, null, null];
-      wrap.innerHTML = '';
-      S.equippedJokers.forEach((uid, i) => {
-        const slot = document.createElement('div');
-        if (uid) {
-          const inv = S.jokerInventory.find(j => j.uid === uid);
-          const def = inv ? JOKERS.find(j => j.id === inv.jokerId) : null;
-          if (def) {
-            const rCol = def.rarity === 5 ? 'var(--gold)' : def.rarity === 4 ? 'var(--purple2)' : 'var(--blue2)';
-            const rStars = '★'.repeat(def.rarity);
-            slot.className = 'joker-slot filled';
-            slot.innerHTML = `
-              <button class="joker-remove" onclick="event.stopPropagation();unequipJoker(${i})">✕</button>
-              <div class="joker-slot-icon">${def.icon}</div>
-              <div class="joker-slot-name">${def.name}</div>
-              <div style="font-size:0.62rem;font-weight:700;color:${rCol};letter-spacing:0.05em;margin-bottom:2px">${rStars}</div>
-              <div class="joker-slot-desc">${def.desc}</div>`;
-            slot.onclick = () => openJokerPicker(i);
-            wrap.appendChild(slot);
-            return;
-          }
-        }
-        slot.className = 'joker-slot';
-        slot.innerHTML = `<div class="joker-slot-icon" style="font-size:1.8rem;color:var(--text3)">+</div><div class="joker-slot-empty">Equip Joker</div>`;
-        slot.onclick = () => openJokerPicker(i);
-        wrap.appendChild(slot);
-      });
-    }
-
-    function openJokerPicker(slotIndex) {
-      jokerPickerSlot = slotIndex;
-      const grid = document.getElementById('joker-modal-grid');
-      grid.innerHTML = '';
-      const equippedUids = S.equippedJokers.filter((u, i) => u && i !== slotIndex);
-      const available = S.jokerInventory.filter(j => !equippedUids.includes(j.uid));
-      if (!available.length) {
-        grid.innerHTML = '<div class="joker-modal-empty">No jokers in inventory.<br>They drop from any pull (~15% per Hand Pull).</div>';
-      } else {
-        const grouped = {};
-        available.forEach(j => { if (!grouped[j.jokerId]) grouped[j.jokerId] = []; grouped[j.jokerId].push(j); });
-        Object.entries(grouped).forEach(([jid, copies]) => {
-          const def = JOKERS.find(j => j.id === jid);
-          if (!def) return;
-          const item = document.createElement('div');
-          item.className = 'joker-pick-item';
-          const rCol = def.rarity === 5 ? 'var(--gold)' : def.rarity === 4 ? 'var(--purple2)' : 'var(--blue2)';
-          const rStars = '★'.repeat(def.rarity);
-          item.innerHTML = `
-            <div class="joker-pick-icon">${def.icon}</div>
-            <div class="joker-pick-name">${def.name}</div>
-            <div style="font-size:0.6rem;font-weight:700;color:${rCol};margin-bottom:2px">${rStars}</div>
-            <div class="joker-pick-desc">${def.desc}</div>
-            ${copies.length > 1 ? `<div class="joker-pick-count">×${copies.length}</div>` : ''}`;
-          item.onclick = () => equipJoker(slotIndex, copies[0].uid);
-          grid.appendChild(item);
-        });
-      }
-      document.getElementById('joker-modal').classList.add('open');
-    }
-
-    function closeJokerPicker() {
-      document.getElementById('joker-modal').classList.remove('open');
-      jokerPickerSlot = -1;
-    }
-
-    function equipJoker(slotIndex, uid) {
-      S.equippedJokers[slotIndex] = uid;
-      save();
-      closeJokerPicker();
-      renderJokerTray();
-      const inv = S.jokerInventory.find(j => j.uid === uid);
-      const def = inv ? JOKERS.find(j => j.id === inv.jokerId) : null;
-      if (def) toast(`${def.icon} ${def.name} equipped!`, 't-green');
-    }
-
-    function unequipJoker(slotIndex) {
-      S.equippedJokers[slotIndex] = null;
-      save();
-      renderJokerTray();
+    function goTab(name,btn){
+      goTabRaw(name);
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      if(btn)btn.classList.add('active');
+      if(name==='missions')renderMissions();
+      if(name==='stats')renderStats();
+      if(name==='forge')renderForge();
+      if(name==='map'&&S.run)renderMap();
+      if(name==='home')renderHome();
     }
 
     // ═══════════════════════════════════════════════
-    // HAND SUGGESTIONS
+    // TOAST / PARTICLES / SFX
     // ═══════════════════════════════════════════════
-    function renderHandSuggestions() {
-      const wrap = document.getElementById('hand-suggestions');
-      if (!wrap) return;
-      wrap.innerHTML = '';
-      if (evalDone || pendingCards.length < 5) return;
-      const combos = getCombinations(pendingCards, 5);
-      const seen = new Set();
-      const best = [];
-      combos.forEach(combo => {
-        const name = classifyHandWithWilds(combo);
-        if (!seen.has(name)) {
-          seen.add(name);
-          const reward = (HAND_REWARDS[name] || 50) + getChipBonus(combo);
-          const tier = HAND_TIER[name] || 1;
-          best.push({ name, reward, tier, combo });
-        }
-      });
-      best.sort((a, b) => b.reward - a.reward);
-      best.forEach(({ name, reward, tier, combo }) => {
-        const btn = document.createElement('button');
-        const tierCls = tier === 3 ? 'tier3' : tier === 2 ? 'tier2' : '';
-        btn.className = `hand-suggest-btn ${tierCls}`;
-        btn.innerHTML = `${name} <span class="suggest-reward">+${reward.toLocaleString()} 💎</span>`;
-        btn.onclick = () => autoSelectHand(combo);
-        wrap.appendChild(btn);
-      });
+    function toast(msg,cls='t-blue'){
+      const stack=document.getElementById('toast-stack');const el=document.createElement('div');
+      el.className=`toast ${cls}`;el.textContent=msg;stack.appendChild(el);
+      requestAnimationFrame(()=>{requestAnimationFrame(()=>el.classList.add('show'));});
+      setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400);},3000);
     }
 
-    function getCombinations(arr, k) {
-      if (k === arr.length) return [arr];
-      if (k === 1) return arr.map(x => [x]);
-      const result = [];
-      for (let i = 0; i <= arr.length - k; i++) {
-        getCombinations(arr.slice(i + 1), k - 1).forEach(rest => result.push([arr[i], ...rest]));
-      }
-      return result;
-    }
-
-    function autoSelectHand(combo) {
-      if (evalDone) return;
-      selectedCards = [...combo];
-      document.querySelectorAll('#pull-stage-cards .card').forEach(el => {
-        const id = parseFloat(el.dataset.id);
-        el.classList.toggle('selected', selectedCards.some(c => c.id == id));
-      });
-      renderHandDrop();
-    }
-
-    function updateUI() {
-      updateHeader();
-      updatePity();
-    }
-
-    // ═══════════════════════════════════════════════
-    // BOSS BATTLE
-    // ═══════════════════════════════════════════════
-    function getBossInBattle() {
-      if (!S.bossBattle) return null;
-      return BOSSES.find(b => b.id === S.bossBattle.bossId) || null;
-    }
-
-    function startBoss(bossId) {
-      if (S.bossBattle) { toast('Already in a boss battle! Finish it first.', 't-red'); return; }
-      const boss = BOSSES.find(b => b.id === bossId);
-      if (!boss) return;
-      S.bossBattle = {
-        bossId,
-        hp: boss.hp,
-        maxHp: boss.hp,
-        round: 1,
-        maxRounds: boss.rounds,
-        handHistory: [],
-        started: Date.now()
-      };
-      save();
-      renderBossStatusBar();
-      renderBossPage();
-      toast(`⚔️ Battle started — ${boss.emoji} ${boss.name}!`, 't-red');
-    }
-
-    function processBossDamage(handName, reward) {
-      if (!S.bossBattle) return;
-      const boss = getBossInBattle();
-      if (!boss) return;
-      const b = S.bossBattle;
-
-      // Lich gimmick: same hand type twice heals 300 HP
-      if (boss.id === 'lich' && b.handHistory.length > 0) {
-        const lastHand = b.handHistory[b.handHistory.length - 1].hand;
-        if (lastHand === handName) {
-          b.hp = Math.min(b.maxHp, b.hp + 300);
-          b.handHistory.push({ hand: handName, dmg: 0, heal: 300 });
-          save();
-          renderBossStatusBar();
-          renderBossPage();
-          toast(`💀 Lich healed 300 HP — same hand used twice!`, 't-red');
-          checkBossEnd();
-          return;
-        }
-      }
-
-      let dmg = boss.gimmick(handName, reward);
-      b.hp = Math.max(0, b.hp - dmg);
-      b.handHistory.push({ hand: handName, dmg, heal: 0 });
-      save();
-      renderBossStatusBar();
-      renderBossPage();
-
-      if (dmg === 0) {
-        toast(`🛡️ ${boss.name} blocked — hand too weak!`, 't-red');
-      } else {
-        toast(`⚔️ Dealt ${dmg.toLocaleString()} dmg to ${boss.name}!`, 't-blue');
-      }
-      checkBossEnd();
-    }
-
-    function checkBossEnd() {
-      if (!S.bossBattle) return;
-      const b = S.bossBattle;
-      const defeated = b.hp <= 0;
-      const outOfRounds = b.handHistory.length >= b.maxRounds;
-      if (defeated) endBossBattle(true);
-      else if (outOfRounds) endBossBattle(false);
-    }
-
-    function endBossBattle(won) {
-      if (!S.bossBattle) return;
-      const boss = getBossInBattle();
-      let gemsGained = 0;
-      let shardsGained = 0;
-
-      if (won) {
-        gemsGained = boss.reward.gems;
-        shardsGained = boss.reward.shards;
-        S.gems += gemsGained;
-        S.jokerShards = (S.jokerShards || 0) + shardsGained;
-        spawnParticles(20);
-        setTimeout(() => toast(`🏆 ${boss.name} DEFEATED! +${gemsGained.toLocaleString()} 💎 +${shardsGained} ⚗️`, 't-gold'), 200);
-      } else {
-        if (boss.id === 'dragon') {
-          const penalty = Math.min(S.gems, 2000);
-          S.gems -= penalty;
-          gemsGained = -penalty;
-          setTimeout(() => toast(`🐉 Dragon punishes failure! -${penalty} 💎`, 't-red'), 200);
-        } else {
-          gemsGained = boss.consolation;
-          S.gems += gemsGained;
-          setTimeout(() => toast(`❌ Defeated by ${boss.name}... +${gemsGained} 💎 consolation`, 't-red'), 200);
-        }
-      }
-
-      if (!S.bossHistory) S.bossHistory = [];
-      S.bossHistory.unshift({ bossId: boss.id, won, gemsGained, shardsGained, rounds: S.bossBattle.handHistory.length, ts: Date.now() });
-      if (S.bossHistory.length > 20) S.bossHistory.pop();
-
-      S.bossBattle = null;
-      save();
-      updateHeader();
-      renderBossStatusBar();
-      renderBossPage();
-    }
-
-    function forfeitBattle() {
-      if (!S.bossBattle) return;
-      endBossBattle(false);
-    }
-
-    function renderBossStatusBar() {
-      const el = document.getElementById('boss-status-bar');
-      if (!el) return;
-      if (!S.bossBattle) { el.style.display = 'none'; el.innerHTML = ''; return; }
-      const boss = getBossInBattle();
-      const b = S.bossBattle;
-      const hpPct = Math.round(b.hp / b.maxHp * 100);
-      const roundsDone = b.handHistory.length;
-      const dmgLog = b.handHistory.map(h => {
-        if (h.heal > 0) return `<span class="boss-dmg-chip heal">+${h.heal} HP</span>`;
-        if (h.dmg === 0) return `<span class="boss-dmg-chip blocked">Blocked</span>`;
-        return `<span class="boss-dmg-chip hit">-${h.dmg.toLocaleString()}</span>`;
-      }).join('');
-      el.style.display = 'block';
-      el.innerHTML = `<div class="boss-status-bar">
-        <div class="boss-status-top">
-          <span class="boss-status-title">${boss.emoji} ${boss.name}</span>
-          <span class="boss-status-round">Round ${Math.min(roundsDone + 1, b.maxRounds)} / ${b.maxRounds}</span>
-          <button class="boss-forfeit" onclick="forfeitBattle()">Forfeit</button>
-        </div>
-        <div class="boss-hp-track"><div class="boss-hp-fill" style="width:${hpPct}%"></div></div>
-        <div class="boss-hp-label"><span>${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()} HP</span><span>${hpPct}%</span></div>
-        <div class="boss-dmg-log">${dmgLog || '<span style="font-size:0.72rem;color:var(--text3)">Evaluate a hand to deal damage</span>'}</div>
-      </div>`;
-    }
-
-    function renderBossPage() {
-      const el = document.getElementById('boss-page-content');
-      if (!el) return;
-      el.innerHTML = '';
-
-      const header = document.createElement('div');
-      header.className = 'boss-page-header';
-      header.innerHTML = `<div class="section-title" style="margin:0">⚔️ Boss Battles</div>
-        <div class="shard-display">⚗️ ${S.jokerShards || 0} Shards</div>`;
-      el.appendChild(header);
-
-      if (S.bossBattle) {
-        const boss = getBossInBattle();
-        const b = S.bossBattle;
-        const hpPct = Math.round(b.hp / b.maxHp * 100);
-        const div = document.createElement('div');
-        div.style.cssText = 'background:var(--bg2);border:2px solid var(--red);border-radius:16px;padding:20px;margin-bottom:24px;text-align:center';
-        div.innerHTML = `<div style="font-size:3rem;margin-bottom:8px">${boss.emoji}</div>
-          <div style="font-weight:800;font-size:1.1rem;margin-bottom:4px;color:var(--red)">${boss.name}</div>
-          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px">⚡ ${boss.desc}</div>
-          <div class="boss-hp-track" style="max-width:320px;margin:0 auto 6px"><div class="boss-hp-fill" style="width:${hpPct}%"></div></div>
-          <div style="font-size:0.75rem;color:var(--text2);margin-bottom:14px">${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()} HP · Round ${b.handHistory.length + 1}/${b.maxRounds}</div>
-          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:16px">Go to Summon tab → pull cards → evaluate hands to deal damage!</div>
-          <button class="boss-forfeit" style="font-size:0.88rem;padding:8px 20px" onclick="forfeitBattle()">Forfeit Battle</button>`;
-        el.appendChild(div);
-      } else {
-        const grid = document.createElement('div');
-        grid.className = 'boss-grid';
-        BOSSES.forEach(boss => {
-          const card = document.createElement('div');
-          card.className = 'boss-card';
-          card.innerHTML = `<div class="boss-art" style="background:${boss.bg}">${boss.emoji}</div>
-            <div class="boss-info">
-              <div class="boss-name" style="color:${boss.color}">${boss.name}</div>
-              <div class="boss-stats-row"><span>❤️ ${boss.hp.toLocaleString()} HP</span><span>🕐 ${boss.rounds} rounds</span></div>
-              <div class="boss-gimmick-text">⚡ ${boss.desc}</div>
-              <div class="boss-reward-text">🏆 Win: ${boss.reward.gems.toLocaleString()} 💎 + ${boss.reward.shards} ⚗️ shards</div>
-              <button class="boss-challenge-btn" style="background:${boss.color}" onclick="startBoss('${boss.id}')">⚔️ Challenge</button>
-            </div>`;
-          grid.appendChild(card);
-        });
-        el.appendChild(grid);
-      }
-
-      if (S.bossHistory && S.bossHistory.length > 0) {
-        const title = document.createElement('div');
-        title.className = 'section-title';
-        title.textContent = 'Battle History';
-        el.appendChild(title);
-        S.bossHistory.slice(0, 10).forEach(h => {
-          const boss = BOSSES.find(b => b.id === h.bossId);
-          if (!boss) return;
-          const item = document.createElement('div');
-          item.className = 'boss-history-item';
-          item.innerHTML = `<span class="boss-history-emoji">${boss.emoji}</span>
-            <div class="boss-history-info">
-              <div class="boss-history-result ${h.won ? 'win' : 'loss'}">${h.won ? '🏆 Victory' : '❌ Defeated'} — ${boss.name}</div>
-              <div style="font-size:0.72rem;color:var(--text3)">${new Date(h.ts).toLocaleDateString()} · ${h.won ? `+${h.gemsGained.toLocaleString()} 💎 +${h.shardsGained} ⚗️` : `${h.gemsGained >= 0 ? '+' : ''}${h.gemsGained} 💎`}</div>
-            </div>`;
-          el.appendChild(item);
-        });
+    function spawnParticles(n=12){
+      const icons=['✨','⭐','🌟','💫','🔮','💎','✦'];
+      for(let i=0;i<n;i++){
+        const p=document.createElement('div');p.className='particle';
+        p.textContent=icons[Math.floor(Math.random()*icons.length)];
+        p.style.left=(15+Math.random()*70)+'vw';p.style.top=(20+Math.random()*60)+'vh';
+        const dx=(Math.random()-0.5)*200,dy=-(50+Math.random()*150);
+        p.style.setProperty('--dx',dx+'px');p.style.setProperty('--dy',dy+'px');
+        p.style.animationDelay=(Math.random()*0.3)+'s';
+        document.body.appendChild(p);setTimeout(()=>p.remove(),1200);
       }
     }
 
-    function craftJoker(jokerId) {
-      const joker = JOKERS.find(j => j.id === jokerId);
-      if (!joker) return;
-      const cost = JOKER_CRAFT_COSTS[joker.rarity] || 99;
-      if ((S.jokerShards || 0) < cost) { toast(`Need ${cost} ⚗️ Shards (have ${S.jokerShards || 0})`, 't-red'); return; }
-      S.jokerShards -= cost;
-      const uid = 'j_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-      S.jokerInventory.push({ uid, jokerId });
-      save();
-      updateHeader();
-      renderShop();
-      renderJokerTray();
-      toast(`Crafted ${joker.icon} ${joker.name}!`, 't-gold');
-    }
-
-    // ═══════════════════════════════════════════════
-    // TABS
-    // ═══════════════════════════════════════════════
-    function goTab(name, btn) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('page-' + name).classList.add('active');
-      btn.classList.add('active');
-
-      if (name === 'inventory') renderInventory();
-      if (name === 'stats') renderStats();
-      if (name === 'missions') renderMissions();
-      if (name === 'shop') renderShop();
-      if (name === 'boss') renderBossPage();
-    }
-
-    // ═══════════════════════════════════════════════
-    // TOAST
-    // ═══════════════════════════════════════════════
-    function toast(msg, cls = 't-blue') {
-      const stack = document.getElementById('toast-stack');
-      const el = document.createElement('div');
-      el.className = `toast ${cls}`;
-      el.textContent = msg;
-      stack.appendChild(el);
-      requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
-      setTimeout(() => {
-        el.classList.remove('show');
-        setTimeout(() => el.remove(), 400);
-      }, 3000);
-    }
-
-    // ═══════════════════════════════════════════════
-    // PARTICLES
-    // ═══════════════════════════════════════════════
-    function spawnParticles(n = 12) {
-      const icons = ['✨', '⭐', '🌟', '💫', '🔮', '💎', '✦'];
-      for (let i = 0; i < n; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.textContent = icons[Math.floor(Math.random() * icons.length)];
-        p.style.left = (15 + Math.random() * 70) + 'vw';
-        p.style.top = (20 + Math.random() * 60) + 'vh';
-        p.style.animationDelay = (Math.random() * 0.8) + 's';
-        p.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 2500);
-      }
-    }
-
-    // ═══════════════════════════════════════════════
-    // AUDIO (Web Audio API - minimal sfx)
-    // ═══════════════════════════════════════════════
-    let audioCtx = null;
-    function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
-
-    function playTone(freq, type = 'sine', dur = 0.15, vol = 0.15) {
-      try {
-        const ctx = getAudio();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = type; osc.frequency.value = freq;
-        gain.gain.setValueAtTime(vol, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-        osc.start(); osc.stop(ctx.currentTime + dur);
-      } catch (e) { }
-    }
-
-    function sfxPull() { playTone(440, 'triangle', 0.2, 0.1); setTimeout(() => playTone(660, 'triangle', 0.15, 0.08), 100); }
-    function sfxFive() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.3, 0.12), i * 80)); }
-    function sfxReward() { playTone(784, 'sine', 0.25, 0.1); setTimeout(() => playTone(1047, 'sine', 0.2, 0.1), 120); }
+    let audioCtx=null;
+    function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+    function playTone(freq,type,vol,dur){try{const ctx=getCtx();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=freq;osc.type=type;gain.gain.setValueAtTime(vol,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
+    function sfxReward(){playTone(784,'sine',0.25,0.1);setTimeout(()=>playTone(1047,'sine',0.2,0.1),120);}
 
     // ═══════════════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════════════
     checkDailyReset();
-    renderBanners();
-    updateUI();
+    updateHeader();
+    renderHome();
     renderMissions();
-    renderShop();
-    renderJokerTray();
-    renderBossStatusBar();
+    if(S.run){setMainTab('🗺️ Map','map');renderMap();goTabRaw('map');document.getElementById('tab-main').classList.add('active');document.querySelectorAll('.tab').forEach((t,i)=>{if(i>0)t.classList.remove('active');});}
 
-    if (S.lastPull && S.lastPull.length > 0) {
-      pendingCards = S.lastPull;
-      renderPullStage(S.lastPull);
-      showPokerWrap(true);
-      if (S.handEvaluated) document.getElementById('eval-btn').classList.remove('show');
-    }
-
-    // wire up audio to pull buttons (needs user gesture to unlock AudioContext)
-    document.getElementById('btn5').addEventListener('mousedown', sfxPull);
-    document.getElementById('btn10').addEventListener('mousedown', sfxPull);
   </script>
 </body>
 
