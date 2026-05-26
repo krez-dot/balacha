@@ -1,0 +1,4097 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AstralDraw — Gacha Poker</title>
+  <style>
+    :root {
+      --bg: #080b14;
+      --bg2: #0e1220;
+      --bg3: #161c30;
+      --bg4: #1e2540;
+      --border: #252d4a;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --gold: #f0b429;
+      --gold2: #fde68a;
+      --purple: #9333ea;
+      --purple2: #c084fc;
+      --blue: #3b82f6;
+      --blue2: #93c5fd;
+      --green: #10b981;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --hearts: #f87171;
+      --diamonds: #fb923c;
+      --clubs: #a3e635;
+      --spades: #60a5fa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BG ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(108, 99, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(147, 51, 234, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(240, 180, 41, 0.03) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(8, 11, 20, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 60px;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .logo-icon {
+      font-size: 1.4rem
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      background: linear-gradient(90deg, #a78bfa, #f0b429, #a78bfa);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: logoBg 4s linear infinite;
+    }
+
+    @keyframes logoBg {
+      0% {
+        background-position: 0%
+      }
+
+      100% {
+        background-position: 200%
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0
+    }
+
+    .gem-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 20px;
+      white-space: nowrap
+    }
+
+    .gem-icon {
+      font-size: 1.1rem
+    }
+
+    .gem-count {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--gold)
+    }
+
+    .gem-anim {
+      animation: gemBump 0.4s ease
+    }
+
+    @keyframes gemBump {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.25)
+      }
+    }
+
+    .daily-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--green);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--green);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .daily-btn:hover {
+      background: rgba(16, 185, 129, 0.25)
+    }
+
+    .daily-btn:disabled {
+      opacity: 0.4;
+      cursor: default
+    }
+
+    /* ── TABS ── */
+    #tabs {
+      display: flex;
+      gap: 2px;
+      padding: 0 28px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
+    }
+
+    .tab {
+      padding: 12px 22px;
+      border: none;
+      background: none;
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .tab:hover {
+      color: var(--text2)
+    }
+
+    .tab.active {
+      color: var(--accent2);
+      border-bottom-color: var(--accent)
+    }
+
+    /* ── PAGES ── */
+    .page {
+      display: none;
+      padding: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* ── BANNERS ── */
+    .banner-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px
+    }
+
+    .banner-card {
+      flex-shrink: 0;
+      width: 260px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+    }
+
+    .banner-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5)
+    }
+
+    .banner-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(108, 99, 255, 0.4)
+    }
+
+    .banner-art {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-art::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+    }
+
+    .banner-info {
+      background: var(--bg3);
+      padding: 12px 14px
+    }
+
+    .banner-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 2px
+    }
+
+    .banner-sub {
+      font-size: 0.75rem;
+      color: var(--text2)
+    }
+
+    .banner-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      border-radius: 10px;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    /* ── PITY BAR ── */
+    .pity-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .pity-top {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 10px
+    }
+
+    .pity-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px
+    }
+
+    .pity-stat-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em
+    }
+
+    .pity-stat-value {
+      font-size: 1.05rem;
+      font-weight: 800
+    }
+
+    .col-gold {
+      color: var(--gold)
+    }
+
+    .col-purple {
+      color: var(--purple2)
+    }
+
+    .col-blue {
+      color: var(--blue2)
+    }
+
+    .col-green {
+      color: var(--green)
+    }
+
+    .col-red {
+      color: var(--red)
+    }
+
+    .pity-bar-wrap {
+      flex: 1;
+      min-width: 180px
+    }
+
+    .pity-bar-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between
+    }
+
+    .pity-track {
+      height: 6px;
+      background: var(--bg4);
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .pity-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--purple), var(--gold));
+      transition: width 0.6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .guarantee-badge {
+      background: rgba(240, 180, 41, 0.15);
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-left: auto;
+    }
+
+    /* ── PULL BUTTONS ── */
+    .pull-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 24px;
+      flex-wrap: wrap
+    }
+
+    .pull-btn {
+      flex: 1;
+      min-width: 180px;
+      padding: 0;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pull-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+      filter: grayscale(0.5)
+    }
+
+    .pull-btn-inner {
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pull-btn-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0
+    }
+
+    .pull-btn-text {
+      text-align: left
+    }
+
+    .pull-btn-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+      display: block
+    }
+
+    .pull-btn-cost {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      color: #fff;
+      display: block;
+      margin-top: 2px
+    }
+
+    .pull-btn-shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.12) 50%, transparent 60%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .pull-btn:hover:not(:disabled) .pull-btn-shine {
+      transform: translateX(100%)
+    }
+
+    .pull-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5)
+    }
+
+    .pull-btn:active:not(:disabled) {
+      transform: translateY(-1px)
+    }
+
+    .btn-single {
+      background: linear-gradient(135deg, #1e3058, #2563eb)
+    }
+
+    .btn-multi {
+      background: linear-gradient(135deg, #2d1458, #7c3aed)
+    }
+
+    .btn-ten {
+      background: linear-gradient(135deg, #4a1500, #c2410c)
+    }
+
+    /* ── PULL STAGE ── */
+    .pull-stage {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      min-height: 220px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .stage-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .cards-flex {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 86px;
+      height: 128px;
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.04)
+    }
+
+    .card.selected {
+      transform: translateY(-10px) scale(1.06)
+    }
+
+    .card-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Rarity styles */
+    .card.r3 .card-body {
+      background: linear-gradient(160deg, #101c30, #0a1420);
+      border: 1.5px solid #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(59, 130, 246, 0.15);
+    }
+
+    .card.r4 .card-body {
+      background: linear-gradient(160deg, #1a0e30, #120920);
+      border: 1.5px solid #9333ea;
+      box-shadow: 0 0 14px rgba(147, 51, 234, 0.45), inset 0 1px 0 rgba(192, 132, 252, 0.2);
+    }
+
+    .card.r5 .card-body {
+      background: linear-gradient(160deg, #1e1400, #100c00);
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 0 1px rgba(240, 180, 41, 0.3), 0 0 20px rgba(240, 180, 41, 0.5);
+      animation: fiveShimmer 2.5s ease-in-out infinite;
+    }
+
+    @keyframes fiveShimmer {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 1px rgba(240, 180, 41, 0.3), 0 0 20px rgba(240, 180, 41, 0.5)
+      }
+
+      50% {
+        box-shadow: 0 0 0 2px rgba(240, 180, 41, 0.6), 0 0 40px rgba(240, 180, 41, 0.8), 0 0 60px rgba(240, 180, 41, 0.2)
+      }
+    }
+
+    .card.selected.r3 .card-body {
+      border-color: #22d3ee;
+      box-shadow: 0 0 16px rgba(34, 211, 238, 0.5)
+    }
+
+    .card.selected.r4 .card-body {
+      border-color: #e879f9;
+      box-shadow: 0 0 20px rgba(232, 121, 249, 0.6)
+    }
+
+    .card.selected.r5 .card-body {
+      border-color: #fde68a;
+      box-shadow: 0 0 0 2px rgba(253, 230, 138, 0.8), 0 0 30px rgba(253, 230, 138, 0.6)
+    }
+
+    /* selected ring */
+    .card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--green);
+      font-size: 0.65rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 5;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    /* card flip animation */
+    @keyframes cardReveal {
+      0% {
+        opacity: 0;
+        transform: rotateY(-90deg) scale(0.8)
+      }
+
+      60% {
+        transform: rotateY(8deg) scale(1.05)
+      }
+
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) scale(1)
+      }
+    }
+
+    .card.revealing {
+      animation: cardReveal 0.5s cubic-bezier(.34, 1.56, .64, 1) both
+    }
+
+    /* five star burst */
+    @keyframes fiveBurst {
+      0% {
+        opacity: 0;
+        transform: rotateY(-90deg) scale(0.6)
+      }
+
+      40% {
+        transform: rotateY(10deg) scale(1.15)
+      }
+
+      60% {
+        transform: rotateY(-5deg) scale(1.1)
+      }
+
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) scale(1)
+      }
+    }
+
+    .card.r5.revealing {
+      animation: fiveBurst 0.7s cubic-bezier(.34, 1.56, .64, 1) both
+    }
+
+    /* SVG card art */
+    .card-svg {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0
+    }
+
+    .card-suit-icon {
+      font-size: 1.5rem;
+      line-height: 1
+    }
+
+    .card-val {
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: -0.02em
+    }
+
+    .card-stars {
+      font-size: 0.5rem;
+      letter-spacing: 1.5px;
+      margin-top: 1px
+    }
+
+    .card-corner-tl {
+      position: absolute;
+      top: 5px;
+      left: 6px;
+      font-size: 0.65rem;
+      font-weight: 900;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .card-corner-br {
+      position: absolute;
+      bottom: 5px;
+      right: 6px;
+      font-size: 0.65rem;
+      font-weight: 900;
+      line-height: 1.3;
+      text-align: center;
+      transform: rotate(180deg);
+    }
+
+    .suit-h {
+      color: var(--hearts)
+    }
+
+    .suit-d {
+      color: var(--diamonds)
+    }
+
+    .suit-c {
+      color: var(--clubs)
+    }
+
+    .suit-s {
+      color: var(--spades)
+    }
+
+    .wild-badge {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.46rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-transform: uppercase;
+      background: rgba(240, 180, 41, 0.15);
+      border: 1px solid rgba(240, 180, 41, 0.5);
+      border-radius: 3px;
+      padding: 1px 4px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* card shimmer overlay for 5* */
+    .card-shimmer {
+      position: absolute;
+      inset: 0;
+      border-radius: 11px;
+      background: linear-gradient(105deg, transparent 25%, rgba(255, 215, 0, 0.08) 50%, transparent 75%);
+      background-size: 200%;
+      animation: shimmerMove 3s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmerMove {
+      0% {
+        background-position: 200%
+      }
+
+      100% {
+        background-position: -200%
+      }
+    }
+
+    /* rarity label strip at top */
+    .rarity-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .r3 .rarity-strip {
+      background: linear-gradient(90deg, #2563eb, #93c5fd)
+    }
+
+    .r4 .rarity-strip {
+      background: linear-gradient(90deg, #7c3aed, #c084fc)
+    }
+
+    .r5 .rarity-strip {
+      background: linear-gradient(90deg, #b45309, #f0b429, #fde68a, #f0b429, #b45309);
+      background-size: 200%;
+      animation: stripFlow 2s linear infinite
+    }
+
+    @keyframes stripFlow {
+      0% {
+        background-position: 0%
+      }
+
+      100% {
+        background-position: 200%
+      }
+    }
+
+    /* ── POKER SECTION ── */
+    .poker-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .poker-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .poker-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent2)
+    }
+
+    .poker-hint {
+      font-size: 0.8rem;
+      color: var(--text2)
+    }
+
+    .hand-drop {
+      background: var(--bg3);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 120px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s;
+      margin-bottom: 14px;
+    }
+
+    /* smaller cards inside the hand-drop so all 5 fit */
+    .hand-drop .card {
+      width: 68px;
+      height: 102px;
+      flex-shrink: 0;
+    }
+
+    .hand-drop.ready {
+      border-color: var(--green);
+      background: rgba(16, 185, 129, 0.05)
+    }
+
+    .hand-placeholder {
+      font-size: 0.85rem;
+      color: var(--text3)
+    }
+
+    .eval-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #065f46, #10b981);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .eval-btn.show {
+      display: block
+    }
+
+    .eval-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4)
+    }
+
+    .eval-btn-shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+      transform: translateX(-100%);
+      transition: transform 0.5s;
+    }
+
+    .eval-btn:hover .eval-btn-shine {
+      transform: translateX(100%)
+    }
+
+    .hand-result {
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-align: center;
+      display: none;
+      animation: resultPop 0.4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes resultPop {
+      0% {
+        transform: scale(0.8);
+        opacity: 0
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .hand-result.show {
+      display: block
+    }
+
+    .hand-result.tier1 {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid #3b82f6;
+      color: var(--blue2)
+    }
+
+    .hand-result.tier2 {
+      background: rgba(147, 51, 234, 0.15);
+      border: 1px solid #9333ea;
+      color: var(--purple2)
+    }
+
+    .hand-result.tier3 {
+      background: rgba(240, 180, 41, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      animation: resultPop 0.4s cubic-bezier(.34, 1.56, .64, 1), resultGlow 1.5s ease-in-out infinite
+    }
+
+    @keyframes resultGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 10px rgba(240, 180, 41, 0.3)
+      }
+
+      50% {
+        box-shadow: 0 0 25px rgba(240, 180, 41, 0.7)
+      }
+    }
+
+    /* ── HAND REFERENCE TABLE ── */
+    .hand-table-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px
+    }
+
+    .hand-table {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px
+    }
+
+    .ht-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 0.83rem;
+    }
+
+    .ht-name {
+      font-weight: 700
+    }
+
+    .ht-reward {
+      color: var(--gold);
+      font-weight: 800
+    }
+
+    /* ── CINEMATIC OVERLAY ── */
+    #cinematic {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    #cinematic.active {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .cin-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 120% 80% at 50% 50%, #1a0a30 0%, #000 70%);
+      animation: cinPulse 3s ease-in-out infinite;
+    }
+
+    /* swipe hint gradient on mobile — fades right edge of cards row */
+    .cin-scroll-hint {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 48px;
+      background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.85));
+      pointer-events: none;
+      z-index: 3;
+      display: none;
+    }
+
+    @keyframes cinPulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.7
+      }
+    }
+
+    .cin-cards-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 40px;
+    }
+
+    .cin-card {
+      width: 110px;
+      height: 162px;
+      border-radius: 14px;
+      opacity: 0;
+      transform: translateY(60px) scale(0.7) rotateZ(-5deg);
+      transition: all 0.5s cubic-bezier(.34, 1.36, .64, 1);
+      cursor: pointer;
+    }
+
+    .cin-card.revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotateZ(0)
+    }
+
+    .cin-card .card-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .cin-skip {
+      position: absolute;
+      bottom: 32px;
+      right: 32px;
+      z-index: 5;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+
+    .cin-skip:hover {
+      background: rgba(255, 255, 255, 0.2)
+    }
+
+    .cin-title {
+      position: relative;
+      z-index: 2;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 8px;
+    }
+
+    .cin-flash {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    .cin-flash.pop {
+      animation: flashPop 0.4s ease-out forwards
+    }
+
+    @keyframes flashPop {
+      0% {
+        opacity: 0.9
+      }
+
+      100% {
+        opacity: 0
+      }
+    }
+
+    /* ── SHOP ── */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px
+    }
+
+    .shop-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .shop-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4)
+    }
+
+    .shop-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px
+    }
+
+    .shop-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+
+    .shop-price {
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 700
+    }
+
+    .shop-desc {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-top: 4px
+    }
+
+    /* ── INVENTORY ── */
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .pill {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .pill:hover {
+      color: var(--text2)
+    }
+
+    .pill.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff
+    }
+
+    .inv-count {
+      font-size: 0.8rem;
+      color: var(--text2)
+    }
+
+    .inv-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px
+    }
+
+    .stat-tile {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .st-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px
+    }
+
+    .st-val {
+      font-size: 1.9rem;
+      font-weight: 900
+    }
+
+    .history-list {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .hist-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .hist-item:last-child {
+      border-bottom: none
+    }
+
+    .hist-hand {
+      font-weight: 700
+    }
+
+    .hist-reward {
+      color: var(--gold);
+      font-weight: 700
+    }
+
+    .hist-time {
+      font-size: 0.75rem;
+      color: var(--text3)
+    }
+
+    /* ── DAILY MISSIONS ── */
+    .mission-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 24px
+    }
+
+    .mission {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mission.done {
+      opacity: 0.5;
+      filter: grayscale(0.5)
+    }
+
+    .mission-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0
+    }
+
+    .mission-info {
+      flex: 1
+    }
+
+    .mission-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 2px
+    }
+
+    .mission-prog {
+      font-size: 0.78rem;
+      color: var(--text2)
+    }
+
+    .mission-reward {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 0.9rem;
+      white-space: nowrap
+    }
+
+    .mission-bar {
+      height: 4px;
+      background: var(--bg4);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden
+    }
+
+    .mission-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 0.5s
+    }
+
+    .claim-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, #065f46, #10b981);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .claim-btn:hover {
+      transform: scale(1.05)
+    }
+
+    .claim-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      transform: none
+    }
+
+    /* ── TOAST ── */
+    #toast-stack {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none
+    }
+
+    .toast {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 0.875rem;
+      max-width: 300px;
+      opacity: 0;
+      transform: translateX(40px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0)
+    }
+
+    .toast.t-gold {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    .toast.t-green {
+      border-color: var(--green);
+      color: var(--green)
+    }
+
+    .toast.t-blue {
+      border-color: var(--blue2);
+      color: var(--blue2)
+    }
+
+    .toast.t-red {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    /* ── PARTICLES ── */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.1rem;
+      z-index: 800;
+      animation: particleFly 1.8s ease-out forwards;
+    }
+
+    @keyframes particleFly {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1)
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-160px) rotate(720deg) scale(0.4)
+      }
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 56px 24px;
+      color: var(--text3)
+    }
+
+    .empty-ico {
+      font-size: 3rem;
+      margin-bottom: 12px
+    }
+
+    /* ── HAND SUGGESTIONS ── */
+    .hand-suggestions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .hand-suggest-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .hand-suggest-btn:hover {
+      border-color: var(--accent);
+      background: rgba(108, 99, 255, 0.1);
+      transform: translateY(-1px)
+    }
+
+    .hand-suggest-btn.tier3 {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(240, 180, 41, 0.08)
+    }
+
+    .hand-suggest-btn.tier3:hover {
+      background: rgba(240, 180, 41, 0.15)
+    }
+
+    .hand-suggest-btn.tier2 {
+      border-color: var(--purple2);
+      color: var(--purple2);
+      background: rgba(147, 51, 234, 0.08)
+    }
+
+    .hand-suggest-btn.tier2:hover {
+      background: rgba(147, 51, 234, 0.15)
+    }
+
+    .suggest-reward {
+      font-size: 0.72rem;
+      opacity: 0.7;
+      font-weight: 600
+    }
+
+    /* ── JOKER SECTION ── */
+    .joker-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .joker-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px
+    }
+
+    .joker-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #22c55e;
+      text-transform: uppercase;
+      letter-spacing: 0.08em
+    }
+
+    .joker-section-sub {
+      font-size: 0.72rem;
+      color: var(--text3)
+    }
+
+    .joker-slots {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .joker-slot {
+      flex: 1;
+      min-width: 100px;
+      min-height: 88px;
+      border-radius: 12px;
+      border: 2px dashed var(--border);
+      background: var(--bg4);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 8px;
+      position: relative;
+    }
+
+    .joker-slot:hover {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.06)
+    }
+
+    .joker-slot.filled {
+      border-style: solid;
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.08)
+    }
+
+    .joker-slot-icon {
+      font-size: 1.5rem;
+      line-height: 1
+    }
+
+    .joker-slot-name {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.2
+    }
+
+    .joker-slot-desc {
+      font-size: 0.58rem;
+      color: var(--text3);
+      text-align: center;
+      line-height: 1.3;
+      margin-top: 2px
+    }
+
+    .joker-slot-empty {
+      font-size: 0.75rem;
+      color: var(--text3)
+    }
+
+    .joker-remove {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.8);
+      border: none;
+      color: #fff;
+      font-size: 0.65rem;
+      cursor: pointer;
+      line-height: 18px;
+      text-align: center;
+      z-index: 5;
+      transition: background 0.2s;
+      padding: 0;
+    }
+
+    .joker-remove:hover {
+      background: var(--red)
+    }
+
+    /* ── JOKER MODAL ── */
+    .joker-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .joker-modal.open {
+      display: flex
+    }
+
+    .joker-modal-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      width: min(480px, 94vw);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .joker-modal-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #22c55e;
+      margin-bottom: 16px
+    }
+
+    .joker-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px
+    }
+
+    .joker-pick-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .joker-pick-item:hover {
+      border-color: #22c55e;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.2)
+    }
+
+    .joker-pick-icon {
+      font-size: 1.8rem;
+      margin-bottom: 6px
+    }
+
+    .joker-pick-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 3px
+    }
+
+    .joker-pick-desc {
+      font-size: 0.66rem;
+      color: var(--text2);
+      line-height: 1.3
+    }
+
+    .joker-pick-count {
+      font-size: 0.65rem;
+      color: var(--text3);
+      margin-top: 3px
+    }
+
+    .joker-modal-cancel {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .joker-modal-cancel:hover {
+      background: var(--bg4)
+    }
+
+    .joker-modal-empty {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text3);
+      font-size: 0.875rem
+    }
+
+    /* ── JOKER CINEMATIC CARD ── */
+    .cin-card.joker-card .card-body {
+      background: linear-gradient(160deg, #0c1f0e, #152d17);
+      border: 2px solid #22c55e;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3), 0 0 22px rgba(34, 197, 94, 0.5);
+      animation: jokerPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes jokerPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3), 0 0 22px rgba(34, 197, 94, 0.4)
+      }
+
+      50% {
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.6), 0 0 44px rgba(34, 197, 94, 0.75)
+      }
+    }
+
+    .joker-cin-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+      margin-bottom: 4px
+    }
+
+    .joker-cin-badge {
+      font-size: 0.55rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: #22c55e;
+      text-transform: uppercase
+    }
+
+    .joker-cin-name {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #86efac;
+      text-align: center;
+      margin-top: 3px
+    }
+
+    .joker-cin-desc {
+      font-size: 0.55rem;
+      color: #4ade80;
+      text-align: center;
+      padding: 0 4px;
+      line-height: 1.3;
+      margin-top: 2px
+    }
+
+    .joker-strip {
+      background: linear-gradient(90deg, #166534, #22c55e, #86efac, #22c55e, #166534);
+      background-size: 200%;
+      animation: stripFlow 2s linear infinite
+    }
+
+    /* ── BOSS BATTLE ── */
+    .boss-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px
+    }
+
+    .boss-card {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: all 0.25s
+    }
+
+    .boss-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5)
+    }
+
+    .boss-art {
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      position: relative
+    }
+
+    .boss-art::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0))
+    }
+
+    .boss-info {
+      background: var(--bg3);
+      padding: 14px 16px
+    }
+
+    .boss-name {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 5px
+    }
+
+    .boss-stats-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 6px;
+      font-size: 0.72rem;
+      color: var(--text3)
+    }
+
+    .boss-gimmick-text {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-bottom: 8px;
+      line-height: 1.4
+    }
+
+    .boss-reward-text {
+      font-size: 0.72rem;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 10px
+    }
+
+    .boss-challenge-btn {
+      width: 100%;
+      padding: 9px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #fff
+    }
+
+    .boss-challenge-btn:hover:not(:disabled) {
+      filter: brightness(1.2)
+    }
+
+    .boss-challenge-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed
+    }
+
+    .boss-status-bar {
+      background: var(--bg2);
+      border: 1px solid var(--red);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.12)
+    }
+
+    .boss-status-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .boss-status-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--red)
+    }
+
+    .boss-status-round {
+      font-size: 0.8rem;
+      color: var(--text2);
+      font-weight: 700
+    }
+
+    .boss-hp-track {
+      height: 10px;
+      background: var(--bg4);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 4px
+    }
+
+    .boss-hp-fill {
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #dc2626, #f97316);
+      transition: width 0.8s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .boss-hp-label {
+      font-size: 0.72rem;
+      color: var(--text2);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px
+    }
+
+    .boss-dmg-log {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      min-height: 26px
+    }
+
+    .boss-dmg-chip {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700
+    }
+
+    .boss-dmg-chip.hit {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: var(--red)
+    }
+
+    .boss-dmg-chip.heal {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--green)
+    }
+
+    .boss-dmg-chip.blocked {
+      background: rgba(100, 116, 139, 0.12);
+      border: 1px solid rgba(100, 116, 139, 0.3);
+      color: var(--text3)
+    }
+
+    .boss-forfeit {
+      padding: 4px 12px;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--red);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s
+    }
+
+    .boss-forfeit:hover {
+      background: rgba(239, 68, 68, 0.1)
+    }
+
+    .boss-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px
+    }
+
+    .shard-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--blue2)
+    }
+
+    .boss-history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 0.85rem
+    }
+
+    .boss-history-emoji {
+      font-size: 1.4rem
+    }
+
+    .boss-history-info {
+      flex: 1
+    }
+
+    .boss-history-result {
+      font-weight: 700
+    }
+
+    .boss-history-result.win {
+      color: var(--green)
+    }
+
+    .boss-history-result.loss {
+      color: var(--red)
+    }
+
+    /* ── JOKER CRAFTING ── */
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px
+    }
+
+    .craft-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s
+    }
+
+    .craft-item:hover:not(.cant-afford) {
+      border-color: var(--blue2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4)
+    }
+
+    .craft-item.cant-afford {
+      opacity: 0.4;
+      cursor: not-allowed
+    }
+
+    .craft-icon {
+      font-size: 1.8rem;
+      margin-bottom: 7px
+    }
+
+    .craft-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 3px
+    }
+
+    .craft-desc {
+      font-size: 0.66rem;
+      color: var(--text2);
+      line-height: 1.3;
+      margin-bottom: 8px
+    }
+
+    .craft-cost {
+      font-size: 0.8rem;
+      color: var(--blue2);
+      font-weight: 800
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:640px) {
+
+      /* Header */
+      #header {
+        padding: 0 14px;
+        height: 54px
+      }
+
+      .logo-text {
+        font-size: 1rem
+      }
+
+      .gem-count {
+        font-size: 0.95rem
+      }
+
+      .daily-btn {
+        font-size: 0.68rem;
+        padding: 5px 10px
+      }
+
+      /* Tabs — scrollable strip */
+      #tabs {
+        padding: 0 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-shrink: 0;
+        white-space: nowrap
+      }
+
+      #tabs::-webkit-scrollbar {
+        display: none
+      }
+
+      .tab {
+        padding: 10px 14px;
+        font-size: 0.78rem;
+        flex-shrink: 0
+      }
+
+      /* Pages */
+      .page {
+        padding: 14px
+      }
+
+      /* Banners */
+      .banner-row {
+        gap: 8px
+      }
+
+      .banner-card {
+        width: 170px;
+        padding: 14px 12px
+      }
+
+      .banner-name {
+        font-size: 0.88rem
+      }
+
+      /* Pity */
+      .pity-section {
+        padding: 12px 14px
+      }
+
+      .pity-top {
+        gap: 12px
+      }
+
+      .pity-stat {
+        min-width: 60px
+      }
+
+      .pity-stat-value {
+        font-size: 0.9rem
+      }
+
+      /* Pull buttons — stack vertically */
+      .pull-row {
+        flex-direction: column;
+        gap: 10px
+      }
+
+      .pull-btn {
+        min-width: unset;
+        width: 100%
+      }
+
+      .pull-btn-inner {
+        padding: 14px 16px
+      }
+
+      /* Pull stage — horizontal scroll so cards never wrap */
+      .pull-stage {
+        padding: 16px
+      }
+
+      .cards-flex {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 8px 4px 12px;
+        scrollbar-width: none;
+      }
+
+      .cards-flex::-webkit-scrollbar {
+        display: none
+      }
+
+      .card {
+        width: 72px;
+        height: 108px;
+        flex-shrink: 0
+      }
+
+      .card-val-top,
+      .card-val-bot {
+        font-size: 0.8rem
+      }
+
+      .card-center {
+        font-size: 1.3rem
+      }
+
+      /* Poker wrap */
+      .poker-wrap {
+        padding: 14px
+      }
+
+      .hand-drop {
+        gap: 6px;
+        padding: 10px;
+        justify-content: flex-start;
+        min-height: 100px
+      }
+
+      .hand-drop .card {
+        width: 54px;
+        height: 81px
+      }
+
+      .poker-hint {
+        font-size: 0.72rem
+      }
+
+      .eval-btn {
+        font-size: 0.85rem;
+        padding: 12px
+      }
+
+      /* Hand suggestions — correct class name */
+      .hand-suggestions {
+        gap: 6px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px
+      }
+
+      .hand-suggest-btn {
+        font-size: 0.68rem;
+        padding: 5px 10px;
+        flex-shrink: 0;
+        white-space: nowrap
+      }
+
+      /* Joker slots — 3 per row */
+      .joker-slots {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .joker-slot {
+        min-width: unset;
+        min-height: 80px
+      }
+
+      .joker-slot-icon {
+        font-size: 1.3rem
+      }
+
+      /* Joker modal */
+      .joker-modal-box {
+        width: 96vw;
+        max-height: 80vh;
+        padding: 16px
+      }
+
+      .joker-modal-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      /* Cinematic — top-anchored layout, cards fill space */
+      #cinematic {
+        justify-content: flex-start;
+        align-items: stretch
+      }
+
+      .cin-title {
+        font-size: 1.3rem;
+        text-align: center;
+        padding: 72px 16px 24px;
+      }
+
+      .cin-cards-row {
+        width: 100%;
+        box-sizing: border-box;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 20px 24px;
+        scrollbar-width: none;
+      }
+
+      .cin-cards-row::-webkit-scrollbar {
+        display: none
+      }
+
+      .cin-card {
+        width: 130px;
+        height: 192px;
+        flex-shrink: 0
+      }
+
+      .cin-skip {
+        bottom: 28px;
+        right: 16px;
+        padding: 12px 28px;
+        font-size: 0.9rem
+      }
+
+      .cin-scroll-hint { display: block }
+
+      /* Shop */
+      .shop-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .shop-item {
+        padding: 12px 10px
+      }
+
+      /* Stats */
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      /* Boss grid — single column */
+      .boss-grid {
+        grid-template-columns: 1fr
+      }
+
+      .boss-art {
+        height: 90px;
+        font-size: 2.8rem
+      }
+
+      .boss-status-bar {
+        padding: 12px 14px
+      }
+
+      .boss-status-top {
+        gap: 6px
+      }
+
+      /* Craft grid — 2 columns */
+      .craft-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      /* Hand table */
+      .hand-table {
+        font-size: 0.8rem
+      }
+
+      /* Inventory grid */
+      .inv-grid {
+        grid-template-columns: repeat(auto-fill, minmax(68px, 1fr))
+      }
+
+      /* Section title */
+      .section-title {
+        font-size: 0.95rem
+      }
+    }
+
+    @media(max-width:380px) {
+      .tab {
+        padding: 9px 11px;
+        font-size: 0.72rem
+      }
+
+      .card {
+        width: 64px;
+        height: 96px;
+        flex-shrink: 0
+      }
+
+      .hand-drop .card {
+        width: 48px;
+        height: 72px
+      }
+
+      .cin-card {
+        width: 80px;
+        height: 118px
+      }
+
+      .joker-modal-grid {
+        grid-template-columns: 1fr
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr
+      }
+
+      .shop-grid {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- JOKER PICKER MODAL -->
+  <div class="joker-modal" id="joker-modal">
+    <div class="joker-modal-box">
+      <div class="joker-modal-title">🃏 Equip Joker</div>
+      <div class="joker-modal-grid" id="joker-modal-grid"></div>
+      <button class="joker-modal-cancel" onclick="closeJokerPicker()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- CINEMATIC PULL OVERLAY -->
+  <div id="cinematic">
+    <div class="cin-bg"></div>
+    <div class="cin-flash" id="cin-flash"></div>
+    <div class="cin-title" id="cin-title">SUMMONING</div>
+    <div style="position:relative;width:100%">
+      <div class="cin-cards-row" id="cin-cards-row"></div>
+      <div class="cin-scroll-hint" id="cin-scroll-hint"></div>
+    </div>
+    <button class="cin-skip" id="cin-skip" onclick="skipCinematic()">Skip</button>
+  </div>
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="logo-wrap">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">ASTRALDRAW</span>
+    </div>
+    <div class="header-right">
+      <button class="daily-btn" id="daily-btn" onclick="claimDaily()">Daily Login</button>
+      <div class="gem-display">
+        <span class="gem-icon">💎</span>
+        <span class="gem-count" id="gem-count">3000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="goTab('pull',this)">✦ Summon</button>
+    <button class="tab" onclick="goTab('missions',this)">📋 Missions</button>
+    <button class="tab" onclick="goTab('shop',this)">🏪 Shop</button>
+    <button class="tab" onclick="goTab('inventory',this)">📦 Collection</button>
+    <button class="tab" onclick="goTab('stats',this)">📊 Stats</button>
+    <button class="tab" onclick="goTab('boss',this)">⚔️ Boss</button>
+  </div>
+
+  <!-- ═══ SUMMON PAGE ═══ -->
+  <div id="page-pull" class="page active">
+
+    <!-- BANNERS -->
+    <div class="banner-row" id="banner-row"></div>
+
+    <!-- PITY -->
+    <div class="pity-section">
+      <div class="pity-top">
+        <div class="pity-stat"><span class="pity-stat-label">Total Pulls</span><span class="pity-stat-value col-blue"
+            id="ps-total">0</span></div>
+        <div class="pity-stat"><span class="pity-stat-label">Pity Count</span><span class="pity-stat-value"
+            id="ps-pity">0</span></div>
+        <div class="pity-stat"><span class="pity-stat-label">Hard Pity In</span><span class="pity-stat-value"
+            id="ps-left">80</span></div>
+        <div class="pity-stat"><span class="pity-stat-label">5★ Rate</span><span class="pity-stat-value col-gold"
+            id="ps-rate">5.0%</span></div>
+        <div class="pity-stat"><span class="pity-stat-label">Last 5★ At</span><span class="pity-stat-value col-gold"
+            id="ps-last5">—</span></div>
+        <div class="pity-bar-wrap">
+          <div class="pity-bar-label">
+            <span>Pity Progress (0 → 80)</span>
+            <span id="ps-pct">0%</span>
+          </div>
+          <div class="pity-track">
+            <div class="pity-fill" id="ps-fill" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="guarantee-badge" id="guarantee-badge" style="display:none">⭐ 5★ Guaranteed!</div>
+      </div>
+    </div>
+
+    <!-- BOSS STATUS BAR (shown during active battle) -->
+    <div id="boss-status-bar" style="display:none"></div>
+
+    <!-- PULL BUTTONS -->
+    <div class="pull-row">
+      <button class="pull-btn btn-single" id="btn5" onclick="startPull(5)">
+        <div class="pull-btn-inner">
+          <span class="pull-btn-icon">🔮</span>
+          <span class="pull-btn-text">
+            <span class="pull-btn-title">Hand Pull ×5</span>
+            <span class="pull-btn-cost">💎 600 Gems — 1 full hand</span>
+          </span>
+        </div>
+        <div class="pull-btn-shine"></div>
+      </button>
+      <button class="pull-btn btn-multi" id="btn10" onclick="startPull(10)">
+        <div class="pull-btn-inner">
+          <span class="pull-btn-icon">✨</span>
+          <span class="pull-btn-text">
+            <span class="pull-btn-title">10× Summon</span>
+            <span class="pull-btn-cost">💎 1600 Gems — pick your best hand</span>
+          </span>
+        </div>
+        <div class="pull-btn-shine"></div>
+      </button>
+    </div>
+
+    <!-- PULL STAGE -->
+    <div class="pull-stage">
+      <div class="stage-label">Latest Summon Results — tap cards to select for poker hand</div>
+      <div class="cards-flex" id="pull-stage-cards">
+        <div class="empty">
+          <div class="empty-ico">🔮</div>
+          <p>Summon to begin your journey</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- POKER HAND -->
+    <div class="poker-wrap" id="poker-wrap" style="display:none">
+      <div class="poker-header">
+        <span class="poker-title">♠ Poker Hand</span>
+        <span class="poker-hint" id="poker-hint-text">Select exactly 5 cards to evaluate</span>
+      </div>
+      <div class="hand-suggestions" id="hand-suggestions"></div>
+      <div class="hand-drop" id="hand-drop">
+        <span class="hand-placeholder">Your selected cards appear here</span>
+      </div>
+      <div class="hand-result" id="hand-result"></div>
+      <button class="eval-btn" id="eval-btn" onclick="evalHand()">
+        ♦ Evaluate Hand &amp; Claim Reward
+        <div class="eval-btn-shine"></div>
+      </button>
+    </div>
+
+    <!-- JOKER SLOTS -->
+    <div class="joker-section">
+      <div class="joker-section-header">
+        <span class="joker-section-title">🃏 Joker Slots</span>
+        <span class="joker-section-sub">Equip jokers to boost hand rewards — drop from any pull</span>
+      </div>
+      <div class="joker-slots" id="joker-slots"></div>
+    </div>
+
+    <!-- HAND TABLE -->
+    <div class="hand-table-wrap">
+      <div class="section-title">Poker Rewards</div>
+      <div class="hand-table">
+        <div class="ht-row"><span class="ht-name">High Card</span><span class="ht-reward">+50 💎</span></div>
+        <div class="ht-row"><span class="ht-name">One Pair</span><span class="ht-reward">+150 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Two Pair</span><span class="ht-reward">+300 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Three of a Kind</span><span class="ht-reward">+500 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Straight</span><span class="ht-reward">+750 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Flush</span><span class="ht-reward">+1,000 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Full House</span><span class="ht-reward">+1,500 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Four of a Kind</span><span class="ht-reward">+3,000 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Straight Flush</span><span class="ht-reward">+4,000 💎</span></div>
+        <div class="ht-row"><span class="ht-name">Royal Flush</span><span class="ht-reward">+5,000 💎 + 5★
+            Guaranteed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MISSIONS PAGE ═══ -->
+  <div id="page-missions" class="page">
+    <div class="section-title">Daily Missions</div>
+    <div class="mission-list" id="mission-list"></div>
+    <div class="section-title">Weekly Missions</div>
+    <div class="mission-list" id="weekly-mission-list"></div>
+  </div>
+
+  <!-- ═══ SHOP PAGE ═══ -->
+  <div id="page-shop" class="page">
+    <div class="section-title">Gem Shop</div>
+    <div class="shop-grid" id="shop-grid"></div>
+    <div class="section-title" style="margin-top:20px">Exchange</div>
+    <div class="shop-grid" id="exchange-grid"></div>
+    <div class="section-title" style="margin-top:20px">⚗️ Joker Crafting <span id="shard-count-shop"
+        style="font-size:0.8rem;font-weight:600;color:var(--blue2);margin-left:8px"></span></div>
+    <div style="font-size:0.78rem;color:var(--text2);margin-bottom:12px">Spend Shards earned from boss battles to craft
+      specific jokers</div>
+    <div class="craft-grid" id="craft-grid"></div>
+  </div>
+
+  <!-- ═══ COLLECTION PAGE ═══ -->
+  <div id="page-inventory" class="page">
+    <div class="inv-header">
+      <div class="filter-pills" id="filter-pills"></div>
+      <span class="inv-count" id="inv-count"></span>
+    </div>
+    <div class="inv-grid" id="inv-grid"></div>
+  </div>
+
+  <!-- ═══ STATS PAGE ═══ -->
+  <div id="page-stats" class="page">
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="section-title">Hand History</div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <!-- ═══ BOSS PAGE ═══ -->
+  <div id="page-boss" class="page">
+    <div id="boss-page-content"></div>
+  </div>
+
+  <div id="toast-stack"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════
+    // CONSTANTS
+    // ═══════════════════════════════════════════════
+    const SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+    const SUIT_SYM = { Hearts: '♥', Diamonds: '♦', Clubs: '♣', Spades: '♠' };
+    const SUIT_CLS = { Hearts: 'suit-h', Diamonds: 'suit-d', Clubs: 'suit-c', Spades: 'suit-s' };
+    const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    const V_ORDER = { 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, J: 11, Q: 12, K: 13, A: 14 };
+    const STAR_CHARS = { 3: '★★★', 4: '★★★★', 5: '★★★★★' };
+
+    const HAND_REWARDS = {
+      'Royal Flush': 5000, 'Straight Flush': 4000, 'Four of a Kind': 3000,
+      'Full House': 1500, 'Flush': 1000, 'Straight': 750,
+      'Three of a Kind': 500, 'Two Pair': 300, 'One Pair': 150, 'High Card': 50
+    };
+    const HAND_TIER = {
+      'Royal Flush': 3, 'Straight Flush': 3, 'Four of a Kind': 3,
+      'Full House': 2, 'Flush': 2, 'Straight': 2,
+      'Three of a Kind': 1, 'Two Pair': 1, 'One Pair': 1, 'High Card': 1
+    };
+    const CHIP_VALUES = { 3: 10, 4: 30, 5: 80 };
+    const HAND_ORDER = ['Royal Flush', 'Straight Flush', 'Four of a Kind', 'Full House', 'Flush', 'Straight', 'Three of a Kind', 'Two Pair', 'One Pair', 'High Card'];
+
+    const JOKERS = [
+      {
+        id: 'high_roller', name: 'High Roller', icon: '🎲', rarity: 3, desc: '+250 gems on any hand',
+        apply: (cards, hand, base) => base + 250
+      },
+      {
+        id: 'suit_collector', name: 'Suit Collector', icon: '🎴', rarity: 3, desc: '+150 per unique suit in hand',
+        apply: (cards, hand, base) => base + new Set(cards.map(c => c.suit)).size * 150
+      },
+      {
+        id: 'pair_magnet', name: 'Pair Magnet', icon: '🧲', rarity: 3, desc: '×2 on Two Pair or better',
+        apply: (cards, hand, base) => {
+          const rank = ['High Card', 'One Pair', 'Two Pair', 'Three of a Kind', 'Straight', 'Flush', 'Full House', 'Four of a Kind', 'Straight Flush', 'Royal Flush'];
+          return rank.indexOf(hand) >= 2 ? base * 2 : base;
+        }
+      },
+      {
+        id: 'star_power', name: 'Star Power', icon: '⭐', rarity: 4, desc: '+25% per 5★ card in hand',
+        apply: (cards, hand, base) => { const n = cards.filter(c => c.rarity === 5).length; return n ? Math.floor(base * (1 + n * 0.25)) : base; }
+      },
+      {
+        id: 'gem_thief', name: 'Gem Thief', icon: '💎', rarity: 4, desc: '×1.5 on hands worth 500+ gems',
+        apply: (cards, hand, base) => base >= 500 ? Math.floor(base * 1.5) : base
+      },
+      {
+        id: 'golden_pair', name: 'Golden Pair', icon: '👑', rarity: 4, desc: '×3 on One Pair specifically',
+        apply: (cards, hand, base) => hand === 'One Pair' ? base * 3 : base
+      },
+      {
+        id: 'rainbow', name: 'Rainbow', icon: '🌈', rarity: 5, desc: '+2000 gems — all 4 suits in hand',
+        apply: (cards, hand, base) => new Set(cards.map(c => c.suit)).size === 4 ? base + 2000 : base
+      },
+      {
+        id: 'lucky_joker', name: 'Lucky Joker', icon: '🃏', rarity: 5, desc: '×5 on High Card',
+        apply: (cards, hand, base) => hand === 'High Card' ? base * 5 : base
+      },
+      // ── EXTRA 3★ ──
+      {
+        id: 'straight_shot', name: 'Straight Shot', icon: '🎯', rarity: 3, desc: '+500 on Straight or Straight Flush',
+        apply: (cards, hand, base) => ['Straight', 'Straight Flush'].includes(hand) ? base + 500 : base
+      },
+      {
+        id: 'flush_hunter', name: 'Flush Hunter', icon: '🌊', rarity: 3, desc: '+400 on Flush specifically',
+        apply: (cards, hand, base) => hand === 'Flush' ? base + 400 : base
+      },
+      {
+        id: 'card_sharp', name: 'Card Sharp', icon: '✂️', rarity: 3, desc: '+120 per face card (J/Q/K/A)',
+        apply: (cards, hand, base) => base + cards.filter(c => ['J', 'Q', 'K', 'A'].includes(c.value)).length * 120
+      },
+      {
+        id: 'wild_whisperer', name: 'Wild Whisperer', icon: '🌙', rarity: 3, desc: '+200 per 5★ wild card',
+        apply: (cards, hand, base) => base + cards.filter(c => c.rarity === 5).length * 200
+      },
+      {
+        id: 'penny_pincher', name: 'Penny Pincher', icon: '💵', rarity: 3, desc: '×1.3 on all hands',
+        apply: (cards, hand, base) => Math.floor(base * 1.3)
+      },
+      {
+        id: 'three_magic', name: "Three's Magic", icon: '💫', rarity: 3, desc: '+600 on Three of a Kind or Full House',
+        apply: (cards, hand, base) => ['Three of a Kind', 'Full House'].includes(hand) ? base + 600 : base
+      },
+      // ── EXTRA 4★ ──
+      {
+        id: 'four_leaf', name: 'Four Leaf', icon: '🍀', rarity: 4, desc: '×2 on Four of a Kind',
+        apply: (cards, hand, base) => hand === 'Four of a Kind' ? base * 2 : base
+      },
+      {
+        id: 'full_throttle', name: 'Full Throttle', icon: '🔥', rarity: 4, desc: '+800 on Full House',
+        apply: (cards, hand, base) => hand === 'Full House' ? base + 800 : base
+      },
+      {
+        id: 'ace_hunter', name: 'Ace Hunter', icon: '🗡️', rarity: 4, desc: '+500 if hand contains an Ace',
+        apply: (cards, hand, base) => cards.some(c => c.value === 'A') ? base + 500 : base
+      },
+      {
+        id: 'king_maker', name: 'King Maker', icon: '🤴', rarity: 4, desc: '+600 if hand contains a King',
+        apply: (cards, hand, base) => cards.some(c => c.value === 'K') ? base + 600 : base
+      },
+      {
+        id: 'lucky_sevens', name: 'Lucky Sevens', icon: '7️⃣', rarity: 4, desc: '+777 if any card is a 7',
+        apply: (cards, hand, base) => cards.some(c => c.value === '7') ? base + 777 : base
+      },
+      {
+        id: 'wild_child', name: 'Wild Child', icon: '🌪️', rarity: 4, desc: '×2 if 2+ wild (5★) cards in hand',
+        apply: (cards, hand, base) => cards.filter(c => c.rarity === 5).length >= 2 ? base * 2 : base
+      },
+      // ── EXTRA 5★ ──
+      {
+        id: 'jackpot', name: 'Jackpot', icon: '🎰', rarity: 5, desc: '×2.5 on hands with base reward 1000+ gems',
+        apply: (cards, hand, base) => (HAND_REWARDS[hand] || 0) >= 1000 ? Math.floor(base * 2.5) : base
+      },
+      {
+        id: 'celestial', name: 'Celestial', icon: '🌟', rarity: 5, desc: '+1000 per 5★ card in hand',
+        apply: (cards, hand, base) => base + cards.filter(c => c.rarity === 5).length * 1000
+      },
+      {
+        id: 'void_walker', name: 'Void Walker', icon: '🌑', rarity: 5, desc: 'Hand always pays at least 800 💎',
+        apply: (cards, hand, base) => Math.max(base, 800)
+      },
+      {
+        id: 'jokers_wild', name: "Joker's Wild", icon: '👾', rarity: 5, desc: '×4 on Straight Flush or Royal Flush',
+        apply: (cards, hand, base) => ['Straight Flush', 'Royal Flush'].includes(hand) ? base * 4 : base
+      },
+    ];
+
+    const BOSSES = [
+      {
+        id: 'goblin', name: 'Goblin King', emoji: '👺', hp: 2500, rounds: 5,
+        color: '#16a34a', bg: 'linear-gradient(135deg,#052e16,#166534)',
+        desc: 'Flushes & Straight Flushes deal ×2 damage',
+        reward: { gems: 2000, shards: 1 }, consolation: 200,
+        gimmick: (hand, dmg) => ['Flush', 'Straight Flush', 'Royal Flush'].includes(hand) ? dmg * 2 : dmg
+      },
+      {
+        id: 'golem', name: 'Iron Golem', emoji: '🗿', hp: 5000, rounds: 5,
+        color: '#6b7280', bg: 'linear-gradient(135deg,#111827,#374151)',
+        desc: 'Pairs & below deal 0 damage — need Three of a Kind or better',
+        reward: { gems: 4000, shards: 2 }, consolation: 400,
+        gimmick: (hand, dmg) => ['High Card', 'One Pair', 'Two Pair'].includes(hand) ? 0 : dmg
+      },
+      {
+        id: 'lich', name: 'Shadow Lich', emoji: '💀', hp: 3500, rounds: 5,
+        color: '#a855f7', bg: 'linear-gradient(135deg,#1e0533,#4c1d95)',
+        desc: 'Playing the same hand type twice heals the Lich for 300 HP',
+        reward: { gems: 3500, shards: 2 }, consolation: 300,
+        gimmick: (hand, dmg) => dmg
+      },
+      {
+        id: 'dragon', name: 'Ancient Dragon', emoji: '🐉', hp: 10000, rounds: 5,
+        color: '#ef4444', bg: 'linear-gradient(135deg,#450a0a,#991b1b)',
+        desc: 'Must deal 10000 damage in 5 rounds or lose 2000 gems',
+        reward: { gems: 10000, shards: 4 }, consolation: 600,
+        gimmick: (hand, dmg) => dmg
+      },
+    ];
+    const JOKER_CRAFT_COSTS = { 3: 3, 4: 6, 5: 12 };
+
+    const BANNERS = [
+      { id: 'standard', name: 'Standard Banner', sub: 'All rarities available', emoji: '🌟', bg: 'linear-gradient(135deg,#1a2040,#2d3a6a)', badge: 'Always Active', rate5: 0.05 },
+      { id: 'featured', name: 'Celestial Covenant', sub: 'Featured 5★ rate UP!', emoji: '⚡', bg: 'linear-gradient(135deg,#1a0a30,#4c1d95)', badge: 'Rate UP', rate5: 0.075 },
+      { id: 'weapon', name: 'Stellar Armory', sub: 'Weapon cards rate UP', emoji: '⚔️', bg: 'linear-gradient(135deg,#200a0a,#7c2020)', badge: 'Limited', rate5: 0.06 },
+    ];
+
+    const SHOP_ITEMS = [
+      { id: 'small', name: 'Small Pack', icon: '💎', price: 0, priceGold: 50, gems: 300, desc: 'Buy with Gold Coins' },
+      { id: 'medium', name: 'Medium Pack', icon: '💎', price: 0, priceGold: 150, gems: 1000, desc: 'Best value per coin' },
+      { id: 'large', name: 'Grand Pack', icon: '💎', price: 0, priceGold: 400, gems: 3000, desc: 'Huge gem boost' },
+      { id: 'single_ticket', name: 'Summon Ticket', icon: '🎫', price: 0, priceGold: 160, gems: 0, isTicket: true, desc: 'Single summon, no gems' },
+    ];
+
+    const EXCHANGE_ITEMS = [
+      { id: 'dupe3', name: 'Stardust', icon: '✨', cost: 10, costUnit: '3★ cards', reward: 50, rewardUnit: 'gems', desc: 'Convert 10 duplicate 3★ cards' },
+      { id: 'dupe4', name: 'Starlight', icon: '🌙', cost: 5, costUnit: '4★ cards', reward: 250, rewardUnit: 'gems', desc: 'Convert 5 duplicate 4★ cards' },
+      { id: 'gold_to_gems', name: 'Gold Exchange', icon: '🪙', cost: 100, costUnit: 'Gold', reward: 60, rewardUnit: 'gems', desc: '100 Gold → 60 Gems' },
+    ];
+
+    const DAILY_MISSIONS = [
+      { id: 'pull1', title: 'First Summon', desc: 'Perform 1 summon today', target: 1, stat: 'dailyPulls', reward: 100 },
+      { id: 'pull5', title: 'Committed Summoner', desc: 'Perform 5 summons', target: 5, stat: 'dailyPulls', reward: 300 },
+      { id: 'poker1', title: 'Poker Player', desc: 'Evaluate 1 poker hand', target: 1, stat: 'dailyPoker', reward: 150 },
+      { id: 'pair', title: 'At Least a Pair', desc: 'Get One Pair or better', target: 1, stat: 'dailyPair', reward: 200 },
+    ];
+
+    const WEEKLY_MISSIONS = [
+      { id: 'w_50pulls', title: 'Devoted Traveler', desc: 'Perform 50 total summons', target: 50, stat: 'weeklyPulls', reward: 1500 },
+      { id: 'w_5star', title: 'Legend Hunter', desc: 'Obtain 3 five-star cards', target: 3, stat: 'weeklyFives', reward: 2000 },
+      { id: 'w_flush', title: 'Flush Master', desc: 'Get a Flush or better hand', target: 1, stat: 'weeklyFlush', reward: 800 },
+    ];
+
+    // ═══════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════
+    function defaultState() {
+      return {
+        gems: 3000, gold: 0,
+        pity: 0, guaranteeNext: false,
+        activeBanner: 'standard',
+        inventory: [],
+        lastPull: [],
+        handEvaluated: false,
+        jokerInventory: [],
+        equippedJokers: [null, null, null],
+        stats: {
+          totalPulls: 0, r3: 0, r4: 0, r5: 0,
+          gemsSpent: 0, pokerEarned: 0,
+          bestHand: '—', handHistory: []
+        },
+        missions: {
+          dailyPulls: 0, dailyPoker: 0, dailyPair: 0,
+          weeklyPulls: 0, weeklyFives: 0, weeklyFlush: 0,
+          dailyClaimed: {}, weeklyClaimed: {},
+          lastDaily: null, lastWeekly: null
+        },
+        dailyLoginClaimed: false,
+        lastLoginDate: null,
+        jokerShards: 0,
+        bossBattle: null,
+        bossHistory: []
+      };
+    }
+
+    let S = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem('astraldraw_v3');
+        if (raw) return Object.assign(defaultState(), JSON.parse(raw));
+      } catch (e) { }
+      return defaultState();
+    }
+    function save() { localStorage.setItem('astraldraw_v3', JSON.stringify(S)); }
+
+    // reset daily/weekly if needed
+    function checkDailyReset() {
+      const today = new Date().toDateString();
+      if (S.lastLoginDate !== today) {
+        S.missions.dailyPulls = 0;
+        S.missions.dailyPoker = 0;
+        S.missions.dailyPair = 0;
+        S.missions.dailyClaimed = {};
+        S.dailyLoginClaimed = false;
+        S.lastLoginDate = today;
+      }
+      const week = getWeekKey();
+      if (S.lastWeeklyReset !== week) {
+        S.missions.weeklyPulls = 0;
+        S.missions.weeklyFives = 0;
+        S.missions.weeklyFlush = 0;
+        S.missions.weeklyClaimed = {};
+        S.lastWeeklyReset = week;
+      }
+    }
+    function getWeekKey() {
+      const d = new Date();
+      const jan1 = new Date(d.getFullYear(), 0, 1);
+      return d.getFullYear() + '-w' + Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+    }
+
+    // ═══════════════════════════════════════════════
+    // GACHA ENGINE
+    // ═══════════════════════════════════════════════
+    function getRarity(banner) {
+      const p = S.pity;
+      const b = BANNERS.find(b => b.id === banner) || BANNERS[0];
+      let r5 = b.rate5 || 0.05;
+      if (p >= 65) r5 = r5 + 0.15 * (p - 64);
+      if (p >= 80 || S.guaranteeNext) r5 = 1;
+      r5 = Math.min(r5, 1);
+
+      const roll = Math.random();
+      if (roll < r5) return 5;
+      if (roll < r5 + 0.25) return 4;
+      return 3;
+    }
+
+    function makeCard(rarity) {
+      return {
+        id: Date.now() + Math.random(),
+        suit: SUITS[Math.floor(Math.random() * 4)],
+        value: VALUES[Math.floor(Math.random() * 13)],
+        rarity,
+        banner: S.activeBanner,
+        ts: Date.now()
+      };
+    }
+
+    function makeJokerDrop() {
+      const r = Math.random();
+      let pool;
+      if (r < 0.06) pool = JOKERS.filter(j => j.rarity === 5);
+      else if (r < 0.30) pool = JOKERS.filter(j => j.rarity === 4);
+      else pool = JOKERS.filter(j => j.rarity === 3);
+      const def = pool[Math.floor(Math.random() * pool.length)];
+      return {
+        isJoker: true,
+        uid: 'j_' + Date.now() + '_' + Math.random().toString(36).slice(2),
+        jokerId: def.id,
+        def: def,
+        ts: Date.now()
+      };
+    }
+
+    function rollCards(n) {
+      const results = [];
+      for (let i = 0; i < n; i++) {
+        const r = getRarity(S.activeBanner);
+        const c = makeCard(r);
+        results.push(c);
+        S.pity++;
+        S.stats.totalPulls++;
+
+        if (r === 5) {
+          S.pity = 0;
+          S.guaranteeNext = false;
+          S.stats.r5++;
+          S.missions.weeklyFives++;
+        } else if (r === 4) { S.stats.r4++; }
+        else { S.stats.r3++; }
+
+        S.missions.dailyPulls++;
+        S.missions.weeklyPulls++;
+      }
+      const jokerChance = n >= 10 ? 0.25 : 0.15;
+      if (Math.random() < jokerChance) results.push(makeJokerDrop());
+      return results;
+    }
+
+    // ═══════════════════════════════════════════════
+    // PULL FLOW
+    // ═══════════════════════════════════════════════
+    let selectedCards = [];
+    let pendingCards = [];
+    let evalDone = false;
+
+    function startPull(n) {
+      const cost = n === 10 ? 1600 : 600;
+      if (S.gems < cost) { toast('Not enough gems! 💎', 't-red'); return; }
+
+      S.gems -= cost;
+      S.stats.gemsSpent += cost;
+
+      const results = rollCards(n);
+      const cards = results.filter(r => !r.isJoker);
+      const jokerDrops = results.filter(r => r.isJoker);
+
+      S.lastPull = cards;
+      S.inventory.push(...cards);
+      jokerDrops.forEach(j => S.jokerInventory.push({ uid: j.uid, jokerId: j.jokerId }));
+
+      pendingCards = cards;
+      selectedCards = [];
+      evalDone = false;
+
+      save();
+      updateHeader();
+      showCinematic(results);
+    }
+
+    // ═══════════════════════════════════════════════
+    // CINEMATIC
+    // ═══════════════════════════════════════════════
+    let cinResolve = null;
+    let cinTimer = null;
+    let cinIndex = 0;
+    let allCinCards = [];
+
+    function showCinematic(cards) {
+      const overlay = document.getElementById('cinematic');
+      const row = document.getElementById('cin-cards-row');
+      const flash = document.getElementById('cin-flash');
+      row.innerHTML = '';
+      allCinCards = cards;
+      cinIndex = 0;
+
+      // Build card elements (hidden)
+      cards.forEach(c => {
+        const el = buildCinCard(c);
+        row.appendChild(el);
+      });
+
+      overlay.classList.add('active');
+      const cardCount = cards.filter(c => !c.isJoker).length;
+      document.getElementById('cin-title').textContent = cardCount > 1 ? `${cardCount}× SUMMON` : 'SUMMON';
+
+      // Show swipe hint if cards overflow
+      const hint = document.getElementById('cin-scroll-hint');
+      if (hint) {
+        setTimeout(() => {
+          const scrollable = row.scrollWidth > row.clientWidth;
+          hint.style.display = scrollable ? 'block' : 'none';
+          row.addEventListener('scroll', () => {
+            hint.style.display = (row.scrollLeft + row.clientWidth >= row.scrollWidth - 10) ? 'none' : 'block';
+          }, { passive: true });
+        }, 500);
+      }
+
+      // Reveal one by one
+      function revealNext() {
+        if (cinIndex >= cards.length) {
+          const has5 = cards.some(c => !c.isJoker && c.rarity === 5);
+          const hasJoker = cards.some(c => c.isJoker);
+          cinTimer = setTimeout(() => closeCinematic(cards), (has5 || hasJoker) ? 3500 : 2000);
+          return;
+        }
+        const el = row.children[cinIndex];
+        const c = cards[cinIndex];
+        if (!c.isJoker && c.rarity === 5) {
+          flash.classList.add('pop');
+          setTimeout(() => flash.classList.remove('pop'), 400);
+        }
+        el.classList.add('revealed');
+        cinIndex++;
+        cinTimer = setTimeout(revealNext, cinIndex <= cards.length ? 220 : 0);
+      }
+      setTimeout(revealNext, 300);
+    }
+
+    function skipCinematic() {
+      clearTimeout(cinTimer);
+      const row = document.getElementById('cin-cards-row');
+      Array.from(row.children).forEach(el => el.classList.add('revealed'));
+      cinTimer = setTimeout(() => closeCinematic(allCinCards), 800);
+    }
+
+    function closeCinematic(allResults) {
+      document.getElementById('cinematic').classList.remove('active');
+      const cards = allResults.filter(c => !c.isJoker);
+      const jokerDrops = allResults.filter(c => c.isJoker);
+
+      renderPullStage(cards);
+      showPokerWrap(true);
+      renderJokerTray();
+
+      // toasts for 5*
+      const fives = cards.filter(c => c.rarity === 5);
+      if (fives.length) {
+        toast(`✨ ${fives.length} Legendary 5★ obtained!`, 't-gold');
+        spawnParticles(fives.length > 1 ? 25 : 14);
+      }
+      jokerDrops.forEach(j => {
+        toast(`🃏 Joker obtained: ${j.def.name}!`, 't-green');
+        spawnParticles(8);
+      });
+      updateUI();
+    }
+
+    function buildCinCard(c) {
+      const div = document.createElement('div');
+      if (c.isJoker) {
+        div.className = 'cin-card joker-card';
+        div.innerHTML = `<div class="card-body">
+      <div class="rarity-strip joker-strip"></div>
+      <div class="joker-cin-icon">${c.def.icon}</div>
+      <div class="joker-cin-badge">JOKER</div>
+      <div class="joker-cin-name">${c.def.name}</div>
+      <div class="joker-cin-desc">${c.def.desc}</div>
+    </div>`;
+      } else {
+        div.className = `cin-card r${c.rarity} card`;
+        div.innerHTML = cardInnerHTML(c, true);
+      }
+      return div;
+    }
+
+    // ═══════════════════════════════════════════════
+    // CARD RENDERING
+    // ═══════════════════════════════════════════════
+    function suitColor(suit) { return SUIT_CLS[suit]; }
+
+    function cardInnerHTML(c, big = false) {
+      const sc = suitColor(c.suit);
+      const sym = SUIT_SYM[c.suit];
+      const stars = STAR_CHARS[c.rarity];
+      const shimmer = c.rarity === 5 ? '<div class="card-shimmer"></div>' : '';
+      const wildBadge = c.rarity === 5 ? '<div class="wild-badge">WILD</div>' : '';
+      return `
+    <div class="card-body">
+      <div class="rarity-strip"></div>
+      ${shimmer}
+      <div class="card-corner-tl ${sc}">${c.value}<br>${sym}</div>
+      <div class="card-suit-icon ${sc}" style="font-size:${big ? '2rem' : '1.4rem'}">${sym}</div>
+      <div class="card-val ${sc}">${c.value}</div>
+      <div class="card-stars" style="color:${c.rarity === 5 ? 'var(--gold)' : c.rarity === 4 ? 'var(--purple2)' : 'var(--blue2)'}">${stars}</div>
+      ${wildBadge}
+      <div class="card-corner-br ${sc}">${c.value}<br>${sym}</div>
+    </div>`;
+    }
+
+    function makeCardEl(c, selectable) {
+      const div = document.createElement('div');
+      div.className = `card r${c.rarity}`;
+      div.dataset.id = c.id;
+      div.innerHTML = cardInnerHTML(c);
+      if (selectable) {
+        div.addEventListener('click', () => toggleSelect(c.id, div));
+      }
+      return div;
+    }
+
+    function renderPullStage(cards) {
+      const container = document.getElementById('pull-stage-cards');
+      container.innerHTML = '';
+      cards.forEach((c, i) => {
+        const el = makeCardEl(c, true);
+        el.classList.add('revealing');
+        el.style.animationDelay = (i * 60) + 'ms';
+        container.appendChild(el);
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    // POKER SELECTION
+    // ═══════════════════════════════════════════════
+    function toggleSelect(id, el) {
+      if (evalDone) return;
+      const card = pendingCards.find(c => c.id == id);
+      if (!card) return;
+
+      const idx = selectedCards.findIndex(c => c.id == id);
+      if (idx === -1) {
+        if (selectedCards.length >= 5) { toast('Max 5 cards!', 't-blue'); return; }
+        selectedCards.push(card);
+        el.classList.add('selected');
+      } else {
+        selectedCards.splice(idx, 1);
+        el.classList.remove('selected');
+      }
+      renderHandDrop();
+    }
+
+    function renderHandDrop() {
+      const drop = document.getElementById('hand-drop');
+      const btn = document.getElementById('eval-btn');
+      const hint = document.getElementById('poker-hint-text');
+
+      drop.innerHTML = '';
+      if (selectedCards.length === 0) {
+        drop.innerHTML = '<span class="hand-placeholder">Your selected cards appear here</span>';
+        drop.classList.remove('ready');
+        btn.classList.remove('show');
+        hint.textContent = 'Select exactly 5 cards to evaluate';
+        return;
+      }
+      selectedCards.forEach(c => {
+        const el = makeCardEl(c, false);
+        drop.appendChild(el);
+      });
+      if (selectedCards.length === 5) {
+        drop.classList.add('ready');
+        btn.classList.add('show');
+        hint.textContent = 'Hand ready — evaluate to claim reward!';
+      } else {
+        drop.classList.remove('ready');
+        btn.classList.remove('show');
+        hint.textContent = `Select ${5 - selectedCards.length} more card${5 - selectedCards.length !== 1 ? 's' : ''}`;
+      }
+    }
+
+    function showPokerWrap(show) {
+      document.getElementById('poker-wrap').style.display = show ? 'block' : 'none';
+      document.getElementById('hand-result').className = 'hand-result';
+      document.getElementById('eval-btn').classList.remove('show');
+      renderHandDrop();
+      renderHandSuggestions();
+    }
+
+    // ═══════════════════════════════════════════════
+    // POKER EVALUATION
+    // ═══════════════════════════════════════════════
+    function evalHand() {
+      if (selectedCards.length !== 5 || evalDone) return;
+      evalDone = true;
+
+      const handName = classifyHandWithWilds(selectedCards);
+      const chips = getChipBonus(selectedCards);
+      const baseReward = (HAND_REWARDS[handName] || 50) + chips;
+      const { reward, triggered } = applyJokers(selectedCards, handName, baseReward);
+      const tier = HAND_TIER[handName] || 1;
+
+      S.gems += reward;
+      S.stats.pokerEarned += reward;
+      S.gold += Math.floor(reward / 10);
+
+      if (!S.stats.bestHand || Object.keys(HAND_REWARDS).indexOf(handName) < Object.keys(HAND_REWARDS).indexOf(S.stats.bestHand)) {
+        S.stats.bestHand = handName;
+      }
+
+      S.stats.handHistory.unshift({ hand: handName, reward, ts: Date.now() });
+      if (S.stats.handHistory.length > 50) S.stats.handHistory.pop();
+
+      if (handName === 'Royal Flush') { S.guaranteeNext = true; spawnParticles(30); }
+      if (handName === 'Straight Flush' || handName === 'Four of a Kind') spawnParticles(18);
+
+      S.missions.dailyPoker++;
+      if (reward >= 150) S.missions.dailyPair++;
+      const handIdx = Object.keys(HAND_REWARDS).indexOf(handName);
+      if (handIdx <= 5) S.missions.weeklyFlush++;
+
+      save();
+      updateHeader();
+      updateUI();
+
+      const resultEl = document.getElementById('hand-result');
+      let resultText = `${handName} — +${reward.toLocaleString()} 💎 +${Math.floor(reward / 10)} 🪙`;
+      if (chips > 0) resultText += `  •  +${chips} chip bonus`;
+      if (triggered.length) resultText += `  •  ${triggered.map(j => j.icon + ' ' + j.name).join('  ')}`;
+      resultEl.textContent = resultText;
+      resultEl.className = `hand-result show tier${tier}`;
+      document.getElementById('eval-btn').classList.remove('show');
+
+      const tierMsg = tier === 3 ? 't-gold' : tier === 2 ? 't-blue' : 't-green';
+      toast(`${handName}! +${reward.toLocaleString()} 💎`, tierMsg);
+      if (S.bossBattle) processBossDamage(handName, reward);
+      sfxReward();
+    }
+
+    function classifyHand(cards) {
+      const vals = cards.map(c => V_ORDER[c.value] || parseInt(c.value)).sort((a, b) => a - b);
+      const suits = cards.map(c => c.suit);
+      const vc = {};
+      vals.forEach(v => vc[v] = (vc[v] || 0) + 1);
+      const counts = Object.values(vc).sort((a, b) => b - a);
+
+      const isFlush = new Set(suits).size === 1;
+      const isStraight = vals[4] - vals[0] === 4 && new Set(vals).size === 5;
+      const isAceLow = JSON.stringify(vals) === '[2,3,4,5,14]';
+
+      if (isFlush && (isStraight || isAceLow)) {
+        if (isStraight && vals[4] === 14 && vals[0] === 10) return 'Royal Flush';
+        return 'Straight Flush';
+      }
+      if (counts[0] === 4) return 'Four of a Kind';
+      if (counts[0] === 3 && counts[1] === 2) return 'Full House';
+      if (isFlush) return 'Flush';
+      if (isStraight || isAceLow) return 'Straight';
+      if (counts[0] === 3) return 'Three of a Kind';
+      if (counts[0] === 2 && counts[1] === 2) return 'Two Pair';
+      if (counts[0] === 2) return 'One Pair';
+      return 'High Card';
+    }
+
+    function classifyHandWithWilds(cards) {
+      const wilds = cards.filter(c => c.rarity === 5);
+      const fixed = cards.filter(c => c.rarity !== 5);
+      if (wilds.length === 0) return classifyHand(cards);
+      if (wilds.length >= 4) return 'Royal Flush';
+
+      let bestIdx = HAND_ORDER.length - 1;
+      function tryWilds(wIdx, current) {
+        if (wIdx === wilds.length) {
+          const idx = HAND_ORDER.indexOf(classifyHand(current));
+          if (idx < bestIdx) bestIdx = idx;
+          return;
+        }
+        for (const suit of SUITS) {
+          for (const value of VALUES) {
+            tryWilds(wIdx + 1, [...current, { suit, value, rarity: 5 }]);
+          }
+        }
+      }
+      tryWilds(0, fixed);
+      return HAND_ORDER[bestIdx];
+    }
+
+    function getChipBonus(cards) {
+      return cards.reduce((sum, c) => sum + (CHIP_VALUES[c.rarity] || 0), 0);
+    }
+
+    // ═══════════════════════════════════════════════
+    // BANNERS
+    // ═══════════════════════════════════════════════
+    function renderBanners() {
+      const row = document.getElementById('banner-row');
+      row.innerHTML = '';
+      BANNERS.forEach(b => {
+        const div = document.createElement('div');
+        div.className = 'banner-card' + (S.activeBanner === b.id ? ' selected' : '');
+        div.innerHTML = `
+      <div class="banner-art" style="background:${b.bg}">
+        <span style="font-size:3.5rem">${b.emoji}</span>
+        <div class="banner-badge">${b.badge}</div>
+      </div>
+      <div class="banner-info">
+        <div class="banner-name">${b.name}</div>
+        <div class="banner-sub">${b.sub} | 5★: ${(b.rate5 * 100).toFixed(1)}%</div>
+      </div>`;
+        div.onclick = () => { S.activeBanner = b.id; save(); renderBanners(); };
+        row.appendChild(div);
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    // MISSIONS
+    // ═══════════════════════════════════════════════
+    function renderMissions() {
+      renderMissionList('mission-list', DAILY_MISSIONS, S.missions.dailyClaimed);
+      renderMissionList('weekly-mission-list', WEEKLY_MISSIONS, S.missions.weeklyClaimed);
+    }
+
+    function renderMissionList(containerId, missions, claimed) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = '';
+      missions.forEach(m => {
+        const prog = Math.min(S.missions[m.stat] || 0, m.target);
+        const done = prog >= m.target;
+        const isClaimed = !!claimed[m.id];
+        const div = document.createElement('div');
+        div.className = 'mission' + (isClaimed ? ' done' : '');
+        div.innerHTML = `
+      <span class="mission-icon">${isClaimed ? '✅' : '🎯'}</span>
+      <div class="mission-info">
+        <div class="mission-title">${m.title}</div>
+        <div class="mission-prog">${m.desc} — ${prog}/${m.target}</div>
+        <div class="mission-bar"><div class="mission-fill" style="width:${(prog / m.target * 100)}%"></div></div>
+      </div>
+      <span class="mission-reward">+${m.reward} 💎</span>
+      <button class="claim-btn" ${(!done || isClaimed) ? 'disabled' : ''} onclick="claimMission('${m.id}',${m.reward},${containerId === 'mission-list' ? 'true' : 'false'})">
+        ${isClaimed ? 'Claimed' : done ? 'Claim' : 'Locked'}
+      </button>`;
+        el.appendChild(div);
+      });
+    }
+
+    function claimMission(id, reward, isDaily) {
+      const claimed = isDaily ? S.missions.dailyClaimed : S.missions.weeklyClaimed;
+      if (claimed[id]) return;
+      claimed[id] = true;
+      S.gems += reward;
+      save();
+      updateHeader();
+      renderMissions();
+      toast(`Mission complete! +${reward} 💎`, 't-green');
+    }
+
+    // ═══════════════════════════════════════════════
+    // DAILY LOGIN
+    // ═══════════════════════════════════════════════
+    function claimDaily() {
+      if (S.dailyLoginClaimed) return;
+      S.dailyLoginClaimed = true;
+      const reward = 160;
+      S.gems += reward;
+      save();
+      updateHeader();
+      document.getElementById('daily-btn').disabled = true;
+      toast(`Daily login: +${reward} 💎`, 't-gold');
+      spawnParticles(8);
+    }
+
+    // ═══════════════════════════════════════════════
+    // SHOP
+    // ═══════════════════════════════════════════════
+    function renderShop() {
+      const grid = document.getElementById('shop-grid');
+      grid.innerHTML = '';
+      SHOP_ITEMS.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'shop-item';
+        div.innerHTML = `
+      <div class="shop-icon">${item.icon}</div>
+      <div class="shop-name">${item.name}</div>
+      <div class="shop-price">🪙 ${item.priceGold} Gold</div>
+      <div class="shop-desc">${item.desc}</div>`;
+        div.onclick = () => buyShop(item);
+        grid.appendChild(div);
+      });
+
+      const exGrid = document.getElementById('exchange-grid');
+      exGrid.innerHTML = '';
+      EXCHANGE_ITEMS.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'shop-item';
+        div.innerHTML = `
+      <div class="shop-icon">${item.icon}</div>
+      <div class="shop-name">${item.name}</div>
+      <div class="shop-price">${item.cost} ${item.costUnit} → ${item.reward} ${item.rewardUnit}</div>
+      <div class="shop-desc">${item.desc}</div>`;
+        div.onclick = () => doExchange(item);
+        exGrid.appendChild(div);
+      });
+
+      const shardCount = document.getElementById('shard-count-shop');
+      if (shardCount) shardCount.textContent = `— ⚗️ ${S.jokerShards || 0} Shards`;
+
+      const craftGrid = document.getElementById('craft-grid');
+      if (craftGrid) {
+        craftGrid.innerHTML = '';
+        const rarityColors = { 3: '#60a5fa', 4: '#c084fc', 5: '#f0b429' };
+        const sorted = [...JOKERS].sort((a, b) => a.rarity - b.rarity);
+        sorted.forEach(joker => {
+          const cost = JOKER_CRAFT_COSTS[joker.rarity] || 99;
+          const canAfford = (S.jokerShards || 0) >= cost;
+          const rStars = '★'.repeat(joker.rarity);
+          const div = document.createElement('div');
+          div.className = 'craft-item' + (canAfford ? '' : ' cant-afford');
+          div.innerHTML = `<div class="craft-icon">${joker.icon}</div>
+            <div class="craft-name" style="color:${rarityColors[joker.rarity] || '#fff'}">${joker.name}</div>
+            <div style="font-size:0.6rem;font-weight:700;color:${rarityColors[joker.rarity]};margin-bottom:4px">${rStars}</div>
+            <div class="craft-desc">${joker.desc}</div>
+            <div class="craft-cost">⚗️ ${cost} Shards</div>`;
+          if (canAfford) div.onclick = () => craftJoker(joker.id);
+          craftGrid.appendChild(div);
+        });
+      }
+    }
+
+    function buyShop(item) {
+      if (S.gold < item.priceGold) { toast('Not enough Gold! 🪙', 't-red'); return; }
+      S.gold -= item.priceGold;
+      if (item.gems) S.gems += item.gems;
+      save();
+      updateHeader();
+      toast(`Purchased ${item.name}! +${item.gems} 💎`, 't-green');
+    }
+
+    function doExchange(item) {
+      const count3 = S.inventory.filter(c => c.rarity === 3).length;
+      const count4 = S.inventory.filter(c => c.rarity === 4).length;
+
+      if (item.id === 'dupe3') {
+        if (count3 < item.cost) { toast(`Need ${item.cost} 3★ cards (have ${count3})`, 't-red'); return; }
+        removeCards(3, item.cost);
+        S.gems += item.reward;
+        toast(`Exchanged! +${item.reward} 💎`, 't-green');
+      } else if (item.id === 'dupe4') {
+        if (count4 < item.cost) { toast(`Need ${item.cost} 4★ cards (have ${count4})`, 't-red'); return; }
+        removeCards(4, item.cost);
+        S.gems += item.reward;
+        toast(`Exchanged! +${item.reward} 💎`, 't-green');
+      } else if (item.id === 'gold_to_gems') {
+        if (S.gold < item.cost) { toast('Not enough Gold! 🪙', 't-red'); return; }
+        S.gold -= item.cost;
+        S.gems += item.reward;
+        toast(`Exchanged! +${item.reward} 💎`, 't-green');
+      }
+      save();
+      updateHeader();
+    }
+
+    function removeCards(rarity, count) {
+      let removed = 0;
+      S.inventory = S.inventory.filter(c => {
+        if (c.rarity === rarity && removed < count) { removed++; return false; }
+        return true;
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    // INVENTORY
+    // ═══════════════════════════════════════════════
+    let invFilter = 'all';
+
+    function renderInventory() {
+      renderFilterPills();
+      const grid = document.getElementById('inv-grid');
+      let cards = [...S.inventory].sort((a, b) => b.rarity - a.rarity || b.ts - a.ts);
+
+      if (invFilter !== 'all') {
+        if (['5', '4', '3'].includes(invFilter)) cards = cards.filter(c => c.rarity == invFilter);
+        else cards = cards.filter(c => c.suit === invFilter);
+      }
+
+      document.getElementById('inv-count').textContent = `${cards.length} cards`;
+
+      if (!cards.length) {
+        grid.innerHTML = '<div class="empty" style="width:100%"><div class="empty-ico">📦</div><p>No cards match this filter</p></div>';
+        return;
+      }
+      grid.innerHTML = '';
+      cards.forEach(c => {
+        const el = makeCardEl(c, false);
+        grid.appendChild(el);
+      });
+    }
+
+    function renderFilterPills() {
+      const wrap = document.getElementById('filter-pills');
+      const filters = [
+        { key: 'all', label: 'All' },
+        { key: '5', label: '5★' },
+        { key: '4', label: '4★' },
+        { key: '3', label: '3★' },
+        { key: 'Hearts', label: '♥' },
+        { key: 'Diamonds', label: '♦' },
+        { key: 'Clubs', label: '♣' },
+        { key: 'Spades', label: '♠' },
+      ];
+      wrap.innerHTML = '';
+      filters.forEach(f => {
+        const b = document.createElement('button');
+        b.className = 'pill' + (invFilter === f.key ? ' on' : '');
+        b.textContent = f.label;
+        b.onclick = () => { invFilter = f.key; renderInventory(); };
+        wrap.appendChild(b);
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    // STATS
+    // ═══════════════════════════════════════════════
+    function renderStats() {
+      const grid = document.getElementById('stats-grid');
+      const luckPct = S.stats.totalPulls > 0
+        ? (S.stats.r5 / S.stats.totalPulls * 100).toFixed(2) + '%' : '—';
+
+      const tiles = [
+        { label: 'Total Summons', val: S.stats.totalPulls, cls: 'col-blue' },
+        { label: '5★ Legendaries', val: S.stats.r5, cls: 'col-gold' },
+        { label: '4★ Rares', val: S.stats.r4, cls: 'col-purple' },
+        { label: '3★ Commons', val: S.stats.r3, cls: '' },
+        { label: 'Gems Earned (Poker)', val: S.stats.pokerEarned.toLocaleString(), cls: 'col-green' },
+        { label: 'Gems Spent', val: S.stats.gemsSpent.toLocaleString(), cls: 'col-red' },
+        { label: 'Gold Coins', val: S.gold.toLocaleString(), cls: 'col-gold' },
+        { label: '5★ Luck Rate', val: luckPct, cls: 'col-gold' },
+        { label: 'Current Pity', val: S.pity, cls: '' },
+        { label: 'Best Hand', val: S.stats.bestHand, cls: 'col-purple', small: true },
+      ];
+
+      grid.innerHTML = '';
+      tiles.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'stat-tile';
+        div.innerHTML = `<div class="st-label">${t.label}</div><div class="st-val ${t.cls}" style="${t.small ? 'font-size:1.1rem' : ''}">${t.val}</div>`;
+        grid.appendChild(div);
+      });
+
+      const hist = document.getElementById('history-list');
+      if (!S.stats.handHistory.length) {
+        hist.innerHTML = '<div style="color:var(--text3);padding:16px;font-size:0.85rem">No hands evaluated yet.</div>';
+        return;
+      }
+      hist.innerHTML = '';
+      S.stats.handHistory.forEach(h => {
+        const d = new Date(h.ts);
+        const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const tier = HAND_TIER[h.hand] || 1;
+        const cls = tier === 3 ? 'col-gold' : tier === 2 ? 'col-purple' : 'col-blue';
+        const div = document.createElement('div');
+        div.className = 'hist-item';
+        div.innerHTML = `<span class="hist-hand ${cls}">${h.hand}</span><span class="hist-reward">+${h.reward.toLocaleString()} 💎</span><span class="hist-time">${timeStr}</span>`;
+        hist.appendChild(div);
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    // UI / PITY
+    // ═══════════════════════════════════════════════
+    function updateHeader() {
+      const el = document.getElementById('gem-count');
+      el.textContent = S.gems.toLocaleString();
+      el.classList.add('gem-anim');
+      setTimeout(() => el.classList.remove('gem-anim'), 400);
+
+      const dailyBtn = document.getElementById('daily-btn');
+      dailyBtn.disabled = S.dailyLoginClaimed;
+      dailyBtn.textContent = S.dailyLoginClaimed ? '✓ Claimed' : 'Daily Login (+160💎)';
+    }
+
+    function updatePity() {
+      const p = S.pity;
+      const left = Math.max(0, 80 - p);
+      const pct = Math.min(100, p / 80 * 100);
+      let r5 = 0.05;
+      if (p >= 65) r5 = 0.05 + 0.15 * (p - 64);
+      r5 = Math.min(r5, 1);
+
+      document.getElementById('ps-total').textContent = S.stats.totalPulls;
+      document.getElementById('ps-pity').textContent = p;
+
+      const leftEl = document.getElementById('ps-left');
+      leftEl.textContent = left;
+      leftEl.className = 'pity-stat-value' + (left <= 10 ? ' col-red' : left <= 25 ? ' col-gold' : '');
+
+      document.getElementById('ps-rate').textContent = (r5 * 100).toFixed(1) + '%';
+      document.getElementById('ps-last5').textContent = p === 0 ? 'just now' : p + ' pulls ago';
+      document.getElementById('ps-pct').textContent = pct.toFixed(0) + '%';
+      document.getElementById('ps-fill').style.width = pct + '%';
+
+      const badge = document.getElementById('guarantee-badge');
+      badge.style.display = S.guaranteeNext ? 'block' : 'none';
+
+      document.getElementById('btn5').disabled = S.gems < 600;
+      document.getElementById('btn10').disabled = S.gems < 1600;
+    }
+
+    // ═══════════════════════════════════════════════
+    // JOKER SYSTEM
+    // ═══════════════════════════════════════════════
+    function applyJokers(cards, handName, base) {
+      let reward = base;
+      const triggered = [];
+      if (!S.equippedJokers) return { reward: Math.floor(reward), triggered };
+      S.equippedJokers.forEach(uid => {
+        if (!uid) return;
+        const inv = S.jokerInventory.find(j => j.uid === uid);
+        if (!inv) return;
+        const def = JOKERS.find(j => j.id === inv.jokerId);
+        if (!def) return;
+        const prev = reward;
+        reward = def.apply(cards, handName, reward);
+        if (reward !== prev) triggered.push(def);
+      });
+      return { reward: Math.floor(reward), triggered };
+    }
+
+    let jokerPickerSlot = -1;
+
+    function renderJokerTray() {
+      const wrap = document.getElementById('joker-slots');
+      if (!wrap) return;
+      if (!S.equippedJokers) S.equippedJokers = [null, null, null];
+      wrap.innerHTML = '';
+      S.equippedJokers.forEach((uid, i) => {
+        const slot = document.createElement('div');
+        if (uid) {
+          const inv = S.jokerInventory.find(j => j.uid === uid);
+          const def = inv ? JOKERS.find(j => j.id === inv.jokerId) : null;
+          if (def) {
+            const rCol = def.rarity === 5 ? 'var(--gold)' : def.rarity === 4 ? 'var(--purple2)' : 'var(--blue2)';
+            const rStars = '★'.repeat(def.rarity);
+            slot.className = 'joker-slot filled';
+            slot.innerHTML = `
+              <button class="joker-remove" onclick="event.stopPropagation();unequipJoker(${i})">✕</button>
+              <div class="joker-slot-icon">${def.icon}</div>
+              <div class="joker-slot-name">${def.name}</div>
+              <div style="font-size:0.62rem;font-weight:700;color:${rCol};letter-spacing:0.05em;margin-bottom:2px">${rStars}</div>
+              <div class="joker-slot-desc">${def.desc}</div>`;
+            slot.onclick = () => openJokerPicker(i);
+            wrap.appendChild(slot);
+            return;
+          }
+        }
+        slot.className = 'joker-slot';
+        slot.innerHTML = `<div class="joker-slot-icon" style="font-size:1.8rem;color:var(--text3)">+</div><div class="joker-slot-empty">Equip Joker</div>`;
+        slot.onclick = () => openJokerPicker(i);
+        wrap.appendChild(slot);
+      });
+    }
+
+    function openJokerPicker(slotIndex) {
+      jokerPickerSlot = slotIndex;
+      const grid = document.getElementById('joker-modal-grid');
+      grid.innerHTML = '';
+      const equippedUids = S.equippedJokers.filter((u, i) => u && i !== slotIndex);
+      const available = S.jokerInventory.filter(j => !equippedUids.includes(j.uid));
+      if (!available.length) {
+        grid.innerHTML = '<div class="joker-modal-empty">No jokers in inventory.<br>They drop from any pull (~15% per Hand Pull).</div>';
+      } else {
+        const grouped = {};
+        available.forEach(j => { if (!grouped[j.jokerId]) grouped[j.jokerId] = []; grouped[j.jokerId].push(j); });
+        Object.entries(grouped).forEach(([jid, copies]) => {
+          const def = JOKERS.find(j => j.id === jid);
+          if (!def) return;
+          const item = document.createElement('div');
+          item.className = 'joker-pick-item';
+          const rCol = def.rarity === 5 ? 'var(--gold)' : def.rarity === 4 ? 'var(--purple2)' : 'var(--blue2)';
+          const rStars = '★'.repeat(def.rarity);
+          item.innerHTML = `
+            <div class="joker-pick-icon">${def.icon}</div>
+            <div class="joker-pick-name">${def.name}</div>
+            <div style="font-size:0.6rem;font-weight:700;color:${rCol};margin-bottom:2px">${rStars}</div>
+            <div class="joker-pick-desc">${def.desc}</div>
+            ${copies.length > 1 ? `<div class="joker-pick-count">×${copies.length}</div>` : ''}`;
+          item.onclick = () => equipJoker(slotIndex, copies[0].uid);
+          grid.appendChild(item);
+        });
+      }
+      document.getElementById('joker-modal').classList.add('open');
+    }
+
+    function closeJokerPicker() {
+      document.getElementById('joker-modal').classList.remove('open');
+      jokerPickerSlot = -1;
+    }
+
+    function equipJoker(slotIndex, uid) {
+      S.equippedJokers[slotIndex] = uid;
+      save();
+      closeJokerPicker();
+      renderJokerTray();
+      const inv = S.jokerInventory.find(j => j.uid === uid);
+      const def = inv ? JOKERS.find(j => j.id === inv.jokerId) : null;
+      if (def) toast(`${def.icon} ${def.name} equipped!`, 't-green');
+    }
+
+    function unequipJoker(slotIndex) {
+      S.equippedJokers[slotIndex] = null;
+      save();
+      renderJokerTray();
+    }
+
+    // ═══════════════════════════════════════════════
+    // HAND SUGGESTIONS
+    // ═══════════════════════════════════════════════
+    function renderHandSuggestions() {
+      const wrap = document.getElementById('hand-suggestions');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      if (evalDone || pendingCards.length < 5) return;
+      const combos = getCombinations(pendingCards, 5);
+      const seen = new Set();
+      const best = [];
+      combos.forEach(combo => {
+        const name = classifyHandWithWilds(combo);
+        if (!seen.has(name)) {
+          seen.add(name);
+          const reward = (HAND_REWARDS[name] || 50) + getChipBonus(combo);
+          const tier = HAND_TIER[name] || 1;
+          best.push({ name, reward, tier, combo });
+        }
+      });
+      best.sort((a, b) => b.reward - a.reward);
+      best.forEach(({ name, reward, tier, combo }) => {
+        const btn = document.createElement('button');
+        const tierCls = tier === 3 ? 'tier3' : tier === 2 ? 'tier2' : '';
+        btn.className = `hand-suggest-btn ${tierCls}`;
+        btn.innerHTML = `${name} <span class="suggest-reward">+${reward.toLocaleString()} 💎</span>`;
+        btn.onclick = () => autoSelectHand(combo);
+        wrap.appendChild(btn);
+      });
+    }
+
+    function getCombinations(arr, k) {
+      if (k === arr.length) return [arr];
+      if (k === 1) return arr.map(x => [x]);
+      const result = [];
+      for (let i = 0; i <= arr.length - k; i++) {
+        getCombinations(arr.slice(i + 1), k - 1).forEach(rest => result.push([arr[i], ...rest]));
+      }
+      return result;
+    }
+
+    function autoSelectHand(combo) {
+      if (evalDone) return;
+      selectedCards = [...combo];
+      document.querySelectorAll('#pull-stage-cards .card').forEach(el => {
+        const id = parseFloat(el.dataset.id);
+        el.classList.toggle('selected', selectedCards.some(c => c.id == id));
+      });
+      renderHandDrop();
+    }
+
+    function updateUI() {
+      updateHeader();
+      updatePity();
+    }
+
+    // ═══════════════════════════════════════════════
+    // BOSS BATTLE
+    // ═══════════════════════════════════════════════
+    function getBossInBattle() {
+      if (!S.bossBattle) return null;
+      return BOSSES.find(b => b.id === S.bossBattle.bossId) || null;
+    }
+
+    function startBoss(bossId) {
+      if (S.bossBattle) { toast('Already in a boss battle! Finish it first.', 't-red'); return; }
+      const boss = BOSSES.find(b => b.id === bossId);
+      if (!boss) return;
+      S.bossBattle = {
+        bossId,
+        hp: boss.hp,
+        maxHp: boss.hp,
+        round: 1,
+        maxRounds: boss.rounds,
+        handHistory: [],
+        started: Date.now()
+      };
+      save();
+      renderBossStatusBar();
+      renderBossPage();
+      toast(`⚔️ Battle started — ${boss.emoji} ${boss.name}!`, 't-red');
+    }
+
+    function processBossDamage(handName, reward) {
+      if (!S.bossBattle) return;
+      const boss = getBossInBattle();
+      if (!boss) return;
+      const b = S.bossBattle;
+
+      // Lich gimmick: same hand type twice heals 300 HP
+      if (boss.id === 'lich' && b.handHistory.length > 0) {
+        const lastHand = b.handHistory[b.handHistory.length - 1].hand;
+        if (lastHand === handName) {
+          b.hp = Math.min(b.maxHp, b.hp + 300);
+          b.handHistory.push({ hand: handName, dmg: 0, heal: 300 });
+          save();
+          renderBossStatusBar();
+          renderBossPage();
+          toast(`💀 Lich healed 300 HP — same hand used twice!`, 't-red');
+          checkBossEnd();
+          return;
+        }
+      }
+
+      let dmg = boss.gimmick(handName, reward);
+      b.hp = Math.max(0, b.hp - dmg);
+      b.handHistory.push({ hand: handName, dmg, heal: 0 });
+      save();
+      renderBossStatusBar();
+      renderBossPage();
+
+      if (dmg === 0) {
+        toast(`🛡️ ${boss.name} blocked — hand too weak!`, 't-red');
+      } else {
+        toast(`⚔️ Dealt ${dmg.toLocaleString()} dmg to ${boss.name}!`, 't-blue');
+      }
+      checkBossEnd();
+    }
+
+    function checkBossEnd() {
+      if (!S.bossBattle) return;
+      const b = S.bossBattle;
+      const defeated = b.hp <= 0;
+      const outOfRounds = b.handHistory.length >= b.maxRounds;
+      if (defeated) endBossBattle(true);
+      else if (outOfRounds) endBossBattle(false);
+    }
+
+    function endBossBattle(won) {
+      if (!S.bossBattle) return;
+      const boss = getBossInBattle();
+      let gemsGained = 0;
+      let shardsGained = 0;
+
+      if (won) {
+        gemsGained = boss.reward.gems;
+        shardsGained = boss.reward.shards;
+        S.gems += gemsGained;
+        S.jokerShards = (S.jokerShards || 0) + shardsGained;
+        spawnParticles(20);
+        setTimeout(() => toast(`🏆 ${boss.name} DEFEATED! +${gemsGained.toLocaleString()} 💎 +${shardsGained} ⚗️`, 't-gold'), 200);
+      } else {
+        if (boss.id === 'dragon') {
+          const penalty = Math.min(S.gems, 2000);
+          S.gems -= penalty;
+          gemsGained = -penalty;
+          setTimeout(() => toast(`🐉 Dragon punishes failure! -${penalty} 💎`, 't-red'), 200);
+        } else {
+          gemsGained = boss.consolation;
+          S.gems += gemsGained;
+          setTimeout(() => toast(`❌ Defeated by ${boss.name}... +${gemsGained} 💎 consolation`, 't-red'), 200);
+        }
+      }
+
+      if (!S.bossHistory) S.bossHistory = [];
+      S.bossHistory.unshift({ bossId: boss.id, won, gemsGained, shardsGained, rounds: S.bossBattle.handHistory.length, ts: Date.now() });
+      if (S.bossHistory.length > 20) S.bossHistory.pop();
+
+      S.bossBattle = null;
+      save();
+      updateHeader();
+      renderBossStatusBar();
+      renderBossPage();
+    }
+
+    function forfeitBattle() {
+      if (!S.bossBattle) return;
+      endBossBattle(false);
+    }
+
+    function renderBossStatusBar() {
+      const el = document.getElementById('boss-status-bar');
+      if (!el) return;
+      if (!S.bossBattle) { el.style.display = 'none'; el.innerHTML = ''; return; }
+      const boss = getBossInBattle();
+      const b = S.bossBattle;
+      const hpPct = Math.round(b.hp / b.maxHp * 100);
+      const roundsDone = b.handHistory.length;
+      const dmgLog = b.handHistory.map(h => {
+        if (h.heal > 0) return `<span class="boss-dmg-chip heal">+${h.heal} HP</span>`;
+        if (h.dmg === 0) return `<span class="boss-dmg-chip blocked">Blocked</span>`;
+        return `<span class="boss-dmg-chip hit">-${h.dmg.toLocaleString()}</span>`;
+      }).join('');
+      el.style.display = 'block';
+      el.innerHTML = `<div class="boss-status-bar">
+        <div class="boss-status-top">
+          <span class="boss-status-title">${boss.emoji} ${boss.name}</span>
+          <span class="boss-status-round">Round ${Math.min(roundsDone + 1, b.maxRounds)} / ${b.maxRounds}</span>
+          <button class="boss-forfeit" onclick="forfeitBattle()">Forfeit</button>
+        </div>
+        <div class="boss-hp-track"><div class="boss-hp-fill" style="width:${hpPct}%"></div></div>
+        <div class="boss-hp-label"><span>${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()} HP</span><span>${hpPct}%</span></div>
+        <div class="boss-dmg-log">${dmgLog || '<span style="font-size:0.72rem;color:var(--text3)">Evaluate a hand to deal damage</span>'}</div>
+      </div>`;
+    }
+
+    function renderBossPage() {
+      const el = document.getElementById('boss-page-content');
+      if (!el) return;
+      el.innerHTML = '';
+
+      const header = document.createElement('div');
+      header.className = 'boss-page-header';
+      header.innerHTML = `<div class="section-title" style="margin:0">⚔️ Boss Battles</div>
+        <div class="shard-display">⚗️ ${S.jokerShards || 0} Shards</div>`;
+      el.appendChild(header);
+
+      if (S.bossBattle) {
+        const boss = getBossInBattle();
+        const b = S.bossBattle;
+        const hpPct = Math.round(b.hp / b.maxHp * 100);
+        const div = document.createElement('div');
+        div.style.cssText = 'background:var(--bg2);border:2px solid var(--red);border-radius:16px;padding:20px;margin-bottom:24px;text-align:center';
+        div.innerHTML = `<div style="font-size:3rem;margin-bottom:8px">${boss.emoji}</div>
+          <div style="font-weight:800;font-size:1.1rem;margin-bottom:4px;color:var(--red)">${boss.name}</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px">⚡ ${boss.desc}</div>
+          <div class="boss-hp-track" style="max-width:320px;margin:0 auto 6px"><div class="boss-hp-fill" style="width:${hpPct}%"></div></div>
+          <div style="font-size:0.75rem;color:var(--text2);margin-bottom:14px">${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()} HP · Round ${b.handHistory.length + 1}/${b.maxRounds}</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:16px">Go to Summon tab → pull cards → evaluate hands to deal damage!</div>
+          <button class="boss-forfeit" style="font-size:0.88rem;padding:8px 20px" onclick="forfeitBattle()">Forfeit Battle</button>`;
+        el.appendChild(div);
+      } else {
+        const grid = document.createElement('div');
+        grid.className = 'boss-grid';
+        BOSSES.forEach(boss => {
+          const card = document.createElement('div');
+          card.className = 'boss-card';
+          card.innerHTML = `<div class="boss-art" style="background:${boss.bg}">${boss.emoji}</div>
+            <div class="boss-info">
+              <div class="boss-name" style="color:${boss.color}">${boss.name}</div>
+              <div class="boss-stats-row"><span>❤️ ${boss.hp.toLocaleString()} HP</span><span>🕐 ${boss.rounds} rounds</span></div>
+              <div class="boss-gimmick-text">⚡ ${boss.desc}</div>
+              <div class="boss-reward-text">🏆 Win: ${boss.reward.gems.toLocaleString()} 💎 + ${boss.reward.shards} ⚗️ shards</div>
+              <button class="boss-challenge-btn" style="background:${boss.color}" onclick="startBoss('${boss.id}')">⚔️ Challenge</button>
+            </div>`;
+          grid.appendChild(card);
+        });
+        el.appendChild(grid);
+      }
+
+      if (S.bossHistory && S.bossHistory.length > 0) {
+        const title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = 'Battle History';
+        el.appendChild(title);
+        S.bossHistory.slice(0, 10).forEach(h => {
+          const boss = BOSSES.find(b => b.id === h.bossId);
+          if (!boss) return;
+          const item = document.createElement('div');
+          item.className = 'boss-history-item';
+          item.innerHTML = `<span class="boss-history-emoji">${boss.emoji}</span>
+            <div class="boss-history-info">
+              <div class="boss-history-result ${h.won ? 'win' : 'loss'}">${h.won ? '🏆 Victory' : '❌ Defeated'} — ${boss.name}</div>
+              <div style="font-size:0.72rem;color:var(--text3)">${new Date(h.ts).toLocaleDateString()} · ${h.won ? `+${h.gemsGained.toLocaleString()} 💎 +${h.shardsGained} ⚗️` : `${h.gemsGained >= 0 ? '+' : ''}${h.gemsGained} 💎`}</div>
+            </div>`;
+          el.appendChild(item);
+        });
+      }
+    }
+
+    function craftJoker(jokerId) {
+      const joker = JOKERS.find(j => j.id === jokerId);
+      if (!joker) return;
+      const cost = JOKER_CRAFT_COSTS[joker.rarity] || 99;
+      if ((S.jokerShards || 0) < cost) { toast(`Need ${cost} ⚗️ Shards (have ${S.jokerShards || 0})`, 't-red'); return; }
+      S.jokerShards -= cost;
+      const uid = 'j_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+      S.jokerInventory.push({ uid, jokerId });
+      save();
+      updateHeader();
+      renderShop();
+      renderJokerTray();
+      toast(`Crafted ${joker.icon} ${joker.name}!`, 't-gold');
+    }
+
+    // ═══════════════════════════════════════════════
+    // TABS
+    // ═══════════════════════════════════════════════
+    function goTab(name, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      btn.classList.add('active');
+
+      if (name === 'inventory') renderInventory();
+      if (name === 'stats') renderStats();
+      if (name === 'missions') renderMissions();
+      if (name === 'shop') renderShop();
+      if (name === 'boss') renderBossPage();
+    }
+
+    // ═══════════════════════════════════════════════
+    // TOAST
+    // ═══════════════════════════════════════════════
+    function toast(msg, cls = 't-blue') {
+      const stack = document.getElementById('toast-stack');
+      const el = document.createElement('div');
+      el.className = `toast ${cls}`;
+      el.textContent = msg;
+      stack.appendChild(el);
+      requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 400);
+      }, 3000);
+    }
+
+    // ═══════════════════════════════════════════════
+    // PARTICLES
+    // ═══════════════════════════════════════════════
+    function spawnParticles(n = 12) {
+      const icons = ['✨', '⭐', '🌟', '💫', '🔮', '💎', '✦'];
+      for (let i = 0; i < n; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = icons[Math.floor(Math.random() * icons.length)];
+        p.style.left = (15 + Math.random() * 70) + 'vw';
+        p.style.top = (20 + Math.random() * 60) + 'vh';
+        p.style.animationDelay = (Math.random() * 0.8) + 's';
+        p.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 2500);
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    // AUDIO (Web Audio API - minimal sfx)
+    // ═══════════════════════════════════════════════
+    let audioCtx = null;
+    function getAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+
+    function playTone(freq, type = 'sine', dur = 0.15, vol = 0.15) {
+      try {
+        const ctx = getAudio();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = type; osc.frequency.value = freq;
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.start(); osc.stop(ctx.currentTime + dur);
+      } catch (e) { }
+    }
+
+    function sfxPull() { playTone(440, 'triangle', 0.2, 0.1); setTimeout(() => playTone(660, 'triangle', 0.15, 0.08), 100); }
+    function sfxFive() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.3, 0.12), i * 80)); }
+    function sfxReward() { playTone(784, 'sine', 0.25, 0.1); setTimeout(() => playTone(1047, 'sine', 0.2, 0.1), 120); }
+
+    // ═══════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════
+    checkDailyReset();
+    renderBanners();
+    updateUI();
+    renderMissions();
+    renderShop();
+    renderJokerTray();
+    renderBossStatusBar();
+
+    if (S.lastPull && S.lastPull.length > 0) {
+      pendingCards = S.lastPull;
+      renderPullStage(S.lastPull);
+      showPokerWrap(true);
+      if (S.handEvaluated) document.getElementById('eval-btn').classList.remove('show');
+    }
+
+    // wire up audio to pull buttons (needs user gesture to unlock AudioContext)
+    document.getElementById('btn5').addEventListener('mousedown', sfxPull);
+    document.getElementById('btn10').addEventListener('mousedown', sfxPull);
+  </script>
+</body>
+
+</html>
