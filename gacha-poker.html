@@ -2695,6 +2695,13 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: linear-gradient(var(--gold-deep), var(--gold-mid)); border-radius: 4px; }
 
+    /* Forge cards */
+    .craft-item { background: rgba(212,160,23,0.05) !important; border-color: rgba(212,160,23,0.18) !important; }
+    .craft-item:hover:not(.cant-afford) { border-color: var(--gold-mid) !important; box-shadow: 0 6px 20px rgba(212,160,23,0.2) !important; }
+    .craft-name { font-family: 'Cinzel', serif !important; color: var(--ink) !important; }
+    .craft-desc { color: var(--muted) !important; }
+    .craft-cost { color: var(--gold-mid) !important; }
+
     /* Hand suggestion buttons — gold tint in game skin */
     .hand-sug-btn {
       border-color: var(--gold-mid) !important;
@@ -3010,15 +3017,38 @@
 
     function endRun(won){
       if(!S.run)return;
-      if(won){S.stats.runsWon++;spawnParticles(25);}
       S.gems+=S.run.runGems;
       const rg=S.run.runGems;
-      save();
-      showNodeResult({
-        emoji:won?'🏆':'💀',title:won?'TOWER CLEARED!':'RUN OVER',
-        desc:won?'You conquered the tower!':'You were defeated. Better luck next time.',
-        rewards:[`💎 +${rg.toLocaleString()} gems earned`],
-      },()=>{S.run=null;save();setMainTab('🏠 Home','home');updateHeader();renderHome();goTabRaw('home');});
+      if(won){
+        S.stats.runsWon++;spawnParticles(25);save();
+        const wave=(S.run.wave||0)+1;
+        showNodeResult({
+          emoji:'🏆',title:'TOWER CLEARED!',
+          desc:`Wave ${wave} complete! Collect your gems or push deeper into the infinite tower.`,
+          rewards:[`💎 +${rg.toLocaleString()} gems earned`],
+          actions:[
+            {label:'🏠 Collect & Retire',fn:()=>{S.run=null;save();setMainTab('🏠 Home','home');updateHeader();renderHome();goTabRaw('home');}},
+            {label:'♾️ Continue — Wave '+(wave+1),fn:()=>continueRun()}
+          ]
+        });
+      }else{
+        save();
+        showNodeResult({
+          emoji:'💀',title:'RUN OVER',
+          desc:'You were defeated. Better luck next time.',
+          rewards:[`💎 +${rg.toLocaleString()} gems earned`],
+        },()=>{S.run=null;save();setMainTab('🏠 Home','home');updateHeader();renderHome();goTabRaw('home');});
+      }
+    }
+
+    function continueRun(){
+      if(!S.run)return;
+      S.run.wave=(S.run.wave||0)+1;
+      S.run.map=generateMap();
+      S.run.floor=0;S.run.nodePos=null;S.run.completedNodes=[];S.run.bossHistory=[];
+      S.run.playerHp=Math.min(S.run.maxHp,S.run.playerHp+60);
+      save();renderMap();goTabRaw('map');
+      toast(`♾️ Wave ${S.run.wave} — enemies are stronger!`,'t-gold');
     }
 
     function setMainTab(label,page){
@@ -3057,7 +3087,8 @@
       if(t==='battle'||t==='elite'){
         const pool=t==='elite'?ELITE_ENEMIES:ENEMIES;
         const base=pool[Math.floor(Math.random()*pool.length)];
-        const scale=1+floor*0.25;
+        const waveBonus=1+(S.run.wave||0)*0.4;
+        const scale=(1+floor*0.25)*waveBonus;
         const enemy={...base,hp:Math.floor(base.hp*scale),maxHp:Math.floor(base.hp*scale),atk:Math.floor(base.atk*scale),isElite:t==='elite'};
         startBattleNode(enemy);
       }else if(t==='shop'){startShopNode();}
@@ -3519,7 +3550,16 @@
       const rwr=document.getElementById('result-rewards');
       rwr.innerHTML=(data.rewards||[]).filter(Boolean).map(r=>`<div style="font-size:0.83rem">${r}</div>`).join('');
       const jpEl=document.getElementById('result-joker-pick');jpEl.innerHTML='';
-      if(data.jokerPick&&data.jokerPick.length){
+      if(data.actions&&data.actions.length){
+        document.getElementById('result-btn').style.display='none';
+        const actDiv=document.createElement('div');actDiv.style.cssText='display:flex;flex-direction:column;gap:8px;margin-top:10px';
+        data.actions.forEach(act=>{
+          const btn=document.createElement('button');btn.className='start-run-btn';btn.style.cssText='width:100%;font-size:0.85rem;padding:11px 16px';btn.textContent=act.label;
+          btn.onclick=()=>{document.getElementById('node-result-overlay').classList.remove('show');resultCallback=null;act.fn();};
+          actDiv.appendChild(btn);
+        });
+        jpEl.appendChild(actDiv);
+      }else if(data.jokerPick&&data.jokerPick.length){
         document.getElementById('result-btn').style.display='none';
         const lbl=document.createElement('div');lbl.style.cssText='font-size:0.78rem;color:var(--muted);margin-bottom:6px';lbl.textContent='Choose a joker:';jpEl.appendChild(lbl);
         const grid=document.createElement('div');grid.className='joker-pick-grid';
@@ -3657,14 +3697,12 @@
       grid.innerHTML='';
       JOKERS.forEach(def=>{
         const cost=JOKER_CRAFT_COSTS[def.rarity]||3;const canAfford=(S.jokerShards||0)>=cost&&!!S.run;
-        const card=document.createElement('div');card.className='joker-card-item';
-        card.innerHTML=`<div class="joker-item-icon">${def.icon}</div>
-        <div class="joker-item-info">
-          <div class="joker-item-name">${def.name} ${'★'.repeat(def.rarity)}</div>
-          <div class="joker-item-desc">${def.desc}</div>
-          <div style="font-size:0.68rem;color:var(--accent);margin-top:2px">⚡ ${def.maxCharges} charges</div>
-        </div>
-        <button class="craft-btn${canAfford?'':' disabled'}" ${canAfford?'':'disabled'} onclick="forgeJoker('${def.id}',${cost})">⚗️ ${cost}</button>`;
+        const card=document.createElement('div');card.className=`craft-item${canAfford?'':' cant-afford'}`;
+        if(canAfford)card.onclick=()=>forgeJoker(def.id,cost);
+        card.innerHTML=`<div class="craft-icon">${def.icon}</div>
+        <div class="craft-name">${def.name} ${'★'.repeat(def.rarity)}</div>
+        <div class="craft-desc">${def.desc}</div>
+        <div class="craft-cost">⚗️ ${cost} shards · ⚡ ${def.maxCharges} charges</div>`;
         grid.appendChild(card);
       });
     }
@@ -3757,7 +3795,7 @@
       if(name==='missions')renderMissions();
       if(name==='stats')renderStats();
       if(name==='forge')renderForge();
-      if(name==='map'&&S.run)renderMap();
+      if(name==='map'){if(S.run)renderMap();else{const g=document.getElementById('map-grid');if(g)g.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--muted)">No active run.<br>Go to Home and start one!</div>';}}
       if(name==='home')renderHome();
     }
 
