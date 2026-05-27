@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AstralDraw — Gacha Poker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #080b14;
@@ -29,6 +32,9 @@
       --diamonds: #fb923c;
       --clubs: #a3e635;
       --spades: #60a5fa;
+      --fg: #e2e8f0;
+      --muted: #94a3b8;
+      --card2: #161c30;
     }
 
     * {
@@ -2506,6 +2512,12 @@
     .joker-pick-desc { font-size:0.66rem;color:var(--muted) }
     .joker-pick-charges { font-size:0.66rem;color:var(--accent);margin-top:3px }
 
+    /* ── HAND SUGGESTIONS ── */
+    .hand-sug-label { font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px }
+    .hand-sug-row { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px }
+    .hand-sug-btn { padding:5px 12px;border:1.5px solid var(--accent);border-radius:20px;background:rgba(108,99,255,0.1);color:var(--accent2);font-size:0.75rem;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.02em }
+    .hand-sug-btn:hover { background:rgba(108,99,255,0.25);transform:translateY(-1px) }
+
     /* ── HOME ── */
     .home-wrap { padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center }
     .home-logo { font-size:3.5rem }
@@ -2552,6 +2564,129 @@
       .map-conn-cell { width:52px }
       .home-wrap { padding:20px 16px }
     }
+
+    /* ══════════════════════════════════════════════════
+       GAME SKIN — Fantasy / Parchment Theme
+    ══════════════════════════════════════════════════ */
+    :root {
+      --gold-deep: #b45309;
+      --gold-mid:  #d4a017;
+      --gold-lite: #fde68a;
+      --frame:     #3a2f1a;
+      --ink:       #e9dec1;
+      --parchment: #1a1426;
+    }
+
+    body { font-family: 'Rubik', 'Segoe UI', system-ui, sans-serif !important; }
+
+    /* Vignette overlay */
+    html::after {
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+      box-shadow:inset 0 0 120px rgba(0,0,0,0.55),inset 0 0 40px rgba(0,0,0,0.3);
+    }
+
+    /* Ambient star dust */
+    body::after {
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(1px 1px at 15% 20%, rgba(253,230,138,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 12%, rgba(253,230,138,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 80%, rgba(253,230,138,0.2) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 30% 65%, rgba(167,139,250,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 45%, rgba(253,230,138,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 42% 38%, rgba(167,139,250,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 78%, rgba(253,230,138,0.15) 0%, transparent 100%);
+    }
+
+    /* Header — gold top line */
+    #header {
+      border-top: 2px solid var(--gold-mid);
+      border-bottom: 1px solid rgba(212,160,23,0.3);
+      background: rgba(10,8,18,0.92) !important;
+    }
+
+    /* Logo */
+    .logo-text {
+      font-family: 'Cinzel', serif !important;
+      letter-spacing: .1em !important;
+    }
+
+    /* Tabs */
+    #tabs { background: rgba(10,8,18,0.88) !important; border-bottom: 1px solid rgba(212,160,23,0.2) !important; }
+    .tab { font-family: 'Cinzel', serif !important; font-size: 0.78rem !important; letter-spacing: .06em !important; }
+    .tab.active { color: var(--gold-lite) !important; border-bottom-color: var(--gold-mid) !important; }
+
+    /* All buttons — bevel feel */
+    button:not(.card):not(.map-node):not(.tab):not(.hand-sug-btn) {
+      font-family: 'Rubik', sans-serif !important;
+    }
+    .start-run-btn {
+      font-family: 'Cinzel', serif !important;
+      background: linear-gradient(160deg, #7c5c10 0%, #b8860b 40%, #f0c040 55%, #b8860b 70%, #7c5c10 100%) !important;
+      color: #1a1000 !important;
+      border: none !important;
+      box-shadow: 0 2px 0 #3a2a00, 0 4px 18px rgba(212,160,23,0.35), inset 0 1px 0 rgba(255,240,150,0.4) !important;
+      letter-spacing: .12em !important;
+      text-shadow: 0 1px 0 rgba(255,230,100,0.5) !important;
+    }
+    .start-run-btn:hover {
+      box-shadow: 0 3px 0 #3a2a00, 0 6px 28px rgba(212,160,23,0.55), inset 0 1px 0 rgba(255,240,150,0.5) !important;
+      transform: translateY(-2px) !important;
+    }
+    .start-run-btn:active { transform: translateY(1px) !important; box-shadow: 0 1px 0 #3a2a00, 0 2px 10px rgba(212,160,23,0.3) !important; }
+
+    .eval-btn {
+      background: linear-gradient(160deg,#5c1a1a 0%,#8b2020 40%,#d44 55%,#8b2020 70%,#5c1a1a 100%) !important;
+      box-shadow: 0 2px 0 #2a0a0a, 0 4px 16px rgba(200,60,60,0.3), inset 0 1px 0 rgba(255,180,180,0.25) !important;
+      font-family: 'Cinzel', serif !important;
+      letter-spacing: .1em !important;
+    }
+    .eval-btn:hover { box-shadow: 0 3px 0 #2a0a0a, 0 6px 22px rgba(220,80,80,0.45), inset 0 1px 0 rgba(255,180,180,0.35) !important; }
+
+    /* Home page glow */
+    .home-title {
+      font-family: 'Cinzel', serif !important;
+      font-size: 2rem !important;
+      font-weight: 900 !important;
+      letter-spacing: .15em !important;
+      background: linear-gradient(90deg, var(--gold-deep), var(--gold-lite), var(--gold-mid), var(--gold-lite), var(--gold-deep)) !important;
+      background-size: 250% !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      background-clip: text !important;
+      animation: logoBg 5s linear infinite !important;
+      text-shadow: none !important;
+    }
+    .home-logo { font-size: 4rem !important; filter: drop-shadow(0 0 16px rgba(212,160,23,0.6)); }
+    .home-flavor {
+      font-size: 0.83rem;
+      color: var(--ink);
+      opacity: 0.75;
+      max-width: 300px;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    /* Map title */
+    .map-title { font-family: 'Cinzel', serif !important; letter-spacing: .12em !important; color: var(--gold-lite) !important; }
+
+    /* Section titles */
+    .section-title { font-family: 'Cinzel', serif !important; letter-spacing: .08em !important; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(var(--gold-deep), var(--gold-mid)); border-radius: 4px; }
+
+    /* Hand suggestion buttons — gold tint in game skin */
+    .hand-sug-btn {
+      border-color: var(--gold-mid) !important;
+      color: var(--gold-lite) !important;
+      background: rgba(212,160,23,0.08) !important;
+      font-family: 'Cinzel', serif !important;
+      font-size: 0.7rem !important;
+    }
+    .hand-sug-btn:hover { background: rgba(212,160,23,0.2) !important; }
   </style>
 </head>
 
@@ -2603,9 +2738,11 @@
     <div class="home-wrap">
       <div class="home-logo">🃏</div>
       <div class="home-title">ASTRALDRAW</div>
-      <div class="home-subtitle">A roguelike poker journey. Collect jokers, battle enemies, conquer the tower.</div>
+      <div class="home-flavor">A roguelike poker journey through a tower of fate. Forge jokers. Master the deck. Conquer the unknown.</div>
+      <div class="home-subtitle">Collect jokers · Battle enemies · Conquer the tower</div>
       <button class="start-run-btn" onclick="startRun()">⚔️ START RUN</button>
       <div class="home-stats-row" id="home-stats-row"></div>
+      <div id="home-best-slot"></div>
     </div>
   </div>
 
@@ -2722,26 +2859,26 @@
     ];
 
     const BOSSES = [
-      {id:'goblin',name:'Goblin King', emoji:'👺',hp:2500,rounds:5,desc:'Flushes deal ×2 damage', reward:{gems:500,shards:1}, gimmick:(h,d)=>['Flush','Straight Flush','Royal Flush'].includes(h)?d*2:d},
-      {id:'golem', name:'Iron Golem',  emoji:'🗿',hp:5000,rounds:5,desc:'Pairs & below deal 0 damage', reward:{gems:800,shards:2}, gimmick:(h,d)=>['High Card','One Pair','Two Pair'].includes(h)?0:d},
-      {id:'lich',  name:'Shadow Lich', emoji:'💀',hp:3500,rounds:5,desc:'Same hand twice heals 300 HP', reward:{gems:700,shards:2}, gimmick:(h,d)=>d},
-      {id:'dragon',name:'Ancient Dragon',emoji:'🐉',hp:10000,rounds:5,desc:'Defeat in 5 rounds or lose 500 gems', reward:{gems:2000,shards:4}, gimmick:(h,d)=>d},
+      {id:'goblin',name:'Goblin King', emoji:'👺',hp:1200,rounds:5,desc:'Flushes deal ×2 damage', reward:{gems:500,shards:1}, gimmick:(h,d)=>['Flush','Straight Flush','Royal Flush'].includes(h)?d*2:d},
+      {id:'golem', name:'Iron Golem',  emoji:'🗿',hp:2000,rounds:5,desc:'Pairs & below deal 0 damage', reward:{gems:800,shards:2}, gimmick:(h,d)=>['High Card','One Pair','Two Pair'].includes(h)?0:d},
+      {id:'lich',  name:'Shadow Lich', emoji:'💀',hp:1600,rounds:5,desc:'Same hand twice heals 200 HP', reward:{gems:700,shards:2}, gimmick:(h,d)=>d},
+      {id:'dragon',name:'Ancient Dragon',emoji:'🐉',hp:4000,rounds:5,desc:'Defeat in 5 rounds or lose 500 gems', reward:{gems:2000,shards:4}, gimmick:(h,d)=>d},
     ];
     const JOKER_CRAFT_COSTS = {3:3,4:6,5:12};
 
     const ENEMIES = [
-      {id:'scout',   name:'Goblin Scout',emoji:'👺',hp:600, atk:15,rounds:3,reward:80},
-      {id:'wolf',    name:'Shadow Wolf', emoji:'🐺',hp:500, atk:20,rounds:3,reward:70},
-      {id:'skeleton',name:'Skeleton',    emoji:'💀',hp:400, atk:12,rounds:3,reward:60},
-      {id:'orc',     name:'Orc Warrior', emoji:'🪓',hp:900, atk:25,rounds:4,reward:120},
-      {id:'mage',    name:'Dark Mage',   emoji:'🧙',hp:700, atk:30,rounds:3,reward:110},
-      {id:'vampire', name:'Vampire',     emoji:'🧛',hp:800, atk:22,rounds:4,reward:100},
+      {id:'scout',   name:'Goblin Scout',emoji:'👺',hp:280, atk:8, rounds:3,reward:80},
+      {id:'wolf',    name:'Shadow Wolf', emoji:'🐺',hp:250, atk:10,rounds:3,reward:70},
+      {id:'skeleton',name:'Skeleton',    emoji:'💀',hp:200, atk:7, rounds:3,reward:60},
+      {id:'orc',     name:'Orc Warrior', emoji:'🪓',hp:420, atk:14,rounds:4,reward:120},
+      {id:'mage',    name:'Dark Mage',   emoji:'🧙',hp:340, atk:16,rounds:3,reward:110},
+      {id:'vampire', name:'Vampire',     emoji:'🧛',hp:380, atk:12,rounds:4,reward:100},
     ];
     const ELITE_ENEMIES = [
-      {id:'e_knight',  name:'Death Knight',  emoji:'⚔️',hp:1800,atk:40,rounds:5,reward:300,shards:1},
-      {id:'e_witch',   name:'Void Witch',    emoji:'🔮',hp:1500,atk:45,rounds:5,reward:280,shards:1},
-      {id:'e_colossus',name:'Stone Colossus',emoji:'🗿',hp:2200,atk:35,rounds:5,reward:350,shards:1},
-      {id:'e_demon',   name:'Chaos Demon',   emoji:'😈',hp:1600,atk:50,rounds:4,reward:320,shards:1},
+      {id:'e_knight',  name:'Death Knight',  emoji:'⚔️',hp:900, atk:22,rounds:5,reward:300,shards:1},
+      {id:'e_witch',   name:'Void Witch',    emoji:'🔮',hp:800, atk:25,rounds:5,reward:280,shards:1},
+      {id:'e_colossus',name:'Stone Colossus',emoji:'🗿',hp:1100,atk:18,rounds:5,reward:350,shards:1},
+      {id:'e_demon',   name:'Chaos Demon',   emoji:'😈',hp:850, atk:28,rounds:4,reward:320,shards:1},
     ];
 
     const EVENTS = [
@@ -2750,11 +2887,11 @@
       {id:'merchant',title:'🧙 Wandering Merchant', text:'A cloaked merchant offers you a deal.',
        options:[{label:'💰 Buy a random joker (200💎)',desc:'Merchant picks for you',action:'merchant_buy'},{label:'🚶 Pass',desc:'Keep your gems',action:'leave'}]},
       {id:'shrine',  title:'⛩️ Ancient Shrine',     text:'A shrine hums with ancient energy.',
-       options:[{label:'🙏 Pray (+25 max HP)',desc:'The shrine strengthens you',action:'shrine_hp'},{label:'💎 Offer 100💎 (+3 charges on next joker)',desc:'Empower your next joker',action:'shrine_gems'},{label:'🚶 Leave',desc:'Better safe',action:'leave'}]},
+       options:[{label:'🙏 Pray (+40 max HP)',desc:'The shrine strengthens you',action:'shrine_hp'},{label:'💎 Offer 100💎 (+3 charges on next joker)',desc:'Empower your next joker',action:'shrine_gems'},{label:'🚶 Leave',desc:'Better safe',action:'leave'}]},
       {id:'gamble',  title:"🎰 Gambler's Den",       text:'A shady figure challenges you. Win big or lose it all.',
        options:[{label:'🎲 Bet 300💎 (×3 if win)',desc:'50/50 gamble',action:'gamble'},{label:'🚶 Walk away',desc:'The smart move',action:'leave'}]},
       {id:'potion',  title:'🧪 Mysterious Potion',   text:'A glowing vial sits on a pedestal.',
-       options:[{label:'✨ Drink it (+30 HP)',desc:'Restore some health',action:'potion_drink'},{label:'🚶 Leave it',desc:"You're not sure what's in it",action:'leave'}]},
+       options:[{label:'✨ Drink it (+50 HP)',desc:'Restore some health',action:'potion_drink'},{label:'🚶 Leave it',desc:"You're not sure what's in it",action:'leave'}]},
       {id:'spirit',  title:'👻 Lost Spirit',          text:'A spirit offers a boon — for a price.',
        options:[{label:'🃏 Trade 20 HP for a joker',desc:'Power at a cost',action:'spirit_trade'},{label:'💨 Let it pass',desc:"You don't deal with spirits",action:'leave'}]},
     ];
@@ -2845,7 +2982,7 @@
     // RUN MANAGEMENT
     // ═══════════════════════════════════════════════
     function startRun(){
-      S.run={map:generateMap(),floor:0,nodePos:null,playerHp:80,maxHp:80,runGems:0,jokers:[],completedNodes:[],bossHistory:[],bonusCharges:0};
+      S.run={map:generateMap(),floor:0,nodePos:null,playerHp:200,maxHp:200,runGems:0,jokers:[],completedNodes:[],bossHistory:[],bonusCharges:0};
       S.stats.totalRuns++;
       save();
       setMainTab('🗺️ Map','map');
@@ -2878,7 +3015,12 @@
 
     function isNodeAvailable(floor,col){
       if(!S.run||!S.run.map[floor]||!S.run.map[floor][col])return false;
-      if(floor===0)return!isNodeDone(floor,col);
+      if(isNodeDone(floor,col))return false;
+      // Once any node on this floor is completed, the whole floor is locked
+      if(S.run.completedNodes.some(n=>n.floor===floor))return false;
+      // If nodePos is already set to a different col on this floor, that path is chosen
+      if(S.run.nodePos&&S.run.nodePos.floor===floor&&S.run.nodePos.col!==col)return false;
+      if(floor===0)return true;
       const prev=S.run.map[floor-1];
       return[0,1,2].some(c=>prev[c]&&isNodeDone(floor-1,c)&&prev[c].connections.includes(col));
     }
@@ -3038,6 +3180,35 @@
       battle.selectedCards=[];battle.evalDone=false;
     }
 
+    function getHandSuggestions(){
+      if(!battle||battle.pendingCards.length<5)return[];
+      const seen=new Set();const suggestions=[];
+      const combos=getCombos(battle.pendingCards,5);
+      combos.sort((a,b)=>HAND_ORDER.indexOf(classifyHand(a))-HAND_ORDER.indexOf(classifyHand(b)));
+      for(const combo of combos){
+        const name=classifyHand(combo);
+        if(!seen.has(name)){seen.add(name);suggestions.push({name,cards:combo});}
+        if(suggestions.length>=4)break;
+      }
+      return suggestions;
+    }
+
+    function applySuggestion(cardIds){
+      if(!battle||battle.evalDone)return;
+      // Deselect all current cards
+      document.querySelectorAll('#battle-stage-cards .card.selected').forEach(el=>el.classList.remove('selected'));
+      battle.selectedCards=[];
+      // Select the suggested cards
+      cardIds.forEach(id=>{
+        const card=battle.pendingCards.find(c=>c.id===id);
+        if(!card)return;
+        battle.selectedCards.push(card);
+        const el=document.querySelector(`#battle-stage-cards [data-id="${id}"]`);
+        if(el)el.classList.add('selected');
+      });
+      updateBattleHandDrop();
+    }
+
     function battleToggleSelect(id,el){
       if(!battle||battle.evalDone)return;
       const card=battle.pendingCards.find(c=>c.id==id);if(!card)return;
@@ -3088,7 +3259,7 @@
         if(boss){
           if(boss.id==='lich'&&battle.dmgLog.length){
             const lastHand=battle.dmgLog[battle.dmgLog.length-1].hand;
-            if(lastHand===handName){battle.enemyHp=Math.min(battle.enemy.maxHp,battle.enemyHp+300);toast('💀 Lich healed 300 HP!','t-red');dmg=0;}
+            if(lastHand===handName){battle.enemyHp=Math.min(battle.enemy.maxHp,battle.enemyHp+200);toast('💀 Lich healed 200 HP!','t-red');dmg=0;}
           }
           if(dmg>0)dmg=boss.gimmick(handName,dmg);
         }
@@ -3253,7 +3424,7 @@
 
     function restHeal(){
       if(!S.run)return;
-      S.run.playerHp=Math.min(S.run.maxHp,S.run.playerHp+30);save();
+      S.run.playerHp=Math.min(S.run.maxHp,S.run.playerHp+50);save();
       completeNode();toast('❤️ Healed 30 HP!','t-green');checkRunProgress();
     }
 
@@ -3294,7 +3465,7 @@
         const def=pickRandomJokerDef();addRunJoker(def.id);save();
         showNodeResult({emoji:def.icon,title:`Got ${def.name}!`,desc:def.desc,rewards:['💎 −200 gems']},()=>checkRunProgress());return;
       }
-      if(action==='shrine_hp'){run.maxHp+=25;run.playerHp=Math.min(run.maxHp,run.playerHp+25);save();showNodeResult({emoji:'⛩️',title:'Blessed!',desc:'Max HP increased.',rewards:['❤️ +25 max HP']},()=>checkRunProgress());return;}
+      if(action==='shrine_hp'){run.maxHp+=40;run.playerHp=Math.min(run.maxHp,run.playerHp+40);save();showNodeResult({emoji:'⛩️',title:'Blessed!',desc:'Max HP increased.',rewards:['❤️ +40 max HP']},()=>checkRunProgress());return;}
       if(action==='shrine_gems'){
         const gems=S.gems+run.runGems;if(gems<100){toast('Not enough gems!','t-red');checkRunProgress();return;}
         if(run.runGems>=100)run.runGems-=100;else{const r=100-run.runGems;run.runGems=0;S.gems-=r;}
@@ -3308,7 +3479,7 @@
         else{save();showNodeResult({emoji:'😢',title:'You lost...',desc:'The gambler takes your gems.',rewards:['💎 −300 gems']},()=>checkRunProgress());}
         return;
       }
-      if(action==='potion_drink'){run.playerHp=Math.min(run.maxHp,run.playerHp+30);save();showNodeResult({emoji:'🧪',title:'Refreshed!',desc:'The potion healed you.',rewards:['❤️ +30 HP']},()=>checkRunProgress());return;}
+      if(action==='potion_drink'){run.playerHp=Math.min(run.maxHp,run.playerHp+50);save();showNodeResult({emoji:'🧪',title:'Refreshed!',desc:'The potion healed you.',rewards:['❤️ +50 HP']},()=>checkRunProgress());return;}
       if(action==='spirit_trade'){
         run.playerHp=Math.max(1,run.playerHp-20);
         const def=pickRandomJokerDef();addRunJoker(def.id);save();
@@ -3427,6 +3598,7 @@
       </div>
       ${jokersHtml}
       <div id="battle-stage-cards" style="display:flex;flex-wrap:wrap;gap:6px;padding:2px 0"></div>
+      <div id="battle-suggestions"></div>
       <div class="hand-drop" id="battle-hand-drop"><span class="hand-placeholder">Select 5 cards to attack</span></div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span class="poker-hint" id="battle-hint">Select exactly 5 cards</span>
@@ -3435,6 +3607,16 @@
       <div class="hand-result" id="battle-hand-result"></div>`;
       const stageEl=document.getElementById('battle-stage-cards');
       battle.pendingCards.forEach((c,i)=>{const el=makeCardEl(c,true);el.classList.add('revealing');el.style.animationDelay=(i*40)+'ms';stageEl.appendChild(el);});
+      renderHandSuggestions();
+    }
+
+    function renderHandSuggestions(){
+      const wrap=document.getElementById('battle-suggestions');if(!wrap)return;
+      const sugs=getHandSuggestions();
+      if(!sugs.length){wrap.innerHTML='';return;}
+      wrap.innerHTML=`<div class="hand-sug-label">Quick select:</div><div class="hand-sug-row">${
+        sugs.map(s=>`<button class="hand-sug-btn" onclick="applySuggestion([${s.cards.map(c=>JSON.stringify(c.id)).join(',')}])">${s.name}</button>`).join('')
+      }</div>`;
     }
 
     // ═══════════════════════════════════════════════
@@ -3598,6 +3780,92 @@
     renderMissions();
     if(S.run){setMainTab('🗺️ Map','map');renderMap();goTabRaw('map');document.getElementById('tab-main').classList.add('active');document.querySelectorAll('.tab').forEach((t,i)=>{if(i>0)t.classList.remove('active');});}
 
+  </script>
+
+  <!-- ══════════════════════════════════════════════════
+       POLISH ENHANCER — visual upgrades layered on top
+  ══════════════════════════════════════════════════ -->
+  <script>
+  (function(){
+    const FLOOR_NAMES=['I · BASE','II','III','IV','V','✦ APEX'];
+
+    // ── Wrap renderHome to inject best-hand stat card ──
+    const _renderHome=window.renderHome;
+    window.renderHome=function(){
+      _renderHome&&_renderHome();
+      const slot=document.getElementById('home-best-slot');
+      if(!slot)return;
+      const best=S&&S.stats&&S.stats.bestHand;
+      const wins=S&&S.stats&&S.stats.runsWon||0;
+      const runs=S&&S.stats&&S.stats.totalRuns||0;
+      const rate=runs>0?Math.round(wins/runs*100):0;
+      if(!best||best==='—'){slot.innerHTML='';return;}
+      slot.innerHTML=`<div class="home-best-card">
+        <div class="home-best-lbl">Best Hand</div>
+        <div class="home-best-val">${best}</div>
+        <div class="home-best-sub">Win rate ${rate}% (${wins}/${runs})</div>
+      </div>`;
+    };
+
+    // ── Wrap renderMap to enhance with floor labels + SVG paths ──
+    const _renderMap=window.renderMap;
+    window.renderMap=function(){
+      _renderMap&&_renderMap();
+      enhanceMap();
+    };
+
+    function enhanceMap(){
+      const grid=document.getElementById('map-grid');
+      if(!grid||!S||!S.run)return;
+      const rows=grid.querySelectorAll('.map-floor-row');
+      rows.forEach((row,i)=>{
+        if(row.dataset.enhanced)return;
+        row.dataset.enhanced='1';
+        const floorIdx=5-i;
+        const lbl=document.createElement('div');
+        lbl.className='map-floor-label';
+        lbl.textContent=FLOOR_NAMES[floorIdx]||`Floor ${floorIdx+1}`;
+        row.insertAdjacentElement('beforebegin',lbl);
+      });
+    }
+
+    // ── Wrap renderBattle to add low-HP pulse + round pill styling ──
+    const _renderBattle=window.renderBattle;
+    window.renderBattle=function(){
+      _renderBattle&&_renderBattle();
+      enhanceBattle();
+    };
+
+    function enhanceBattle(){
+      const wrap=document.getElementById('battle-wrap');
+      if(!wrap||!S||!S.run)return;
+      const pct=S.run.playerHp/S.run.maxHp;
+      if(pct<=0.3)wrap.classList.add('low-hp');else wrap.classList.remove('low-hp');
+    }
+
+    // ── Wrap updateHeader to keep low-HP state in sync ──
+    const _updateHeader=window.updateHeader;
+    window.updateHeader=function(){
+      _updateHeader&&_updateHeader();
+      enhanceBattle();
+    };
+
+    // ── CSS for polish additions ──
+    const style=document.createElement('style');
+    style.textContent=`
+      .home-best-card{background:rgba(212,160,23,0.07);border:1px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 20px;text-align:center;margin-top:-4px}
+      .home-best-lbl{font-size:0.65rem;color:var(--gold-mid,#d4a017);text-transform:uppercase;letter-spacing:.1em;font-family:'Cinzel',serif}
+      .home-best-val{font-size:1rem;font-weight:800;color:var(--gold-lite,#fde68a);font-family:'Cinzel',serif;margin:2px 0}
+      .home-best-sub{font-size:0.65rem;color:var(--muted)}
+      .map-floor-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-mid,#d4a017);text-align:center;margin:2px 0;font-family:'Cinzel',serif;opacity:0.7}
+      .battle-wrap.low-hp{animation:lowHpPulse 2s ease-in-out infinite}
+      @keyframes lowHpPulse{0%,100%{box-shadow:none}50%{box-shadow:inset 0 0 40px rgba(239,68,68,0.15)}}
+    `;
+    document.head.appendChild(style);
+
+    // Run enhancements after initial render
+    setTimeout(()=>{renderHome&&renderHome();},50);
+  })();
   </script>
 </body>
 
