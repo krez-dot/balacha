@@ -2671,7 +2671,24 @@
     .map-title { font-family: 'Cinzel', serif !important; letter-spacing: .12em !important; color: var(--gold-lite) !important; }
 
     /* Section titles */
-    .section-title { font-family: 'Cinzel', serif !important; letter-spacing: .08em !important; }
+    .section-title { font-family: 'Cinzel', serif !important; letter-spacing: .08em !important; color: var(--gold-lite) !important; }
+
+    /* Stat tiles */
+    .stat-tile { background: rgba(212,160,23,0.06) !important; border-color: rgba(212,160,23,0.2) !important; }
+    .st-val { color: var(--gold-lite) !important; }
+    .st-label { color: var(--muted) !important; }
+
+    /* History */
+    .hist-item { border-bottom-color: rgba(212,160,23,0.1) !important; }
+    .hist-hand { font-family: 'Cinzel', serif; font-size: 0.82rem; color: var(--ink); }
+    .hist-reward { color: var(--gold-mid) !important; }
+
+    /* Mission cards */
+    .mission { background: rgba(255,255,255,0.03) !important; border-color: rgba(212,160,23,0.15) !important; }
+    .mission-title { color: var(--ink) !important; }
+    .mission-prog { color: var(--muted) !important; }
+    .mission-fill { background: linear-gradient(90deg, var(--gold-deep), var(--gold-mid)) !important; }
+    .claim-btn { background: linear-gradient(135deg, #5c3d00, #b8860b) !important; border: 1px solid var(--gold-mid) !important; font-family: 'Cinzel', serif !important; }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; }
@@ -3277,7 +3294,7 @@
       const hi=HAND_ORDER.indexOf(handName);
       if(hi<=5)S.missions.weeklyFlush++;
       S.missions.weeklyPoker++;
-      if(!S.stats.bestHand||HAND_ORDER.indexOf(handName)<HAND_ORDER.indexOf(S.stats.bestHand))S.stats.bestHand=handName;
+      if(!S.stats.bestHand||S.stats.bestHand==='—'||HAND_ORDER.indexOf(handName)<HAND_ORDER.indexOf(S.stats.bestHand))S.stats.bestHand=handName;
       S.stats.handHistory=([{hand:handName,reward:dmg,ts:Date.now()},...(S.stats.handHistory||[])]).slice(0,50);
       if(S.run)S.run.runGems+=Math.floor(baseReward*0.2); // bonus run gems
       save();
@@ -3673,14 +3690,15 @@
       el.innerHTML='';
       missions.forEach(m=>{
         const prog=S.missions[m.stat]||0;const done=prog>=m.target;const isClaimed=claimed&&claimed[m.id];
-        const div=document.createElement('div');div.className=`mission-item${done?' done':''}`;
-        div.innerHTML=`<div class="mission-text">
-          <div class="mission-title">${m.title}</div><div class="mission-desc">${m.desc}</div>
-          <div class="mission-prog-bar"><div class="mission-prog-fill" style="width:${Math.min(100,prog/m.target*100)}%"></div></div>
+        const div=document.createElement('div');div.className=`mission${done?' done':''}`;
+        div.innerHTML=`<div class="mission-info">
+          <div class="mission-title">${m.title}</div>
+          <div class="mission-prog">${m.desc}</div>
+          <div class="mission-bar"><div class="mission-fill" style="width:${Math.min(100,prog/m.target*100)}%"></div></div>
         </div>
-        <div class="mission-reward-wrap">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <div class="mission-reward">+${m.reward} 💎</div>
-          ${done&&!isClaimed?`<button class="mission-claim-btn" onclick="claimMission('${m.id}','${containerId==='mission-list'?'daily':'weekly'}',${m.reward})">Claim</button>`:isClaimed?`<span style="font-size:0.7rem;color:var(--muted)">✓</span>`:`<span style="font-size:0.7rem;color:var(--muted)">${prog}/${m.target}</span>`}
+          ${done&&!isClaimed?`<button class="claim-btn" onclick="claimMission('${m.id}','${containerId==='mission-list'?'daily':'weekly'}',${m.reward})">Claim</button>`:isClaimed?`<span style="font-size:0.7rem;color:var(--green)">✓ Done</span>`:`<span style="font-size:0.7rem;color:var(--muted)">${prog}/${m.target}</span>`}
         </div>`;
         el.appendChild(div);
       });
@@ -3698,13 +3716,13 @@
       const grid=document.getElementById('stats-grid');const hist=document.getElementById('history-list');if(!grid)return;
       const st=S.stats;
       grid.innerHTML=`
-      <div class="stat-box"><div class="stat-val">${st.totalRuns||0}</div><div class="stat-lbl">Total Runs</div></div>
-      <div class="stat-box"><div class="stat-val">${st.runsWon||0}</div><div class="stat-lbl">Runs Won</div></div>
-      <div class="stat-box"><div class="stat-val">${st.totalHands||0}</div><div class="stat-lbl">Hands Played</div></div>
-      <div class="stat-box"><div class="stat-val">${st.bestHand||'—'}</div><div class="stat-lbl">Best Hand</div></div>
-      <div class="stat-box"><div class="stat-val">${S.gems.toLocaleString()}</div><div class="stat-lbl">Total Gems</div></div>
-      <div class="stat-box"><div class="stat-val">${S.jokerShards||0}</div><div class="stat-lbl">Shards</div></div>`;
-      if(hist){hist.innerHTML='';(st.handHistory||[]).slice(0,20).forEach(h=>{const d=document.createElement('div');d.className='history-item';d.innerHTML=`<span>${h.hand}</span><span>${h.reward.toLocaleString()} dmg</span>`;hist.appendChild(d);});}
+      <div class="stat-tile"><div class="st-val">${st.totalRuns||0}</div><div class="st-label">Total Runs</div></div>
+      <div class="stat-tile"><div class="st-val">${st.runsWon||0}</div><div class="st-label">Runs Won</div></div>
+      <div class="stat-tile"><div class="st-val">${st.totalHands||0}</div><div class="st-label">Hands Played</div></div>
+      <div class="stat-tile"><div class="st-val">${st.bestHand||'—'}</div><div class="st-label">Best Hand</div></div>
+      <div class="stat-tile"><div class="st-val">${S.gems.toLocaleString()}</div><div class="st-label">Total Gems</div></div>
+      <div class="stat-tile"><div class="st-val">${S.jokerShards||0}</div><div class="st-label">Shards</div></div>`;
+      if(hist){hist.innerHTML='';(st.handHistory||[]).slice(0,20).forEach(h=>{const d=document.createElement('div');d.className='hist-item';d.innerHTML=`<span class="hist-hand">${h.hand}</span><span class="hist-reward">${h.reward.toLocaleString()} dmg</span>`;hist.appendChild(d);});}
     }
 
     // ═══════════════════════════════════════════════
