@@ -2523,6 +2523,10 @@
     .hand-sug-btn { padding:5px 12px;border:1.5px solid var(--accent);border-radius:20px;background:rgba(108,99,255,0.1);color:var(--accent2);font-size:0.75rem;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.02em }
     .hand-sug-btn:hover { background:rgba(108,99,255,0.25);transform:translateY(-1px) }
 
+    /* ── ABANDON ── */
+    .abandon-btn { margin-top:28px;padding:7px 18px;border:1.5px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.06);color:var(--red);border-radius:20px;font-size:0.72rem;font-weight:600;cursor:pointer;opacity:0.6;transition:all .2s;letter-spacing:.02em }
+    .abandon-btn:hover { opacity:1;border-color:var(--red);background:rgba(239,68,68,0.14) }
+
     /* ── HOME ── */
     .home-wrap { padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center }
     .home-logo { font-size:3.5rem }
@@ -2781,6 +2785,7 @@
       <div class="map-title">✦ THE TOWER</div>
       <div class="map-run-info" id="map-run-info"></div>
       <div id="map-grid"></div>
+      <button class="abandon-btn" onclick="abandonRun()">🏳️ Abandon Run</button>
     </div>
   </div>
 
@@ -3054,6 +3059,19 @@
       S.run.playerHp=Math.min(S.run.maxHp,S.run.playerHp+60);
       save();renderMap();goTabRaw('map');
       toast(`♾️ Wave ${S.run.wave} — enemies are stronger!`,'t-gold');
+    }
+
+    function abandonRun(){
+      if(!S.run)return;
+      showNodeResult({
+        emoji:'🏳️',title:'Abandon Run?',
+        desc:'Your progress will be lost. Any gems earned this run are kept.',
+        rewards:[],
+        actions:[
+          {label:'Yes, abandon run',fn:()=>{S.run=null;save();setMainTab('🏠 Home','home');updateHeader();renderHome();goTabRaw('home');}},
+          {label:'No, keep going',fn:()=>{}}
+        ]
+      });
     }
 
     function setMainTab(label,page){
