@@ -2461,14 +2461,19 @@
     .map-run-info { display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;justify-content:center }
     .map-stat { display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 10px;font-size:0.78rem }
     .map-floor-row { display:flex;justify-content:center;gap:20px;width:100%;max-width:340px;position:relative }
-    .map-node { width:60px;height:60px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.5rem;cursor:default;border:2px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);transition:all .2s;position:relative;flex-shrink:0 }
+    .map-node { width:60px;height:60px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.5rem;cursor:default;border:2px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);transition:transform .15s;position:relative;flex-shrink:0;opacity:0.45 }
     .map-node .node-label { font-size:0.48rem;font-weight:700;letter-spacing:.05em;margin-top:1px;opacity:.7;text-transform:uppercase }
-    .map-node.available { border-color:var(--accent);background:rgba(108,99,255,0.15);box-shadow:0 0 12px rgba(108,99,255,0.3);cursor:pointer }
-    .map-node.available:hover { transform:scale(1.08);box-shadow:0 0 20px rgba(108,99,255,0.5) }
-    .map-node.done { opacity:.3;cursor:default }
-    .map-node.boss-node { border-color:#ef4444;background:rgba(239,68,68,0.08);font-size:1.9rem;width:68px;height:68px }
-    .map-node.boss-node.available { border-color:#ef4444;background:rgba(239,68,68,0.18);box-shadow:0 0 20px rgba(239,68,68,0.4);cursor:pointer }
+    .map-node .node-resume { font-size:0.38rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:rgba(212,160,23,0.9);color:#1a0e00;border-radius:3px;padding:1px 4px;margin-top:1px }
+    .map-node.available { border-color:var(--gold-mid,#d4a017);background:rgba(212,160,23,0.12);box-shadow:0 0 0 1px var(--gold-mid,#d4a017),0 0 14px rgba(212,160,23,0.4);cursor:pointer;opacity:1;animation:nodeGoldPulse 1.8s ease-in-out infinite }
+    .map-node.available:hover { transform:scale(1.1);box-shadow:0 0 0 2px var(--gold-lite,#fde68a),0 0 22px rgba(212,160,23,0.65) }
+    .map-node.current-node { border-color:var(--gold-lite,#fde68a) !important;animation:nodeResumePulse 1s ease-in-out infinite !important }
+    .map-node.done { opacity:0.12;filter:grayscale(1);cursor:default;pointer-events:none }
+    .map-node.boss-node { border-color:#ef4444;background:rgba(239,68,68,0.08);font-size:1.9rem;width:68px;height:68px;opacity:0.5 }
+    .map-node.boss-node.available { border-color:#ef4444;background:rgba(239,68,68,0.18);box-shadow:0 0 0 1px #ef4444,0 0 18px rgba(239,68,68,0.5);cursor:pointer;opacity:1;animation:nodeBossPulse 1.5s ease-in-out infinite }
     .map-node.empty { visibility:hidden;pointer-events:none }
+    @keyframes nodeGoldPulse{0%,100%{box-shadow:0 0 0 1px var(--gold-mid,#d4a017),0 0 10px rgba(212,160,23,0.3)}50%{box-shadow:0 0 0 2px var(--gold-lite,#fde68a),0 0 20px rgba(212,160,23,0.6)}}
+    @keyframes nodeResumePulse{0%,100%{box-shadow:0 0 0 2px var(--gold-mid,#d4a017),0 0 14px rgba(212,160,23,0.5)}50%{box-shadow:0 0 0 3px var(--gold-lite,#fde68a),0 0 26px rgba(212,160,23,0.85)}}
+    @keyframes nodeBossPulse{0%,100%{box-shadow:0 0 0 1px #ef4444,0 0 12px rgba(239,68,68,0.4)}50%{box-shadow:0 0 0 2px #ff8080,0 0 24px rgba(239,68,68,0.7)}}
     .map-conn-row { display:flex;justify-content:center;gap:20px;width:100%;max-width:340px;height:18px }
     .map-conn-cell { width:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center }
     .map-conn-line { width:2px;height:100%;background:rgba(255,255,255,0.1);margin:0 auto }
@@ -3602,8 +3607,10 @@
           const cell=document.createElement('div');
           if(!node){cell.className='map-node empty';row.appendChild(cell);continue;}
           const done=isNodeDone(f,c);const available=isNodeAvailable(f,c);
-          cell.className=`map-node${node.type==='boss'?' boss-node':''}${done?' done':available?' available':''}`;
-          cell.innerHTML=`${NODE_ICONS[node.type]||'?'}<div class="node-label">${NODE_LABELS[node.type]||''}</div>`;
+          const isCurrent=!done&&S.run.nodePos&&S.run.nodePos.floor===f&&S.run.nodePos.col===c;
+          cell.className=`map-node${node.type==='boss'?' boss-node':''}${done?' done':available?' available':''}${isCurrent?' current-node':''}`;
+          const resumeHtml=isCurrent?'<div class="node-resume">RESUME</div>':'';
+          cell.innerHTML=`${NODE_ICONS[node.type]||'?'}<div class="node-label">${NODE_LABELS[node.type]||''}</div>${resumeHtml}`;
           if(available&&!done)cell.onclick=()=>enterNode(f,c);
           row.appendChild(cell);
         }
